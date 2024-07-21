@@ -21,5 +21,11 @@ public class TestConteroller {
 			System.out.println("동현이 코드도 가져왔다 !!!!!!!!!!!!!!!!!!!!!!!!");
 			
 			System.out.println("브랜치 접근 으하하하~!");
+			
+			System.out.println("드디어 권한 들어갔니ㅏ????????????????");
+			
+			System.out.println("드디어 권한 들거ㅏㅆ나ㅣㅇㄹ ? 22222222");
+			
+			System.out.println("우철 로컬 브랜치 ㅇ입니다");
 		}
 }

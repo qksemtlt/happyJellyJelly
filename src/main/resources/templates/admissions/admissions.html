@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>입학 신청 폼</title>
+</head>
+<body>
+    <h1>입학 신청 폼</h1>
+    <form action="#" method="post">
+        <label for="dog_id">DOG_ID (DOGS 테이블 참조):</label>
+        <input type="text" id="dog_id" name="dog_id" required><br><br>
+
+        <label for="application_date">입학 신청 일자:</label>
+        <input type="date" id="application_date" name="application_date" required><br><br>
+
+     
+        <label for="desired_subs_type">희망하는 이용권 타입:</label>
+        <select id="desired_subs_type" name="desired_subs_type" required>
+            <option value="">선택하세요</option>
+            <option value="count">횟수권</option>
+            <option value="regular">정기권</option>
+        </select><br><br>
+
+        <div id="count_option" style="display:none;">
+            <label for="desired_usage_count">희망하는 횟수:</label>
+            <input type="number" id="desired_usage_count" name="desired_usage_count" min="1"><br><br>
+        </div>
+
+        <div id="regular_option" style="display:none;">
+            <label for="desired_days_per_week">1주에 희망하는 횟수:</label>
+            <input type="number" id="desired_days_per_week" name="desired_days_per_week" min="1" max="7"><br><br>
+        </div>
+
+        <input type="submit" value="제출">
+    </form>
+
+
+</body>
+</html>

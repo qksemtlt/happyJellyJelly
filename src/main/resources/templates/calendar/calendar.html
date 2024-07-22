@@ -3,7 +3,6 @@
 <meta charset='utf-8' />
 <script src='../js/index.global.js'></script>
 <script th:inline="javascript">
-
 	document.addEventListener('DOMContentLoaded',function() {
 		var calendarEl = document.getElementById('calendar');
 
@@ -24,16 +23,16 @@
 		eventDiarys = [];
 		//    eventDiarys.push([[${list}]]);   
 		var diaryId = "";
-		for (i = 0; i < list.length; i++) {
-			eventDiarys.push({
-				title : list[i].title,
-				start : list[i].diarydate,
-				url : '/diary/select?selectDate='
-						+ list[i].diarydate + '&diaryId='
-						+ list[i].id,
-				diaryId : list[i].id
-			});
-		}
+// 		for (i = 0; i < list.length; i++) {
+// 			eventDiarys.push({
+// 				title : list[i].title,
+// 				start : list[i].diarydate,
+// 				url : '/calendar/select?selectDate='
+// 						+ list[i].diarydate + '&diaryId='
+// 						+ list[i].id,
+// 				diaryId : list[i].id
+// 			});
+// 		}
 
 		var calendar = new FullCalendar.Calendar(calendarEl, {
 			initialDate : formattedDate,
@@ -44,7 +43,7 @@
 			dayMaxEvents : true, // allow "more" link when too many events
 			selectMirror : true,
 			select : function(arg) {
-				window.location = "/diary/create?selectDate="
+				window.location = "/calendar/create?selectDate="
 						+ arg.startStr;
 				calendar.unselect()
 			},
@@ -74,10 +73,10 @@ body {
 	margin: 0 auto;
 }
 </style>
-<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+<!-- <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"> -->
 </head>
 <body>
-	<nav th:replace="~{navbar::navbarFragment}"></nav>
+<!-- 	<nav th:replace="~{navbar::navbarFragment}"></nav> -->
 	<div id='calendar'></div>
 
 </body>

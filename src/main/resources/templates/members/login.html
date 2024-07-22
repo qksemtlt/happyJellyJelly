@@ -1,0 +1,10 @@
+/member/login.html
+
+<form th:action="@{/members/login}" method="post">
+	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+	<label for="username">ID:</label>
+		<input type="text" name="username" /><br/>
+	<label for="password">Password:</label>
+		<input type="password" name="password" /><br/>
+	<input type="submit" value="로그인" />
+</form>

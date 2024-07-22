@@ -3,38 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>입학 신청 폼</title>
+    <title>입학신청 폼</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 5px;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .section-title {
+            background-color: #e6e6e6;
+            text-align: center;
+        }
+        .submit-btn {
+            background-color: yellow;
+            padding: 10px;
+            border: none;
+            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .text-area {
+            width: 100%;
+            height: 100px;
+        }
+    </style>
 </head>
 <body>
-    <h1>입학 신청 폼</h1>
-    <form action="#" method="post">
-        <label for="dog_id">DOG_ID (DOGS 테이블 참조):</label>
-        <input type="text" id="dog_id" name="dog_id" required><br><br>
+    <form>
+        <table>
+            <tr>
+                <th colspan="4" class="section-title">개린이 견적사항</th>
+            </tr>
+            <tr>
+                <th>이름</th>
+                <td><input type="text"></td>
+                <th>몸무게</th>
+                <td><input type="number" step="0.1"> kg</td>
+            </tr>
+            <tr>
+                <th>성별</th>
+                <td>
+                    <input type="radio" name="gender" id="male"> <label for="male">남</label>
+                    <input type="radio" name="gender" id="female"> <label for="female">여</label>
+                </td>
+                <th>중성화여부</th>
+                <td>
+                    <input type="radio" name="neutered" id="neutered-yes"> <label for="neutered-yes">중성화완료</label>
+                    <input type="radio" name="neutered" id="neutered-no"> <label for="neutered-no">중성화안됨</label>
+                </td>
+            </tr>
+            <tr>
+                <th>생년월일</th>
+                <td><input type="date"></td>
+                <th>예방접종여부</th>
+                <td>
+                    <input type="checkbox" id="vaccination1"> <label for="vaccination1">종합백신</label>
+                    <input type="checkbox" id="vaccination2"> <label for="vaccination2">코로나</label>
+                    <input type="checkbox" id="vaccination3"> <label for="vaccination3">인플루엔자</label>
+                    <input type="checkbox" id="vaccination4"> <label for="vaccination4">광견병</label>
+                </td>
+            </tr>
+            <tr>
+                <th>견종</th>
+                <td><input type="text"></td>
+                <th>입학희망시기</th>
+                <td><input type="date"></td>
+            </tr>
+        </table>
 
-        <label for="application_date">입학 신청 일자:</label>
-        <input type="date" id="application_date" name="application_date" required><br><br>
+        <table>
+            <tr>
+                <th colspan="4" class="section-title">생활 습관</th>
+            </tr>
+            <tr>
+                <th>배변 훈련</th>
+                <td>
+                    <input type="radio" name="toilet-training" id="toilet-o"> <label for="toilet-o">O</label>
+                    <input type="radio" name="toilet-training" id="toilet-x"> <label for="toilet-x">X</label>
+                </td>
+                <th>마킹여부</th>
+                <td>
+                    <input type="radio" name="marking" id="marking-o"> <label for="marking-o">O</label>
+                    <input type="radio" name="marking" id="marking-x"> <label for="marking-x">X</label>
+                </td>
+            </tr>
+            <tr>
+                <th>급여 형태</th>
+                <td>
+                    <input type="radio" name="feeding" id="feeding-dry"> <label for="feeding-dry">자유급식</label>
+                    <input type="radio" name="feeding" id="feeding-wet"> <label for="feeding-wet">정량급식</label>
+                </td>
+                <th>식욕</th>
+                <td>
+                    <input type="radio" name="appetite" id="appetite-good"> <label for="appetite-good">상</label>
+                    <input type="radio" name="appetite" id="appetite-normal"> <label for="appetite-normal">중</label>
+                    <input type="radio" name="appetite" id="appetite-poor"> <label for="appetite-poor">하</label>
+                </td>
+            </tr>
+            <tr>
+                <th>하루 산책횟수</th>
+                <td><input type="number"> 회</td>
+                <th>평균 횟수</th>
+                <td>주 <input type="number"> 회</td>
+            </tr>
+        </table>
 
-     
-        <label for="desired_subs_type">희망하는 이용권 타입:</label>
-        <select id="desired_subs_type" name="desired_subs_type" required>
-            <option value="">선택하세요</option>
-            <option value="count">횟수권</option>
-            <option value="regular">정기권</option>
-        </select><br><br>
+        <table>
+            <tr>
+                <th class="section-title">특이사항</th>
+            </tr>
+            <tr>
+                <td><textarea class="text-area"></textarea></td>
+            </tr>
+        </table>
 
-        <div id="count_option" style="display:none;">
-            <label for="desired_usage_count">희망하는 횟수:</label>
-            <input type="number" id="desired_usage_count" name="desired_usage_count" min="1"><br><br>
-        </div>
-
-        <div id="regular_option" style="display:none;">
-            <label for="desired_days_per_week">1주에 희망하는 횟수:</label>
-            <input type="number" id="desired_days_per_week" name="desired_days_per_week" min="1" max="7"><br><br>
-        </div>
-
-        <input type="submit" value="제출">
+        <button type="submit" class="submit-btn">신청서 제출</button>
     </form>
-
-
 </body>
 </html>

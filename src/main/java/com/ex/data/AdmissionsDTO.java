@@ -15,18 +15,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class AdmissionsDTO {
-		
-	private Long damission_id;
-	private Long dog_id;
-	private LocalDateTime application_date;
-	private String status;
-	private LocalDateTime approval_date;
-	private String desired_subs_type;
-	private Long desired_usage_count;
-	private Long desired_day_per_week;
+ private Long admission_id;
+ private Long	dog_id;
+ private Date	application_date;
+ private String	status;
+ private Date	approval_date;
+ private String	desired_subs_type;
+ private Long	desired_usage_count;
+ private Long	desired_days_per_week;
 }
-
-
-
 
 

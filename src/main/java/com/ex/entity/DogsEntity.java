@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,9 +25,9 @@ import lombok.Setter;
 public class DogsEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer dog_id;				// DOGS 테이블 식별번호
-	
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "dogs_seq")
+	@SequenceGenerator(name = "dogs_seq", sequenceName = "dogs_seq", allocationSize = 1, initialValue = 1)
+	private Integer dog_id;
 	@ManyToOne
 	private MembersEntity member;		// MEMBERS 테이블 식별번호(견주)
 	

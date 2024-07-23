@@ -1,12 +1,17 @@
 package com.ex.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ex.data.DogsDTO;
+import com.ex.entity.DogsEntity;
 import com.ex.repository.dogRepository;
 import com.ex.service.DogService;
 
@@ -32,9 +37,17 @@ public class DogController {
 		return "dogs/dogList";
 	};
 	
-	@GetMapping("detail")
-	public String dogDetail(Model model) {
-//		model.addAttribute("dog", dogService.)
+	@GetMapping("detail/{dog_id}")
+	public String dogDetail(Model model, @PathVariable("dog_id") Integer id,
+			DogsDTO dogsDTO) {
+		
+		Optional<DogsEntity> dogEntityOptional = dogService.selectDog(id);
+	    if (dogEntityOptional.isPresent()) {
+	        model.addAttribute("dogdetail", dogEntityOptional.get());
+	    } else {
+	        model.addAttribute("dogdetail", null);
+	    }
+		
 		return "dogs/dogDetail";
 	};
 	

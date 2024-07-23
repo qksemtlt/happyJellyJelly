@@ -38,8 +38,8 @@ public class DogService {
 //		return membersRepository.findAllById(Iterable<ID> ids)
 //	}
 	
-//	public List<DogsEntity> selectDog(){
-//		return dogRepository.findById(null)
-//	}
+	public Optional<DogsEntity> selectDog(Integer id){
+		return dogRepository.findById(id);
+	}
 	
 }

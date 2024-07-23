@@ -24,7 +24,7 @@ import lombok.Setter;
 public class CalendarEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Integer report_id;				// DAILYREPORTS테이블 식별번호 시퀀스 REPORT_SEQ
 	
 	@ManyToOne
@@ -43,6 +43,6 @@ public class CalendarEntity {
 	@Column(columnDefinition = "TEXT")
 	private String contents;				// 알림장내용
 	
-//	@ManyToOne
-//	private MembersEntity membersEntity;	// 강아지 테이블 id 컬럼
+	@ManyToOne
+	private MembersEntity members;			// 강아지 테이블 id 컬럼
 }

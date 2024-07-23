@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>강아지 상세 조회</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+        }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+        table {
+            width: 100%;
+        }
+        .circular-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto 20px;
+        }
+        h1, h3 {
+            text-align: center;
+        }
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: yellow;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>강아지 상세 조회</h1>
+        
+        <img class="circular-image" th:src="@{/images/dog.jpg}" alt="강아지 사진">
+        
+        <form th:action="@{/dog/update}" method="post">
+            <table>
+                <tr>
+                    <td>반정보</td>
+                    <td>
+                        <select name="classInfo">
+                            <option value="마키꽁뽕">마키꽁뽕</option>
+                            <!-- 다른 옵션들 추가 -->
+                        </select>
+                    </td>
+                    <td>강아지이름</td>
+                    <td><input type="text" name="dogname"></td>
+                </tr>
+                <tr>
+                    <td>품종</td>
+                    <td><input type="text" name="breed"></td>
+                    <td>성별</td>
+                    <td><input type="text" name="gender"></td>
+                </tr>
+                <tr>
+                    <td>생년월일</td>
+                    <td><input type="date" name="birthDate"></td>
+                    <td>일련번호</td>
+                    <td><input type="text" name="dog_serialnum"></td>
+                </tr>
+                <tr>
+                    <td>입학일자</td>
+                    <td><input type="date" name=""></td>
+                    <td>퇴소(예정)일자</td>
+                    <td><input type="date" name=""></td>
+                </tr>
+                <tr>
+                    <td>견주</td>
+                    <td><input type="text" name="member"></td>
+                    <td>연락처</td>
+                    <td><input type="tel" name=""></td>
+                </tr>
+            </table>
+            
+            <h3>주의사항 및 특이사항</h3>
+            <textarea name="notes" rows="4"></textarea>
+            
+            <button type="submit">수정하기</button>
+        </form>
+    </div>
+</body>
+</html>

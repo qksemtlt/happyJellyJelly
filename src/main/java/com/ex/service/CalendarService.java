@@ -3,14 +3,11 @@ package com.ex.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.stereotype.Service;
-
 import com.ex.data.CalendarDTO;
 import com.ex.entity.CalendarEntity;
 import com.ex.entity.MembersEntity;
 import com.ex.repository.MembersRepository;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -32,7 +29,7 @@ public class CalendarService {
 			for(CalendarEntity d: diary) {
 				di = new CalendarDTO().builder()
 					.report_id(d.getReport_id())
-					.dog_id(d.getDogs())
+					.dogs(d.getDogs())
 					.attendance_id(d.getAttendance_id())
 					.report_date(d.getReport_date())
 					.behavior(d.getBehavior())

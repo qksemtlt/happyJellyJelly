@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.ex.entity.DogsEntity;
+import com.ex.entity.MembersEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class CalendarDTO {
 
 	private Integer report_id;		// DAILYREPORTS테이블 식별번호 시퀀스 REPORT_SEQ
-	private DogsEntity dog_id;		// 강아지 식별번호
+	private DogsEntity dogs;		// 강아지 식별번호
 	private Integer attendance_id;	// 출석부 식별번호
 	private LocalDate report_date;	// 작성일자
 	private String behavior;		// 기분
@@ -26,7 +27,8 @@ public class CalendarDTO {
 	private String health;			// 건강상태
 	private String bowel;			// 배변활동
 	private String contents;		// 알림장내용
-   
+	private MembersEntity members;	// 견주 식별번호
+	
 }
 /*
 REPORT_ID 		DAILYREPORTS  고유 식별 번호	NUMBER	PK	REPORT _SEQ

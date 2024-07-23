@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,17 +25,18 @@ import lombok.Setter;
 public class DogsEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "dogs_seq")								// 시퀀스 생성
+	@SequenceGenerator(name = "dogs_seq", sequenceName = "dogs_seq", allocationSize=1, initialValue = 1)	// 시퀀스 설정
 	private Integer dog_id;				// DOGS 테이블 식별번호
 	
 	@ManyToOne
 	private MembersEntity member;		// MEMBERS 테이블 식별번호(견주)
 	
-	private String name;				// 강아지 이름
+	private String dogname;				// 강아지 이름
 	private String breed;				// 강아지 품종
 	private LocalDate birth_date;		// 강아지 생일
 	private char gender;				// 강아지 성별
-	private Integer dog_serialnum;		// 강아지 일련번호
+	private String dog_serialnum;		// 강아지 일련번호
 	private String dog_profile;			// 강아지 프로필사진 파일명
 	
 }

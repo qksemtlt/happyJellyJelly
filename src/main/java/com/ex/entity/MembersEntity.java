@@ -1,8 +1,5 @@
 package com.ex.entity;
 import java.time.LocalDate;
-import java.util.List;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,5 +36,4 @@ public class MembersEntity {
 	
 	@Column(nullable=false)
 	private String password;
-	
 }

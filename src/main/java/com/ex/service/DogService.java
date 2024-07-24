@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
 import com.ex.repository.MembersRepository;
-import com.ex.repository.dogRepository;
+import com.ex.repository.dogsRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class DogService {
 
 	@Autowired
-	private final dogRepository dogRepository;
+	private final dogsRepository dogRepository;
 	@Autowired
 	private final MembersRepository membersRepository;
 	
@@ -38,8 +38,8 @@ public class DogService {
 //		return membersRepository.findAllById(Iterable<ID> ids)
 //	}
 	
-//	public List<DogsEntity> selectDog(){
-//		return dogRepository.findById(null)
-//	}
+	public Optional<DogsEntity> selectDog(Integer id){
+		return dogRepository.findById(id);
+	}
 	
 }

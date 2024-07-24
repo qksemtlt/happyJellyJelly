@@ -28,7 +28,6 @@ public class DogsEntity {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "dogs_seq")								// 시퀀스 생성
 	@SequenceGenerator(name = "dogs_seq", sequenceName = "dogs_seq", allocationSize=1, initialValue = 1)	// 시퀀스 설정
 	private Integer dog_id;				// DOGS 테이블 식별번호
-	
 	@ManyToOne
 	private MembersEntity member;		// MEMBERS 테이블 식별번호(견주)
 	

@@ -54,9 +54,9 @@
     <div class="container">
         <h1>강아지 상세 조회</h1>
         
-        <img class="circular-image" th:src="@{/images/dog.jpg}" alt="강아지 사진">
+        <!-- <img class="circular-image" th:src="@{/images/{dog_profile}(dog_profile=${dogdetail.profileImage})}" alt="강아지 사진"> -->
         
-        <form th:action="@{/dog/update}" method="post">
+        <form th:action="@{/dog/update}" method="post" th:object="${dogsDTO}" th:if="${dogdetail != null}">
             <table>
                 <tr>
                     <td>반정보</td>
@@ -67,39 +67,52 @@
                         </select>
                     </td>
                     <td>강아지이름</td>
-                    <td><input type="text" name="dogname"></td>
+                    <td><input type="text" th:name="dogname" th:value="${dogdetail.dogname}"></td>
                 </tr>
                 <tr>
                     <td>품종</td>
-                    <td><input type="text" name="breed"></td>
+                    <td><input type="text" name="breed" th:value="${dogdetail.breed}"></td>
                     <td>성별</td>
-                    <td><input type="text" name="gender"></td>
+                    <td>
+                    	<label for="male">수컷</label>
+<!--                         <input type="radio" name="gender" th:field="*{gender}" value="M" > -->
+                        <input type="radio" name="gender" th:field="${dogdetail.gender}" value="M" >
+                        <label for="male">암컷</label>
+                        <input type="radio" name="gender" th:field="${dogdetail.gender}" value="F" >
+<!--                         <input type="radio" name="gender" value="F" th:checked="${dogdetail.gender == 'F'}"> 암컷 -->
+<!--                         <input type="text" name="gender" th:value="*{gender}"> -->
+<!--                         <input type="text" name="gender" th:value="${dogdetail.gender}"> -->
+                    </td>
                 </tr>
                 <tr>
                     <td>생년월일</td>
-                    <td><input type="date" name="birthDate"></td>
+                    <td><input type="date" name="birthDate" th:value="${dogdetail.birth_date}"></td>
                     <td>일련번호</td>
-                    <td><input type="text" name="dog_serialnum"></td>
+                    <td><input type="text" name="dog_serialnum" th:value="${dogdetail.dog_serialnum}"></td>
                 </tr>
                 <tr>
                     <td>입학일자</td>
-                    <td><input type="date" name=""></td>
+                    <td><input type="date" name="admissionDate" th:value="${dogdetail.birth_date}"></td>
                     <td>퇴소(예정)일자</td>
-                    <td><input type="date" name=""></td>
+                    <td><input type="date" name="graduationDate" th:value="${dogdetail.birth_date}"></td>
                 </tr>
                 <tr>
                     <td>견주</td>
-                    <td><input type="text" name="member"></td>
+                    <td><input type="text" name="member" th:value="${dogdetail.member.name}"></td>
                     <td>연락처</td>
-                    <td><input type="tel" name=""></td>
+                    <td><input type="tel" name="contact" th:value="${dogdetail.member.phone}"></td>
                 </tr>
             </table>
             
             <h3>주의사항 및 특이사항</h3>
-            <textarea name="notes" rows="4"></textarea>
+            <textarea name="notes" rows="4" th:text="${dogdetail.dogname}"></textarea>
             
             <button type="submit">수정하기</button>
         </form>
+        
+        <div th:if="${dogdetail == null}">
+            <p>강아지를 찾을 수 없습니다.</p>
+        </div>
     </div>
 </body>
 </html>

@@ -26,8 +26,12 @@ public class UserSecurityService implements UserDetailsService {
 		}
 		MembersEntity me = op.get();
 		List<GrantedAuthority> grantedList = new ArrayList<>();
-		if("admin".equals(username)) {
+		if(username.startsWith("admin_")) {
 			grantedList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+		}else if(username.startsWith("director_")){
+			grantedList.add(new SimpleGrantedAuthority("ROLE_DIRECTOR"));
+		}else if(username.startsWith("teacher_")) {
+			grantedList.add(new SimpleGrantedAuthority("ROLE_TEACHER"));
 		}else {
 			grantedList.add(new SimpleGrantedAuthority("ROLE_USER"));
 		}

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ex.entity.DogsEntity;
 
-public interface dogRepository extends JpaRepository<DogsEntity, Integer>{
+public interface dogsRepository extends JpaRepository<DogsEntity, Integer>{
 
 //	Page<DogsEntity> findAll(Specification<DogsEntity> spec , Pageable pageable);
 //	Page<DogsEntity> findAll(Pageable pageable);

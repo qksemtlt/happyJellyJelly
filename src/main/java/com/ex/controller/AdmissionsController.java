@@ -29,9 +29,23 @@ public class AdmissionsController {
             return "admissions/admissionsList";
         }
         
-       
+        @GetMapping("/admissionsDetail/{id}")
+        public String viewAdmission(@PathVariable("id") Integer id, Model model) {
+            AdmissionsDTO admission = admissionsService.getAdmissionById(id);
+            model.addAttribute("admission", admission);
+            return "admissions/admissionsDetail";
+        }
+        
+        @PostMapping("/updateStatus/{id}")
+        public String updateAdmissionStatus(
+                @PathVariable("id") Integer id, 
+                @RequestParam("status") String status) {
+            AdmissionsDTO updatedAdmission = admissionsService.updateAdmissionStatus(id, status);
+            return "redirect:/admissions/admissionsList";
+        }
+
+    }
         
        
         
    
-}

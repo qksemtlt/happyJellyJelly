@@ -20,11 +20,13 @@ public class AdmissionsEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "admissions_seq")
     @SequenceGenerator(name = "admissions_seq", sequenceName = "admissions_SEQ", allocationSize = 1)
       @Column(name = "ADMISSION_ID")
-      private Long admissionId;
-
-      @Column(name = "DOG_ID")
-      private Long dogId;
-
+      private Integer admissionId;
+      
+     @ManyToOne
+     @JoinColumn(name = "dog_id") // Replace "dog_id" with the actual column name in your database
+     private DogsEntity dogs;
+     
+     
       @Column(name = "APPLICATION_DATE")
       private Date applicationDate;
 

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>입학 신청 상세</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .table td {
+            vertical-align: middle;
+        }
+        .container {
+            max-width: 800px;
+            margin-top: 50px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 40px;
+            background-color: white;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: bold;
+            color: #343a40;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+        .status-form {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>입학 신청 상세</h1>
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th scope="row">입학신청 번호:</th>
+                    <td th:text="${admission.admissionId}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">강아지:</th>
+                    <td th:text="${admission.dogId}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">신청 날짜:</th>
+                    <td th:text="${#dates.format(admission.applicationDate, 'yyyy-MM-dd')}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">상태:</th>
+                    <td th:text="${admission.status}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">승인 날짜:</th>
+                    <td th:text="${admission.approvalDate != null ? #dates.format(admission.approvalDate, 'yyyy-MM-dd') : '아직 승인되지 않음'}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">희망 구독 유형:</th>
+                    <td th:text="${admission.desiredSubsType}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">희망 이용 횟수:</th>
+                    <td th:text="${admission.desiredUsageCount}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">희망 주간 이용 일수:</th>
+                    <td th:text="${admission.desiredDaysPerWeek}"></td>
+                </tr>
+            </tbody>
+        </table>
+        
+           <div class="status-form">
+            <h4>입학 신청 상태 변경</h4>
+            <form th:action="@{/admissions/updateStatus/{id}(id=${admission.admissionId})}" method="post">
+                <div class="form-group">
+                    <label for="status">새로운 상태:</label>
+                    <select class="form-control" id="status" name="status">
+                        <option value="APPROVED" th:selected="${admission.status == 'APPROVED'}">대기중</option>
+                        <option value="REJECTED" th:selected="${admission.status == 'REJECTED'}">승인됨</option>
+                        <option value="PENDING" th:selected="${admission.status == 'PENDING'}">거절됨</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">상태 변경</button>
+            </form>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a th:href="@{/admissions/admissionsList}" class="btn btn-secondary">목록으로 돌아가기</a>
+        </div>
+    </div>
+</body>
+</html>

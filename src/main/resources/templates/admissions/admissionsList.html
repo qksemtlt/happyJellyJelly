@@ -4,63 +4,22 @@
     <meta charset="UTF-8">
     <title>입학 신청 조회</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-
+    <style>
+        .status-REJECTED {
+            color: green;
+        }
+        .status-PENDING {
+            color: red;
+        }
+        .status-APPROVED {
+            color: orange;
+        }
+        
+        
+    </style>
+    
 </head>
 <body>
-    <div class="container mt-5">
-        <h2>입학 신청 목록</h2>
-        
-        <!-- 검색 폼 -->
-       
-        <!-- 입학신청 페이지로 이동하는 버튼 -->
-		<div class="mb-3 text-right">
-		    <a href="/admissions" class="btn btn-primary">강아지 입학 신청하기</a>
-		</div>
-		        
-		<!-- 입학 신청 목록 테이블 -->
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>신청 ID</th>
-                    <th>강아지 ID</th>
-                    <th>신청 일자</th>
-                    <th>상태</th>
-                    <th>승인 일자</th>
-                    <th>희망 구독 유형</th>
-                    <th>희망 이용 횟수</th>
-                    <th>희망 주간 일수</th>
-                    <th>상세</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="admission : ${admissions}">
-                    <td th:text="${admission.admissionId}"></td>
-                    <td th:text="${admission.dogId}"></td>
-                    <td th:text="${#dates.format(admission.applicationDate, 'yyyy-MM-dd')}"></td>
-                    <td th:text="${admission.status}"></td>
-                    <td th:text="${admission.approvalDate != null ? #dates.format(admission.approvalDate, 'yyyy-MM-dd') : '-'}"></td>
-                    <td th:text="${admission.desiredSubsType}"></td>
-                    <td th:text="${admission.desiredUsageCount}"></td>
-                    <td th:text="${admission.desiredDaysPerWeek}"></td>
-                    <td>
-                        <a th:href="@{/admissions/{id}(id=${admission.admissionId})}" class="btn btn-sm btn-info">상세보기</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- 페이지네이션 (옵션) -->
-        <nav th:if="${totalPages > 1}">
-            <ul class="pagination justify-content-center">
-                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admissions?page=${currentPage - 1}}">이전</a>
-                </li>
-		<head>
-		    <meta charset="UTF-8">
-		    <title>입학 신청 조회</title>
-		    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-		</head>
-		<body>
     <div class="container mt-5">
         <h2>입학 신청 목록</h2>
         
@@ -84,6 +43,7 @@
             </div>
         </form>
         
+       <a th:href="@{/admissions}" class="btn btn-primary mb-3">입학신청</a>
 
         <!-- 입학 신청 목록 테이블 -->
         <table class="table table-striped">
@@ -102,16 +62,16 @@
             </thead>
             <tbody>
                 <tr th:each="admission : ${admissions}">
-                    <td th:text="${admission.admissionId}"></td>
-                    <td th:text="${admission.dogId}"></td>
-                    <td th:text="${#dates.format(admission.applicationDate, 'yyyy-MM-dd')}"></td>
-                    <td th:text="${admission.status}"></td>
-                    <td th:text="${admission.approvalDate != null ? #dates.format(admission.approvalDate, 'yyyy-MM-dd') : '-'}"></td>
-                    <td th:text="${admission.desiredSubsType}"></td>
-                    <td th:text="${admission.desiredUsageCount}"></td>
-                    <td th:text="${admission.desiredDaysPerWeek}"></td>
-                    <td>
-                        <a th:href="@{/admissions/{id}(id=${admission.admissionId})}" class="btn btn-sm btn-info">상세보기</a>
+                <td th:text="${admission.admissionId}"></td>
+                <td th:text="${admission.dogname}"></td>
+                <td th:text="${#dates.format(admission.applicationDate, 'yyyy-MM-dd')}"></td>
+                <td th:text="${admission.status}" th:classappend="'status-' + ${admission.status}"></td>
+                <td th:text="${admission.approvalDate != null ? #dates.format(admission.approvalDate, 'yyyy-MM-dd') : '-'}"></td>
+                <td th:text="${admission.desiredSubsType}"></td>
+                <td th:text="${admission.desiredUsageCount}"></td>
+                <td th:text="${admission.desiredDaysPerWeek}"></td>
+                    <td>                
+					   <a th:href="@{/admissions/admissionsDetail/{id}(id=${admission.admissionId})}">상세보기</a>
                     </td>
                 </tr>
             </tbody>
@@ -137,5 +97,4 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
-
 </html>

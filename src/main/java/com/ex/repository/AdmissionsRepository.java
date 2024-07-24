@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AdmissionsRepository extends JpaRepository<AdmissionsEntity, Long> {
-    List<AdmissionsEntity> findByDogId(Long dogId);
+public interface AdmissionsRepository extends JpaRepository<AdmissionsEntity, Integer> {
+    List<AdmissionsEntity> findByAdmissionId(Integer admissionId);;
     List<AdmissionsEntity> findByStatus(String status);
 }

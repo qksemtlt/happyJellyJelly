@@ -1,10 +1,9 @@
-<a href="/members/login" sec:authorize="isAnonymous()">로그인</a>
-
-<a href="/members/logout" sec:authorize="isAuthenticated()">로그아웃</a>
-
-<a href="/admissions">입학신청</a>
-
-<a href="/admissions/admissionsList">입학신청목록보기</a>
-
-
-
+<html layout:decorate="~{layout}">
+    <div layout:fragment="content" class="container my-3">
+        <div ckass="my-3 border-bottom">
+            <div>
+                <h4 class="border-bottom py-2">main.html</h4>
+            </div>        
+        </div>
+    </div>
+</html>

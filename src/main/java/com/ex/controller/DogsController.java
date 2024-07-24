@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ex.data.DogsDTO;
 import com.ex.entity.DogsEntity;
-import com.ex.repository.dogsRepository;
+import com.ex.repository.DogsRepository;
 import com.ex.service.DogService;
 
 import lombok.RequiredArgsConstructor;

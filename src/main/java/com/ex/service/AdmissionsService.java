@@ -9,7 +9,7 @@ import com.ex.data.AdmissionsDTO;
 import com.ex.entity.AdmissionsEntity;
 import com.ex.entity.DogsEntity;
 import com.ex.repository.AdmissionsRepository;
-import com.ex.repository.dogRepository;
+import com.ex.repository.dogsRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class AdmissionsService {
     private final AdmissionsRepository admissionRepository;
-    private final dogRepository dogRepository;
+    private final dogsRepository dogRepository;
 
     public void createAdmission(AdmissionsDTO admissionDTO) {
         DogsEntity dog = dogRepository.findById(admissionDTO.getDogId())

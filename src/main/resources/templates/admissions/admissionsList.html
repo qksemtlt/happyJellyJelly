@@ -62,7 +62,7 @@
             </thead>
             <tbody>
                 <tr th:each="admission : ${admissions}">
-                <td th:text="${admission.admissionId}"></td>
+                <td th:text="${admission.dogs.member}"></td>
                 <td th:text="${admission.dogname}"></td>
                 <td th:text="${#dates.format(admission.applicationDate, 'yyyy-MM-dd')}"></td>
                 <td th:text="${admission.status}" th:classappend="'status-' + ${admission.status}"></td>

@@ -2,7 +2,7 @@ package com.ex.data;
 
 import java.util.Date;
 
-
+import com.ex.entity.DogsEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,8 +15,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AdmissionsDTO {
     private Integer admissionId;
-    private Integer dogId;  // DogsEntity 대신 dogId를 사용
+    
+    private Integer dog_id; 
+    
     private String dogname;
+    
     private Date applicationDate;
     private String status;
     private Date approvalDate;

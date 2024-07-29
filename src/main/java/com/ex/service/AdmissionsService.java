@@ -21,7 +21,7 @@ public class AdmissionsService {
     private final DogsRepository dogRepository;
 
     public void createAdmission(AdmissionsDTO admissionDTO) {
-        DogsEntity dog = dogRepository.findById(admissionDTO.getDogId())
+        DogsEntity dog = dogRepository.findById(admissionDTO.getDog_id())
                 .orElseThrow(() -> new RuntimeException("Dog not found"));
 
         AdmissionsEntity ae = AdmissionsEntity.builder()
@@ -51,7 +51,7 @@ public class AdmissionsService {
     private AdmissionsDTO convertToDTO(AdmissionsEntity entity) {
         AdmissionsDTO dto = new AdmissionsDTO();
         dto.setAdmissionId(entity.getAdmissionId());
-        dto.setDogId(entity.getDogs() != null ? entity.getDogs().getDog_id() : null);
+        dto.setDog_id(entity.getDogs() != null ? entity.getDogs().getDog_id() : null);
         dto.setDogname(entity.getDogs() != null ? entity.getDogs().getDogname() : null);  // 추가된 라인
         dto.setApplicationDate(entity.getApplicationDate());
         dto.setStatus(entity.getStatus());

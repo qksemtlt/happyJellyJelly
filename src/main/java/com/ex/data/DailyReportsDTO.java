@@ -31,4 +31,5 @@ public class DailyReportsDTO {
 	private String title;					// 알림장제목
 	private MembersEntity members;			// 견주 식별번호
 	
+
 }

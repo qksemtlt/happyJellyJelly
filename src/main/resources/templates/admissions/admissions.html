@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,9 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
         }
         table {
             width: 100%;
@@ -14,8 +17,9 @@
             margin-bottom: 20px;
         }
         th, td {
-            border: 1px solid black;
-            padding: 5px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
         }
         th {
             background-color: #f2f2f2;
@@ -24,61 +28,88 @@
         .section-title {
             background-color: #e6e6e6;
             text-align: center;
+            font-size: 18px;
         }
         .submit-btn {
-            background-color: yellow;
-            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
             border: none;
-            width: 100%;
-            font-size: 16px;
+            border-radius: 4px;
             cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
         }
         .text-area {
             width: 100%;
             height: 100px;
+            resize: vertical;
+        }
+        select, input[type="text"], input[type="number"], input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin: 4px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
     </style>
 </head>
 <body>
-    <form>
+    <h1>입학신청 폼</h1>
+    <form th:action="@{/admissions/create}" method="post" th:object="${admissionDTO}">
+ 
         <table>
             <tr>
                 <th colspan="4" class="section-title">개린이 견적사항</th>
             </tr>
             <tr>
+                <th>강아지 선택</th>
+                <td colspan="3">
+                    <select id="dogId" required>
+                        <option value="">강아지를 선택하세요</option>
+                        <option th:each="dog : ${userDogs}" th:value="${dog.dog_id}" th:text="${dog.dogname}"></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
                 <th>이름</th>
-                <td><input type="text"></td>
+                <td><input type="text" name="dogname" th:value="${userDogs[0].dogname}" readonly></td>
                 <th>몸무게</th>
-                <td><input type="number" step="0.1"> kg</td>
+                <td><input type="number" step="0.1" name="weight" th:value="${userDogs[0].weight}"></td>
             </tr>
             <tr>
                 <th>성별</th>
                 <td>
-                    <input type="radio" name="gender" id="male"> <label for="male">남</label>
-                    <input type="radio" name="gender" id="female"> <label for="female">여</label>
+                    <input type="radio" name="gender" id="male" value="M" th:checked="${userDogs[0].gender == 'M'}"> <label for="male">남</label>
+                    <input type="radio" name="gender" id="female" value="F" th:checked="${userDogs[0].gender == 'F'}"> <label for="female">여</label>
                 </td>
                 <th>중성화여부</th>
                 <td>
-                    <input type="radio" name="neutered" id="neutered-yes"> <label for="neutered-yes">중성화완료</label>
-                    <input type="radio" name="neutered" id="neutered-no"> <label for="neutered-no">중성화안됨</label>
+                   <input type="radio" name="neutered" id="neutered-yes" value="1" th:checked="${userDogs[0].neutering == 1}"> <label for="neutered-yes">중성화완료</label>
+                    <input type="radio" name="neutered" id="neutered-no" value="0" th:checked="${userDogs[0].neutering == 0}"> <label for="neutered-no">중성화안됨</label>
                 </td>
             </tr>
             <tr>
                 <th>생년월일</th>
-                <td><input type="date"></td>
+                <td><input type="date" name="birthDate" th:value="${userDogs[0].birth_date}"></td>
                 <th>예방접종여부</th>
                 <td>
-                    <input type="checkbox" id="vaccination1"> <label for="vaccination1">종합백신</label>
-                    <input type="checkbox" id="vaccination2"> <label for="vaccination2">코로나</label>
-                    <input type="checkbox" id="vaccination3"> <label for="vaccination3">인플루엔자</label>
-                    <input type="checkbox" id="vaccination4"> <label for="vaccination4">광견병</label>
+                    <input type="checkbox" id="vaccination1" name="vaccination" value="종합백신" th:checked="${userDogs[0].vaccination != null && userDogs[0].vaccination.contains('종합백신')}"> <label for="vaccination1">종합백신</label>
+                    <input type="checkbox" id="vaccination2" name="vaccination" value="코로나" th:checked="${userDogs[0].vaccination != null && userDogs[0].vaccination.contains('코로나')}"> <label for="vaccination2">코로나</label>
+                    <input type="checkbox" id="vaccination3" name="vaccination" value="인플루엔자" th:checked="${userDogs[0].vaccination != null && userDogs[0].vaccination.contains('인플루엔자')}"> <label for="vaccination3">인플루엔자</label>
+                    <input type="checkbox" id="vaccination4" name="vaccination" value="광견병" th:checked="${userDogs[0].vaccination != null && userDogs[0].vaccination.contains('광견병')}"> <label for="vaccination4">광견병</label>
                 </td>
             </tr>
             <tr>
                 <th>견종</th>
-                <td><input type="text"></td>
+                <td><input type="text" name="breed" th:value="${userDogs[0].breed}" readonly></td>
                 <th>입학희망시기</th>
-                <td><input type="date"></td>
+                <td><input type="date" name="admissionDate" required></td>
             </tr>
         </table>
 
@@ -89,33 +120,33 @@
             <tr>
                 <th>배변 훈련</th>
                 <td>
-                    <input type="radio" name="toilet-training" id="toilet-o"> <label for="toilet-o">O</label>
-                    <input type="radio" name="toilet-training" id="toilet-x"> <label for="toilet-x">X</label>
+                    <input type="radio" name="toiletTraining" id="toilet-o" value="O"> <label for="toilet-o">O</label>
+                    <input type="radio" name="toiletTraining" id="toilet-x" value="X"> <label for="toilet-x">X</label>
                 </td>
                 <th>마킹여부</th>
                 <td>
-                    <input type="radio" name="marking" id="marking-o"> <label for="marking-o">O</label>
-                    <input type="radio" name="marking" id="marking-x"> <label for="marking-x">X</label>
+                    <input type="radio" name="marking" id="marking-o" value="O"> <label for="marking-o">O</label>
+                    <input type="radio" name="marking" id="marking-x" value="X"> <label for="marking-x">X</label>
                 </td>
             </tr>
             <tr>
                 <th>급여 형태</th>
                 <td>
-                    <input type="radio" name="feeding" id="feeding-dry"> <label for="feeding-dry">자유급식</label>
-                    <input type="radio" name="feeding" id="feeding-wet"> <label for="feeding-wet">정량급식</label>
+                    <input type="radio" name="feeding" id="feeding-free" value="자유급식"> <label for="feeding-free">자유급식</label>
+                    <input type="radio" name="feeding" id="feeding-measured" value="정량급식"> <label for="feeding-measured">정량급식</label>
                 </td>
                 <th>식욕</th>
                 <td>
-                    <input type="radio" name="appetite" id="appetite-good"> <label for="appetite-good">상</label>
-                    <input type="radio" name="appetite" id="appetite-normal"> <label for="appetite-normal">중</label>
-                    <input type="radio" name="appetite" id="appetite-poor"> <label for="appetite-poor">하</label>
+                    <input type="radio" name="appetite" id="appetite-good" value="상"> <label for="appetite-good">상</label>
+                    <input type="radio" name="appetite" id="appetite-normal" value="중"> <label for="appetite-normal">중</label>
+                    <input type="radio" name="appetite" id="appetite-poor" value="하"> <label for="appetite-poor">하</label>
                 </td>
             </tr>
             <tr>
                 <th>하루 산책횟수</th>
-                <td><input type="number"> 회</td>
+                <td><input type="number" name="dailyWalks"> 회</td>
                 <th>평균 횟수</th>
-                <td>주 <input type="number"> 회</td>
+                <td>주 <input type="number" name="weeklyWalks"> 회</td>
             </tr>
         </table>
 
@@ -124,11 +155,32 @@
                 <th class="section-title">특이사항</th>
             </tr>
             <tr>
-                <td><textarea class="text-area"></textarea></td>
+               <td><input type="text" name="significant"></td>
             </tr>
         </table>
 
         <button type="submit" class="submit-btn">신청서 제출</button>
     </form>
+
+    <script th:inline="javascript">
+        // 강아지 선택 시 정보 자동 채우기
+        document.getElementById('dogId').addEventListener('change', function() {
+            var dogs = /*[[${userDogs}]]*/ [0];
+            var selectedDog = dogs.find(dog => dog.dog_id == this.value);
+            if (selectedDog) {
+                document.querySelector('input[name="dogname"]').value = selectedDog.dogname;
+                document.querySelector('input[name="breed"]').value = selectedDog.breed;
+                document.querySelector('input[name="birthDate"]').value = selectedDog.birth_date;
+                document.querySelector('input[name="gender"][value="' + selectedDog.gender + '"]').checked = true;
+                document.querySelector('input[name="neutered"][value="' + selectedDog.neutering + '"]').checked = true;
+                
+                // 예방접종 체크박스 처리
+                var vaccinations = selectedDog.vaccination || [];
+                document.querySelectorAll('input[name="vaccination"]').forEach(function(checkbox) {
+                    checkbox.checked = vaccinations.includes(checkbox.value);
+                });
+            }
+        });
+    </script>
 </body>
 </html>

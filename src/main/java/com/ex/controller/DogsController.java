@@ -1,22 +1,19 @@
 package com.ex.controller;
-
 import java.security.Principal;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.ex.data.DogsDTO;
 import com.ex.entity.DogsEntity;
-import com.ex.repository.DogsRepository;
 import com.ex.service.DogService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -37,7 +34,7 @@ public class DogsController {
 	@GetMapping("search")
 	public String search(DogsDTO dogsDTO) {
 		return "dogs/dogList";
-	};
+	}
 	
 	@GetMapping("detail/{dog_id}")
 	public String dogDetail(Model model, @PathVariable("dog_id") Integer id,
@@ -51,13 +48,25 @@ public class DogsController {
 	    }
 		
 		return "dogs/dogDetail";
-	};
+	}
 	
 	@GetMapping("update")
 	@PreAuthorize("isAuthenticated()")
-	public String dogupdate(Principal principal, Model model,
-			DogsDTO dogsDTO) {
+	public String dogupdate(Principal principal, Model model, DogsDTO dogsDTO) {
 		model.addAttribute("dogsDTO", dogsDTO);
 		return "dogs/dogDetail";
-	};
+	}
+	
+	@GetMapping("addDogs")
+	@PreAuthorize("isAuthenticated()")
+	public String createDogs(DogsDTO dogsDTO) {
+		return "dogs/myDogsInsert";
+	}
+	
+	@PostMapping("addDogs")
+	@PreAuthorize("isAuthenticated()")
+	public String createDogs(@Valid DogsDTO dogsDTO, Principal principal) {
+		dogService.addDogs(principal.getName(), dogsDTO);
+		return "redirect:/members/mypage";
+	}
 }

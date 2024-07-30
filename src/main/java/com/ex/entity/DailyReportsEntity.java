@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class DailyReportsEntity {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "REPORT _SEQ")							
 	@SequenceGenerator(name = "REPORT _SEQ", sequenceName = "REPORT _SEQ", allocationSize=1, initialValue = 1)
@@ -45,5 +45,5 @@ public class DailyReportsEntity {
 	
 	@ManyToOne
 	private MembersEntity members;	// 강아지 테이블 id 컬럼
-	
+
 }

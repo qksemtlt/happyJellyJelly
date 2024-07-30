@@ -2,99 +2,75 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>입학 신청 조회</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>입학 신청 목록</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        .status-REJECTED {
-            color: green;
+        .container {
+            margin-top: 50px;
         }
-        .status-PENDING {
-            color: red;
+        h1 {
+            margin-bottom: 30px;
         }
-        .status-APPROVED {
-            color: orange;
+        .table th {
+            background-color: #f8f9fa;
         }
-        
-        
+        .btn-container {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+       .status-pending {
+    color: #856404; /* 대기중의 글자색 */
+    font-weight: bold;
+}
+
+.status-approved {
+    color: #155724; /* 승인됨의 글자색 */
+    font-weight: bold;
+}
+
+.status-rejected {
+    color: #721c24; /* 거부됨의 글자색 */
+    font-weight: bold;
+}
+
     </style>
-    
 </head>
 <body>
-    <div class="container mt-5">
-        <h2>입학 신청 목록</h2>
-        
-        <!-- 검색 폼 -->
-        <form th:action="@{/admissions/search}" method="get" class="mb-3">
-            <div class="form-row">
-                <div class="col">
-                    <input type="text" class="form-control" name="dogId" placeholder="강아지 ID">
-                </div>
-                <div class="col">
-                    <select class="form-control" name="status">
-                        <option value="">상태 선택</option>
-                        <option value="PENDING">대기중</option>
-                        <option value="APPROVED">승인됨</option>
-                        <option value="REJECTED">거절됨</option>
-                    </select>
-                </div>
-                <div class="col">
-                    <button type="submit" class="btn btn-primary">검색</button>
-                </div>
-            </div>
-        </form>
-        
-       <a th:href="@{/admissions}" class="btn btn-primary mb-3">입학신청</a>
-
-        <!-- 입학 신청 목록 테이블 -->
-        <table class="table table-striped">
-            <thead>
+    <div class="container">
+        <h1>입학 신청 목록</h1>
+        <div class="btn-container">
+            <a th:href="@{/admissions}" class="btn btn-primary">입학 신청</a>
+        </div>
+        <table class="table table-bordered table-hover">
+            <thead class="thead-light">
                 <tr>
-                    <th>신청 ID</th>
-                    <th>강아지 ID</th>
-                    <th>신청 일자</th>
+                    <th>번호</th>
+                    <th>강아지 이름</th>
+                    <th>신청 날짜</th>
                     <th>상태</th>
-                    <th>승인 일자</th>
                     <th>희망 구독 유형</th>
-                    <th>희망 이용 횟수</th>
-                    <th>희망 주간 일수</th>
-                    <th>상세</th>
+                    <th>배변 훈련</th>
+                    <th>산책 횟수</th>
+                    <th>상세보기</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="admission : ${admissions}">
-                <td th:text="${admission.dogs.member}"></td>
-                <td th:text="${admission.dogname}"></td>
-                <td th:text="${#dates.format(admission.applicationDate, 'yyyy-MM-dd')}"></td>
-                <td th:text="${admission.status}" th:classappend="'status-' + ${admission.status}"></td>
-                <td th:text="${admission.approvalDate != null ? #dates.format(admission.approvalDate, 'yyyy-MM-dd') : '-'}"></td>
-                <td th:text="${admission.desiredSubsType}"></td>
-                <td th:text="${admission.desiredUsageCount}"></td>
-                <td th:text="${admission.desiredDaysPerWeek}"></td>
-                    <td>                
-					   <a th:href="@{/admissions/admissionsDetail/{id}(id=${admission.admissionId})}">상세보기</a>
+                    <td th:text="${admission.admissionId}"></td>
+                    <td th:text="${admission.dogs.dogname}"></td>
+                    <td th:text="${#dates.format(admission.applicationDate, 'yyyy-MM-dd')}"></td>
+                    <td th:classappend="${admission.status == 'APPROVED' ? 'status-pending' : (admission.status == 'REJECTED' ? 'status-approved' : 'status-rejected')}"
+                        th:text="${admission.status == 'APPROVED' ? '대기중' : (admission.status == 'REJECTED' ? '승인됨' : '거부됨')}">
+                    </td>
+                    <td th:text="${admission.desiredSubsType}"></td>
+                    <td th:text="${admission.pottytraining}"></td>
+                    <td th:text="${admission.walk}"></td>
+                    <td>
+                        <a th:href="@{/admissions/admissionsDetail/{id}(id=${admission.admissionId})}" class="btn btn-info btn-sm">상세보기</a>
                     </td>
                 </tr>
             </tbody>
         </table>
-
-        <nav th:if="${totalPages > 1}">
-            <ul class="pagination justify-content-center">
-                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admissions?page=${currentPage - 1}}">이전</a>
-                </li>
-                <li class="page-item" th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
-                    th:classappend="${pageNum == currentPage} ? 'active'">
-                    <a class="page-link" th:href="@{/admissions?page=${pageNum}}" th:text="${pageNum}"></a>
-                </li>
-                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admissions?page=${currentPage + 1}}">다음</a>
-                </li>
-            </ul>
-        </nav>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

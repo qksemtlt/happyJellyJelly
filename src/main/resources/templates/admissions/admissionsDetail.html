@@ -54,7 +54,7 @@
                 </tr>
                 <tr>
                     <th scope="row">강아지:</th>
-                    <td th:text="${admission.dogId}"></td>
+                    <td th:text="${admission.dogs.dogname}"></td>
                 </tr>
                 <tr>
                     <th scope="row">신청 날짜:</th>
@@ -80,10 +80,34 @@
                     <th scope="row">희망 주간 이용 일수:</th>
                     <td th:text="${admission.desiredDaysPerWeek}"></td>
                 </tr>
+                <tr>
+                    <th scope="row">배변 훈련:</th>
+                    <td th:text="${admission.pottytraining}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">마킹:</th>
+                    <td th:text="${admission.marking}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">급여 형태:</th>
+                    <td th:text="${admission.ration}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">식욕:</th>
+                    <td th:text="${admission.appetite}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">산책 횟수:</th>
+                    <td th:text="${admission.walk}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">주 산책 횟수:</th>
+                    <td th:text="${admission.numberofweeks}"></td>
+                </tr>
             </tbody>
         </table>
         
-           <div class="status-form">
+        <div class="status-form">
             <h4>입학 신청 상태 변경</h4>
             <form th:action="@{/admissions/updateStatus/{id}(id=${admission.admissionId})}" method="post">
                 <div class="form-group">
@@ -92,6 +116,7 @@
                         <option value="APPROVED" th:selected="${admission.status == 'APPROVED'}">대기중</option>
                         <option value="REJECTED" th:selected="${admission.status == 'REJECTED'}">승인됨</option>
                         <option value="PENDING" th:selected="${admission.status == 'PENDING'}">거절됨</option>
+                        
                     </select>
                 </div>
                 <button type="submit" class="btn btn-primary">상태 변경</button>

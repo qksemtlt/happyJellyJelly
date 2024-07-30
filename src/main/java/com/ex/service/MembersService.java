@@ -1,6 +1,8 @@
 package com.ex.service;
 import java.time.LocalDate;
 import java.util.Optional;
+
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.ex.data.MembersDTO;
@@ -78,4 +80,9 @@ public class MembersService {
 		MembersEntity me = membersRepository.findByUsername(username).get();
 		membersRepository.delete(me);
 	}
+	// 추가
+	 public MembersEntity findByUsername(String username) {
+	        return membersRepository.findByUsername(username)
+	            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+	    }
 }

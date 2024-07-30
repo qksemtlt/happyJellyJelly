@@ -3,6 +3,7 @@
 <meta charset='utf-8' />
 <script src='../js/index.global.js'></script>
 <script th:inline="javascript">
+	
 	document.addEventListener('DOMContentLoaded',function() {
 		var calendarEl = document.getElementById('calendar');
 
@@ -22,17 +23,17 @@
 
 		eventDiarys = [];
 		//    eventDiarys.push([[${list}]]);   
-		var diaryId = "";
-// 		for (i = 0; i < list.length; i++) {
-// 			eventDiarys.push({
-// 				title : list[i].title,
-// 				start : list[i].diarydate,
-// 				url : '/calendar/select?selectDate='
-// 						+ list[i].diarydate + '&diaryId='
-// 						+ list[i].id,
-// 				diaryId : list[i].id
-// 			});
-// 		}
+		//var diaryId = "";
+ 		for (i = 0; i < list.length; i++) {
+ 			eventDiarys.push({
+ 				title : list[i].activities,
+ 				start : list[i].report_date,
+ 				url : '/calendar/select?selectDate='
+ 						+ list[i].report_date
+						+ '&reportId='
+ 						+ list[i].id,
+ 			});
+ 		}
 
 		var calendar = new FullCalendar.Calendar(calendarEl, {
 			initialDate : formattedDate,

@@ -27,7 +27,7 @@ public class StaffAssignmentsEntity {
 	private Integer sfassignment_id;
 	
 	@ManyToOne
-	private MembersEntity mamber;	
+	private MembersEntity members;	
 	
 	private Integer	daygroup_id;
 	

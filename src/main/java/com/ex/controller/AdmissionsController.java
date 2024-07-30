@@ -2,12 +2,18 @@ package com.ex.controller;
 
 
 import com.ex.data.AdmissionsDTO;
+import com.ex.entity.DogsEntity;
+import com.ex.entity.MembersEntity;
 import com.ex.service.AdmissionsService;
+import com.ex.service.DogService;
+import com.ex.service.MembersService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -16,10 +22,30 @@ import java.util.List;
 public class AdmissionsController {
         
         private final AdmissionsService admissionsService;
-        
+        private final DogService dogService;      
+        private final MembersService membersService;
+            
+        // 추가
         @GetMapping("")
-        public String admissions() {
-                return "admissions/admissions";
+        public String AdmissionForm(Model model, Principal principal) {
+            // 현재 로그인한 사용자 정보 가져오기
+            String username = principal.getName();
+            MembersEntity member = membersService.findByUsername(username);
+
+            // 사용자의 강아지 정보 가져오기
+            List<DogsEntity> userDogs = dogService.findDogsByMember(member);
+
+            // 모델에 강아지 정보 추가
+            model.addAttribute("userDogs", userDogs);
+
+            return "/admissions/admissions";
+        }
+        
+        
+        @PostMapping("/create")
+        public String admissionss() {
+        	
+        	return "redirect:/admissions/admissionsList";
         }
         
         @GetMapping("/admissionsList")

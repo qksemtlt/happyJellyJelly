@@ -23,7 +23,7 @@ public class AdmissionsEntity {
       private Integer admissionId;
       
      @ManyToOne
-     @JoinColumn(name = "dog_id") // Replace "dog_id" with the actual column name in your database
+     @JoinColumn(name = "dog_id") //
      private DogsEntity dogs;
      
      
@@ -45,5 +45,11 @@ public class AdmissionsEntity {
       @Column(name = "DESIRED_DAYS_PER_WEEK")
       private Integer desiredDaysPerWeek;
 
-       // getters and setters
+      private String  pottytraining; // 배변훈련
+      private String  marking; //마킹
+      private String  ration; // 급여 형태
+      private String  appetite; // 식욕
+      private Integer  walk; //산책횟수    
+      private Integer numberofweeks; // 주 산책횟수
+      private String  significant; // 특이사항
     }

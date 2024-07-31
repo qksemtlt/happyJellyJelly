@@ -3,21 +3,25 @@ package com.ex.entity;
 import java.time.LocalDate;
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "DAILYREPORTS")
-@Data
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -44,6 +48,6 @@ public class DailyReportsEntity {
 	private String title;					// 알림장제목
 	
 	@ManyToOne
-	private MembersEntity members;	// 강아지 테이블 id 컬럼
+	private MembersEntity members;			//  테이블 id 컬럼
 
 }

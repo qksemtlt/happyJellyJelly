@@ -17,19 +17,20 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="MonthcareGroups")
+@Table(name="Monthcaregroups")
 public class MonthcareGroupsEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "class_seq")
 	@SequenceGenerator(name = "class_seq", sequenceName = "class_seq", allocationSize=1, initialValue = 1)
-	private Integer MONTHGROUP_ID;		// CLASS 테이블 식별번호
+	private Integer id;					// CLASS 테이블 식별번호
 	
-	private Integer BRANCH_ID;			// BRANCHES 테이블 참조키
-	private String NAME;				// 수업 이름
-	private String DESCRIPTION;			// 수업 내용
-	private Integer CAPACITY;			// 수용 인원
-	private Integer MONTH_PRICE;		// 금액
+	@ManyToOne
+	private BranchEntity branches;		// BRANCHES 테이블 참조키
+	private String name;				// 수업 이름
+	private String description;			// 수업 내용
+	private Integer capacity;			// 수용 인원
+	private Integer month_price;		// 금액
 	
 	@ManyToOne
 	private TicketEntity ticket;		// 이용권

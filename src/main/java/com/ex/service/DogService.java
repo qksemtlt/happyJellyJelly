@@ -49,8 +49,8 @@ public class DogService {
 			MembersEntity me = op.get();
 			DogsEntity de = DogsEntity.builder().dogname(dogsDTO.getDogname()).breed(dogsDTO.getBreed())
 					.weight(dogsDTO.getWeight()).birth_date(dogsDTO.getBirth_date())
-					.gender(dogsDTO.getGender()).dog_serialnum(dogsDTO.getDog_serialnum())
-					
+					.gender(dogsDTO.getGender()).dog_serialnum(dogsDTO.getDog_serialnum())				
+
 					.member(me).build();
 			dogRepository.save(de);
 		}

@@ -1,5 +1,7 @@
 package com.ex.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,24 +16,30 @@ import com.ex.repository.AdmissionsRepository;
 import com.ex.repository.DogsRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AdmissionsService {
     private final AdmissionsRepository admissionRepository;
     private final DogsRepository dogRepository;
 
+    
     public void createAdmission(AdmissionsDTO admissionDTO) {
+        log.info("Starting creation of admission with DTO: {}", admissionDTO);
+
         DogsEntity dog = dogRepository.findById(admissionDTO.getDogs().getDog_id())
                 .orElseThrow(() -> new RuntimeException("Dog not found"));
+        
+        log.info("Found dog: {}", dog);
+
         AdmissionsEntity ae = AdmissionsEntity.builder()
-                .dogs(dog)
-                .applicationDate(admissionDTO.getApplicationDate())
-                .status(admissionDTO.getStatus())
-                .approvalDate(admissionDTO.getApprovalDate())
-                .desiredSubsType(admissionDTO.getDesiredSubsType())
-                .desiredUsageCount(admissionDTO.getDesiredUsageCount())
-                .desiredDaysPerWeek(admissionDTO.getDesiredDaysPerWeek())
+                .dogs(dog)       
+                .applicationDate(new Date())
+                .status("APPROVED")
+                .desiredDaysPerWeek(3)
+                .desiredSubsType("REGULAR")
                 .pottytraining(admissionDTO.getPottytraining())
                 .marking(admissionDTO.getMarking())
                 .ration(admissionDTO.getRation())
@@ -40,8 +48,18 @@ public class AdmissionsService {
                 .numberofweeks(admissionDTO.getNumberofweeks())
                 .significant(admissionDTO.getSignificant())
                 .build();
-        admissionRepository.save(ae);
+
+        log.info("Created AdmissionsEntity: {}", ae);
+
+        try {
+            AdmissionsEntity savedEntity = admissionRepository.save(ae);
+            log.info("Successfully saved admission: {}", savedEntity);
+        } catch (Exception e) {
+            log.error("Error while saving admission", e);
+            throw e;
+        }
     }
+
     public List<AdmissionsDTO> getAllAdmissions() {
         return admissionRepository.findAll().stream()
                 .map(this::convertToDTO)

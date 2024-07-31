@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
@@ -31,21 +32,23 @@ public class AdmissionsController {
             // 현재 로그인한 사용자 정보 가져오기
             String username = principal.getName();
             MembersEntity member = membersService.findByUsername(username);
-
             // 사용자의 강아지 정보 가져오기
             List<DogsEntity> userDogs = dogService.findDogsByMember(member);
-
             // 모델에 강아지 정보 추가
             model.addAttribute("userDogs", userDogs);
-
-            return "/admissions/admissions";
-        }
-        
+            return "admissions/admissions";
+        }  
         
         @PostMapping("/create")
-        public String admissionss() {
-        	
-        	return "redirect:/admissions/admissionsList";
+        public String createAdmission(@ModelAttribute AdmissionsDTO admissionDTO, RedirectAttributes redirectAttributes) {
+            try {
+                admissionsService.createAdmission(admissionDTO);
+                redirectAttributes.addFlashAttribute("message", "입학 신청이 성공적으로 제출되었습니다.");
+                return "redirect:/admissions/admissionsList";
+            } catch (RuntimeException e) {
+                redirectAttributes.addFlashAttribute("error", "입학 신청 중 오류가 발생했습니다: " + e.getMessage());
+                return "redirect:/admissions";
+            }
         }
         
         @GetMapping("/admissionsList")

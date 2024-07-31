@@ -2,6 +2,9 @@ package com.ex.entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,8 +34,10 @@ public class DogsEntity {
 	private Integer dog_id;	// DOGS 테이블 식별번호
 	
 	
+	@JsonBackReference
 	@ManyToOne
-	private MembersEntity member;		// MEMBERS 테이블 식별번호(견주)
+	private MembersEntity member;	
+	// MEMBERS 테이블 식별번호(견주)
 	
 	private String dogname;				// 강아지 이름
 	private String breed;				// 강아지 품종

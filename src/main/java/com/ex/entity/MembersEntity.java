@@ -1,6 +1,9 @@
 package com.ex.entity;
 import java.time.LocalDate;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,6 +58,7 @@ public class MembersEntity {
 	// 사용자 비밀번호
 	private String password;
 	
+	@JsonManagedReference
 	@OneToMany(mappedBy="member", cascade=CascadeType.REMOVE)
 	private List<DogsEntity> dogs;
 	

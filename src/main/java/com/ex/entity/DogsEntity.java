@@ -46,7 +46,7 @@ public class DogsEntity {
 	private String dog_serialnum;		// 강아지 일련번호
 	private String dog_profile;			// 강아지 프로필사진 파일명
 	private Integer neutering;			// 중성화여부
-	private List<String> vaccination;	// 예방접종여부
+	//private List<String> vaccination;	// 예방접종여부
 	
 	@Column(precision=10, scale=1)
 	private BigDecimal weight;				// 강아지 몸무게

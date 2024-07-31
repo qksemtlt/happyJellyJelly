@@ -59,8 +59,8 @@
                     <td th:text="${admission.admissionId}"></td>
                     <td th:text="${admission.dogs.dogname}"></td>
                     <td th:text="${#dates.format(admission.applicationDate, 'yyyy-MM-dd')}"></td>
-                    <td th:classappend="${admission.status == 'APPROVED' ? 'status-pending' : (admission.status == 'REJECTED' ? 'status-approved' : 'status-rejected')}"
-                        th:text="${admission.status == 'APPROVED' ? '대기중' : (admission.status == 'REJECTED' ? '승인됨' : '거부됨')}">
+                    <td th:classappend="${admission.status == 'PENDING' ? 'status-pending' : (admission.status == 'APPROVED' ? 'status-approved' : 'status-rejected')}"
+                        th:text="${admission.status == 'PENDING' ? '대기중' : (admission.status == 'APPROVED' ? '승인됨' : '거부됨')}">
                     </td>
                     <td th:text="${admission.desiredSubsType}"></td>
                     <td th:text="${admission.pottytraining}"></td>

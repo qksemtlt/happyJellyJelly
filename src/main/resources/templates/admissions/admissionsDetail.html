@@ -102,9 +102,9 @@
                 <div class="form-group">
                     <label for="status">새로운 상태:</label>
                     <select class="form-control" id="status" name="status">
-                        <option value="APPROVED" th:selected="${admission.status == 'APPROVED'}">대기중</option>
-                        <option value="REJECTED" th:selected="${admission.status == 'REJECTED'}">승인됨</option>
-                        <option value="PENDING" th:selected="${admission.status == 'PENDING'}">거절됨</option>
+                        <option value="PENDING" th:selected="${admission.status == 'PENDING'}">대기중</option>
+                        <option value="APPROVED" th:selected="${admission.status == 'APPROVED'}">승인됨</option>
+                        <option value="REJECTED" th:selected="${admission.status == 'REJECTED'}">거절됨</option>
                         
                     </select>
                 </div>

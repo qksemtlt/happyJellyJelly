@@ -12,6 +12,7 @@ import com.ex.data.AdmissionsDTO;
 
 import com.ex.entity.AdmissionsEntity;
 import com.ex.entity.DogsEntity;
+import com.ex.entity.MembersEntity;
 import com.ex.repository.AdmissionsRepository;
 import com.ex.repository.DogsRepository;
 
@@ -24,6 +25,11 @@ import lombok.extern.slf4j.Slf4j;
 public class AdmissionsService {
     private final AdmissionsRepository admissionRepository;
     private final DogsRepository dogRepository;
+    private final MembersService membersService;
+
+    
+    
+   
 
     
     public void createAdmission(AdmissionsDTO admissionDTO) {
@@ -37,7 +43,7 @@ public class AdmissionsService {
         AdmissionsEntity ae = AdmissionsEntity.builder()
                 .dogs(dog)       
                 .applicationDate(new Date())
-                .status("APPROVED")
+                .status("PENDING")
                 .desiredDaysPerWeek(3)
                 .desiredSubsType("REGULAR")
                 .pottytraining(admissionDTO.getPottytraining())
@@ -59,13 +65,13 @@ public class AdmissionsService {
             throw e;
         }
     }
-
+    // 강아지 전체 출력
     public List<AdmissionsDTO> getAllAdmissions() {
         return admissionRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
-
+    
     public AdmissionsDTO getAdmissionById(Integer id) {
         return admissionRepository.findById(id)
                 .map(this::convertToDTO)
@@ -100,7 +106,7 @@ public class AdmissionsService {
 
         admission.setStatus(newStatus);
 
-        if ("REJECTED".equals(newStatus)) {
+        if ("APPROVED".equals(newStatus)) {
             admission.setApprovalDate(new Date());
         } else {
             admission.setApprovalDate(null);
@@ -110,6 +116,19 @@ public class AdmissionsService {
         return convertToDTO(updatedAdmission);
     }
     
+    
+    public List<AdmissionsDTO> getAdmissionsByUsername(String username) {
+        MembersEntity member = membersService.findByUsername(username);
+        List<DogsEntity> userDogs = dogRepository.findByMember(member);
+        
+        // 모든 입학신청서를 가져옵니다.
+        List<AdmissionsDTO> allAdmissions = getAllAdmissions();
+        
+        // 사용자의 강아지에 해당하는 입학신청서만 필터링합니다.
+        return allAdmissions.stream()
+                .filter(admission -> userDogs.contains(admission.getDogs()))
+                .collect(Collectors.toList());
+    }
   
     }
     

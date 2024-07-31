@@ -50,7 +50,7 @@ public class DogService {
 			DogsEntity de = DogsEntity.builder().dogname(dogsDTO.getDogname()).breed(dogsDTO.getBreed())
 					.weight(dogsDTO.getWeight()).birth_date(dogsDTO.getBirth_date())
 					.gender(dogsDTO.getGender()).dog_serialnum(dogsDTO.getDog_serialnum())
-					.neutering(dogsDTO.getNeutering()).vaccination(dogsDTO.getVaccination())
+					
 					.member(me).build();
 			dogRepository.save(de);
 		}

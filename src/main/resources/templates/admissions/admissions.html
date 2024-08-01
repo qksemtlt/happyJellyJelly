@@ -78,8 +78,11 @@
 	                    <th>강아지 선택</th>
 	                    <td colspan="3">
 	                        <select id="dogId" name="dogs.dog_id" required onchange="updateDogInfo(this.value)">
-                              <option value="">강아지를 선택하세요</option>
-                              <option th:each="dog : ${userDogs}" th:value="${dog.dog_id}" th:text="${dog.dogname}"></option>
+                               <option th:each="dog, iterStat : ${userDogs}" 
+                                       th:value="${dog.dog_id}" 
+                                       th:text="${dog.dogname}"
+                                       th:selected="${iterStat.first}">
+                              </option>
                             </select>
 	                    </td>
 	                </tr>
@@ -215,7 +218,7 @@
     var userDogs = /*[[${userDogs}]]*/ [];
     console.log("Initial userDogs:", userDogs);
 
- // 사용자의 강아지 데이터 (서버에서 제공)
+     // 사용자의 강아지 데이터 (서버에서 제공)
     var userDogs = /*[[${userDogs}]]*/ [];
 
     // 강아지 정보 업데이트 함수
@@ -296,6 +299,9 @@
     document.addEventListener('DOMContentLoaded', function() {
         var dogSelect = document.getElementById('dogId');
         if (dogSelect) {
+        	
+        	 updateDogInfo(dogSelect.value);
+        	
             // 강아지 선택 시 정보 업데이트
             dogSelect.addEventListener('change', function() {
                 updateDogInfo(this.value);

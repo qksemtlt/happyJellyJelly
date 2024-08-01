@@ -65,6 +65,7 @@ public class AdmissionsService {
             throw e;
         }
     }
+     
     // 강아지 전체 출력
     public List<AdmissionsDTO> getAllAdmissions() {
         return admissionRepository.findAll().stream()

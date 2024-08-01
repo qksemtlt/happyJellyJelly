@@ -2,6 +2,7 @@ package com.ex.controller;
 
 
 import com.ex.data.AdmissionsDTO;
+import com.ex.data.DogsDTO;
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
 import com.ex.service.AdmissionsService;
@@ -23,7 +24,7 @@ public class AdmissionsController {
         private final DogService dogService;      
         private final MembersService membersService;
             
-        // 추가
+        // 
         @GetMapping("")
         public String AdmissionForm(Model model, Principal principal) {
             // 현재 로그인한 사용자 정보 가져오기
@@ -35,6 +36,18 @@ public class AdmissionsController {
             model.addAttribute("userDogs", userDogs);
             return "admissions/admissions";
         }  
+        
+        
+        @GetMapping("/{id}")
+        public String AdmissionForm(@PathVariable("id") Integer id, 
+        		Principal principal, Model model) {
+        	DogsDTO dogsDTO = dogService.selectDog(id, principal.getName());
+        	model.addAttribute("dog", dogsDTO);
+        	model.addAttribute("dog_id", id);
+        	return "admissions/admissions";
+        }
+        
+        
         
         @PostMapping("/create")
         public String createAdmission(@ModelAttribute AdmissionsDTO admissionDTO) {

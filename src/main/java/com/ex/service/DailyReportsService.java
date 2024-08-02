@@ -27,7 +27,7 @@ public class DailyReportsService {
 	@Autowired
 	private final MembersService membersService;
 	
-	public List<DailyReportsDTO> dailyReportsList(String username){
+	public List<DailyReportsDTO> getDailyReportsList(String username){
 		List<DailyReportsDTO> list = null;
 		DailyReportsDTO di = null;
 		Optional<MembersEntity> op = membersRepository.findByUsername(username);
@@ -77,11 +77,25 @@ public class DailyReportsService {
 		return dailyReportsDTO;
 	}
 	
+	// 알림장등록
 	public void create(DailyReportsDTO dailyReportsDTO, String username, String selectDate) {
 //		LocalDate diarydate = LocalDate.parse(selectDate);
 		
-//		DailyReportsEntity de = DailyReportsEntity.builder()
-//				.dogs(null)
+		DailyReportsEntity de = DailyReportsEntity.builder()
+								.dogs(dailyReportsDTO.getDogs())
+								.attendance(dailyReportsDTO.getAttendance())
+								.report_date(dailyReportsDTO.getReport_date())
+								.behavior(dailyReportsDTO.getBehavior())
+								.activities(dailyReportsDTO.getActivities())
+								.meals(dailyReportsDTO.getMeals())
+								.health(dailyReportsDTO.getHealth())
+								.bowel(dailyReportsDTO.getBowel())
+								.contents(dailyReportsDTO.getContents())
+								.title(dailyReportsDTO.getTitle())
+								.members(dailyReportsDTO.getMembers())
+								.build();
+		
+		dailyReportsRepository.save(de);
 	}
 	
 /*

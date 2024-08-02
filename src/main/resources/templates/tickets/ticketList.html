@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>이용권 목록</title>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+	<style>
+		.container {
+            margin-top: 50px;
+        }
+		h2 {
+            margin-bottom: 30px;
+        }
+		.table th {
+            background-color: #f8f9fa;
+        }
+		.btn-container {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+	</style>
+</head>
+<body>
+	<nav th:replace="~{navbar::navbarFragment}"></nav>
+	<div class="container" layout:fragment="content">
+		<h2 class="text-center mb-4">이용권 목록</h2>
+		<div class="btn-container">
+			<a th:href="@{/tickets/add}" class="btn btn-dark">이용권 추가</a>
+		</div>
+	    <table class="table table-bordered table-hover">
+	        <thead class="thead-light">
+	            <tr>
+	                <th>번호</th>
+	                <th>이용권 이름</th>
+	                <th>금액</th>
+	                <th>이용권 종류</th>
+<!--	                <th>이용권 판매상태</th>-->
+	            </tr>
+	        </thead>
+	        <tbody>
+	            <tr th:each="ticket : ${ticketsList}">
+	                <td th:text="${ticket.id}"></td>
+	                <td>
+						<a th:href="@{/tickets/detail/{id}(id=${ticket.id})}"><span th:text="${ticket.ticketname}"></span></a>
+<!--						<a th:href="@{/admissions/admissionsDetail/{id}(id=${admission.admissionId})}" class="btn btn-secondary btn-sm">상세보기</a>-->
+					</td>
+	                <td th:text="${ticket.price}"></td>
+	                <td th:text="${ticket.groupType == 'REGULAR' ? '정기권' : '횟수권'}"></td>
+<!--	                <td th:text="${ticket.salesstatus == 1 ? '판매중' : '판매종료'}"></td>-->
+	            </tr>
+	        </tbody>
+	    </table>
+	</div>
+	
+	<th:block layout:fragment="script">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    </th:block>
+</body>
+</html>

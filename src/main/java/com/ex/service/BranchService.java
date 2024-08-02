@@ -31,7 +31,7 @@ public class BranchService {
         branch.setName(branchDTO.getName());
         branch.setAddress(branchDTO.getAddress());
         branch.setPhone(branchDTO.getPhone());
-        branch.setManager_id(branchDTO.getManager_id());
+//        branch.setManager_id(branchDTO.getManager_id());
         branch.setActive(true); // 새로 등록된 매장은 기본적으로 활성 상태
 
         BranchEntity savedBranch = branchRepository.save(branch);
@@ -46,7 +46,7 @@ public class BranchService {
         branch.setName(branchDTO.getName());
         branch.setAddress(branchDTO.getAddress());
         branch.setPhone(branchDTO.getPhone());
-        branch.setManager_id(branchDTO.getManager_id());
+//        branch.setManager_id(branchDTO.getManager_id());
 
         BranchEntity updatedBranch = branchRepository.save(branch);
         return convertToDTO(updatedBranch);
@@ -124,11 +124,11 @@ public class BranchService {
      */
     private BranchEntity convertToEntity(BranchDTO branchDTO) {
         return BranchEntity.builder()
-                .branch_id(branchDTO.getBranch_id())
+//                .branch_id(branchDTO.getBranch_id())
                 .name(branchDTO.getName())
                 .address(branchDTO.getAddress())
                 .phone(branchDTO.getPhone())
-                .manager_id(branchDTO.getManager_id())
+//                .manager_id(branchDTO.getManager_id())
                 .active(branchDTO.isActive())
                 .build();
     }
@@ -140,11 +140,11 @@ public class BranchService {
      */
     private BranchDTO convertToDTO(BranchEntity branch) {
         return BranchDTO.builder()
-                .branch_id(branch.getBranch_id())
+//                .branch_id(branch.getBranch_id())
                 .name(branch.getName())
                 .address(branch.getAddress())
                 .phone(branch.getPhone())
-                .manager_id(branch.getManager_id())
+//                .manager_id(branch.getManager_id())
                 .active(branch.isActive())
                 .build();
     }

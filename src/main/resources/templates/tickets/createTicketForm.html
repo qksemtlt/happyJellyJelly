@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>이용권 등록</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <nav th:replace="~{navbar::navbarFragment}"></nav>
+    <div class="container">
+    	<h2 class="text-center mb-4">이용권 등록</h2>
+        <form th:action="@{/tickets/add}" method="post">
+            <div class="form-group">
+                <label for="ticketname">이용권 이름</label>
+                <input type="text" class="form-control" id="ticketname" name="ticketname" required>
+            </div>
+            <div class="form-group">
+                <label for="price">금액</label>
+                <input type="number" class="form-control" id="price" name="price" required>
+            </div>
+            <div class="form-group">
+                <label for="groupType">이용권 종류</label>
+                <select class="form-control" id="groupType" name="groupType" required>
+                    <option value="REGULAR">정기권</option>
+                    <option value="DAYCARE">횟수권</option>
+                </select>
+            </div>
+			<div class="form-group">
+				<label for="dayofweek">요일</label>
+	            <td>
+					<input type="checkbox" name="dayofweek" id="male" value="1" th:checked="${dayofweek == '1'}"> <label for="1">일요일</label>
+					<input type="checkbox" name="dayofweek" id="female" value="2" th:checked="${dayofweek == '2'}"> <label for="2">월요일</label>
+					<input type="checkbox" name="dayofweek" id="female" value="3" th:checked="${dayofweek == '3'}"> <label for="3">화요일</label>
+					<input type="checkbox" name="dayofweek" id="female" value="4" th:checked="${dayofweek == '4'}"> <label for="4">수요일</label>
+					<input type="checkbox" name="dayofweek" id="female" value="5" th:checked="${dayofweek == '5'}"> <label for="5">목요일</label>
+					<input type="checkbox" name="dayofweek" id="female" value="6" th:checked="${dayofweek == '6'}"> <label for="6">금요일</label>
+					<input type="checkbox" name="dayofweek" id="female" value="7" th:checked="${dayofweek == '7'}"> <label for="7">토요일</label>
+					<span th:if="${dayofweek == null}">정보 없음</span>
+	            </td>
+			</div>
+<!--			<div class="form-group">-->
+<!--                <label for="">횟수</label>-->
+<!--                <input type="number" class="form-control" id="" name="" required>-->
+<!--            </div>-->
+			<span th:if="${dayofweek == null}"></span>
+            <button type="submit" class="btn btn-primary">등록</button>
+            <button type="button" class="btn btn-secondary"onclick="window.location.href='/tickets/list'">취소</button>
+        </form>
+    </div>
+
+    <th:block layout:fragment="script">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    </th:block>
+</body>
+</html>

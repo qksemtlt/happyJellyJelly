@@ -52,4 +52,5 @@ public class AdmissionsEntity {
       private Integer  walk; //산책횟수    
       private Integer numberofweeks; // 주 산책횟수
       private String  significant; // 특이사항
+      private String reason; // 반려사유
     }

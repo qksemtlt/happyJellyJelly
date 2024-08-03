@@ -3,16 +3,23 @@ package com.ex.controller;
 
 import com.ex.data.AdmissionsDTO;
 import com.ex.data.DogsDTO;
+import com.ex.entity.AdmissionsEntity;
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
 import com.ex.service.AdmissionsService;
 import com.ex.service.DogService;
 import com.ex.service.MembersService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -26,19 +33,25 @@ public class AdmissionsController {
             
         // 
         @GetMapping("")
+        @PreAuthorize("isAuthenticated()")
         public String AdmissionForm(Model model, Principal principal) {
             // 현재 로그인한 사용자 정보 가져오기
             String username = principal.getName();
             MembersEntity member = membersService.findByUsername(username);
+
             // 사용자의 강아지 정보 가져오기
             List<DogsEntity> userDogs = dogService.findDogsByMember(member);
-            // 모델에 강아지 정보 추가
+
+           
+            // 모델에 정보 추가
             model.addAttribute("userDogs", userDogs);
+
             return "admissions/admissions";
-        }  
-        
+        }
+
         
         @GetMapping("/{id}")
+        @PreAuthorize("isAuthenticated()")
         public String AdmissionForm(@PathVariable("id") Integer id, 
         		Principal principal, Model model) {
         	DogsDTO dogsDTO = dogService.selectDog(id, principal.getName());
@@ -50,6 +63,7 @@ public class AdmissionsController {
         
         
         @PostMapping("/create")
+        @PreAuthorize("isAuthenticated()")
         public String createAdmission(@ModelAttribute AdmissionsDTO admissionDTO) {
             try {
                 admissionsService.createAdmission(admissionDTO);
@@ -62,27 +76,30 @@ public class AdmissionsController {
         }
         
         @GetMapping("/admissionsList")
-        public String admissionsList(Model model, Principal principal) {
+        @PreAuthorize("isAuthenticated()")
+        public String admissionsList(Model model, Principal principal,
+                                     @RequestParam(value = "page", defaultValue = "0") int page) {
             String username = principal.getName();
-            List<AdmissionsDTO> admissions;
+            Page<AdmissionsDTO> paginatedAdmissions;
 
             if (username.startsWith("director_")) {
                 // 관리자: 모든 입학신청서를 가져옴
-                admissions = admissionsService.getAllAdmissions();
+                paginatedAdmissions = admissionsService.getAllAdmissionsPaginated(page);
                 model.addAttribute("isDirector", true);
             } else {
                 // 일반 사용자: 해당 사용자의 강아지 입학신청서만 가져옴
-                admissions = admissionsService.getAdmissionsByUsername(username);
+                paginatedAdmissions = admissionsService.getAdmissionsByUsernamePaginated(username, page);
                 model.addAttribute("isDirector", false);
             }
 
-            model.addAttribute("admissions", admissions);
+            model.addAttribute("admissionsList", paginatedAdmissions);
             return "admissions/admissionsList";
         }
         
         
         
         @GetMapping("/admissionsDetail/{id}")
+        @PreAuthorize("isAuthenticated()")
         public String viewAdmission(@PathVariable("id") Integer id, Model model) {
             AdmissionsDTO admission = admissionsService.getAdmissionById(id);
             model.addAttribute("admission", admission);
@@ -90,11 +107,19 @@ public class AdmissionsController {
         }
         
         @PostMapping("/updateStatus/{id}")
+        @PreAuthorize("isAuthenticated()")
         public String updateAdmissionStatus(
                 @PathVariable("id") Integer id, 
-                @RequestParam("status") String status) {
-            AdmissionsDTO admissionsDTO = admissionsService.updateAdmissionStatus(id, status);
+                @RequestParam("status") String status, @RequestParam("reason") String reason) {
+            admissionsService.updateAdmissionStatus(id, status, reason);
             return "redirect:/admissions/admissionsList";
+        }
+        
+        @PostMapping("/cancel/{id}")
+        @PreAuthorize("isAuthenticated()")
+        public String cancelAdmission(@PathVariable("id") Integer id) {
+           admissionsService.cancelAdmission(id);
+           return "redirect:/admissions/admissionsList";
         }
 
     }

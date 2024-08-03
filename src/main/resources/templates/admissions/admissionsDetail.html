@@ -51,86 +51,93 @@
     <div layout:fragment="content" class="container" >
         <h2 class="text-center mb-4">입학 신청 상세</h2>
         <div th:if="${admission!=null}">
-	        <table class="table table-bordered">
-	            <tbody>
-	                <tr>
-	                    <th scope="row">입학신청 번호:</th>
-	                    <td th:text="${admission.admissionId}"></td>
-	                </tr>
-	                <tr>
-	                    <th scope="row">강아지:</th>
-	                    <td th:text="${admission.dogs.dogname}"></td>
-	                </tr>
-	                <tr>
+           <table class="table table-bordered">
+               <tbody>
+                   <tr>
+                       <th scope="row">입학신청 번호:</th>
+                       <td th:text="${admission.admissionId}"></td>
+                   </tr>
+                   <tr>
+                       <th scope="row">강아지:</th>
+                       <td th:text="${admission.dogs.dogname}"></td>
+                   </tr>
+                   <tr>
                    <th scope="row">상태:</th>
                        <td th:switch="${admission.status}">
-                        	<span th:case="'PENDING'">대기중</span>
-                     		<span th:case="'APPROVED'">승인됨</span>
-                        	<span th:case="'REJECTED'">거절됨</span>
-                        	<span th:case="*" th:text="${admission.status}"></span>
+                           <span th:case="'PENDING'">대기중</span>
+                           <span th:case="'APPROVED'">승인됨</span>
+                           <span th:case="'REJECTED'">거절됨</span>
+                           <span th:case="*" th:text="${admission.status}"></span>
                        </td>
                    </tr>
-	                <tr>
-	                    <th scope="row">상태:</th>
-	                    <td th:text="${admission.status}"></td>
-	                </tr>
-	                <tr>
-	                    <th scope="row">승인 날짜:</th>
-	                    <td th:text="${admission.approvalDate != null ? #dates.format(admission.approvalDate, 'yyyy-MM-dd') : '아직 승인되지 않음'}"></td>
-	                </tr>
-	                <tr>
-	                    <th scope="row">희망 구독 유형:</th>
-	                    <td th:text="${admission.desiredSubsType}"></td>
-	                </tr>
-	                <tr>
-	                    <th scope="row">배변 훈련:</th>
-	                    <td th:text="${admission.pottytraining}"></td>
-	                </tr>
-	                <tr>
-	                    <th scope="row">마킹:</th>
-	                    <td th:text="${admission.marking}"></td>
-	                </tr>
-	                <tr>
-	                    <th scope="row">급여 형태:</th>
-	                    <td th:text="${admission.ration}"></td>
-	                </tr>
-	                <tr>
-	                    <th scope="row">식욕:</th>
-	                    <td th:text="${admission.appetite}"></td>
-	                </tr>
-	                <tr>
-	                    <th scope="row">주 산책 횟수:</th>
-	                    <td th:text="${admission.numberofweeks}"></td>
-	                </tr>
-	            </tbody>
-	        </table>
-	        <div class="status-form">
-	            <h4>입학 신청 상태 변경</h4>
-	            <form th:action="@{/admissions/updateStatus/{id}(id=${admission.admissionId})}" method="post">
-	                <div class="form-group my-3">
-	                    <label for="status">새로운 상태:</label>
-	                    <select class="form-select" id="status" name="status">
-	                        <option value="PENDING" th:selected="${admission.status == 'PENDING'}">대기중</option>
-	                        <option value="APPROVED" th:selected="${admission.status == 'APPROVED'}">승인됨</option>
-	                        <option value="REJECTED" th:selected="${admission.status == 'REJECTED'}">거절됨</option>
-	                    </select>
-	                </div>
-	                <button type="submit" class="btn btn-dark btn-sm">상태 변경</button>
-	            </form>
-        	</div>
-        	<div class="text-center mt-4">
-            	<a th:href="@{/admissions/admissionsList}" class="btn btn-secondary">목록으로 돌아가기</a>
-        	</div>
+                   <tr>
+                       <th scope="row">승인 날짜:</th>
+                       <td th:text="${admission.approvalDate != null ? #dates.format(admission.approvalDate, 'yyyy-MM-dd') : '아직 승인되지 않음'}"></td>
+                   </tr>
+                   <tr>
+                       <th scope="row">희망 구독 유형:</th>
+                       <td th:text="${admission.desiredSubsType}"></td>
+                   </tr>
+                   <tr>
+                       <th scope="row">배변 훈련:</th>
+                       <td th:text="${admission.pottytraining}"></td>
+                   </tr>
+                   <tr>
+                       <th scope="row">마킹:</th>
+                       <td th:text="${admission.marking}"></td>
+                   </tr>
+                   <tr>
+                       <th scope="row">급여 형태:</th>
+                       <td th:text="${admission.ration}"></td>
+                   </tr>
+                   <tr>
+                       <th scope="row">식욕:</th>
+                       <td th:text="${admission.appetite}"></td>
+                   </tr>
+                   <tr>
+                       <th scope="row">주 산책 횟수:</th>
+                       <td th:text="${admission.numberofweeks}"></td>
+                   </tr>
+                   <tr>
+                       <th scope="row">거절 사유:</th>
+                       <td th:text="${admission.reason}"></td>
+                   </tr>
+               </tbody>
+           </table>
+           <div class="status-form" sec:authorize="hasRole('ROLE_DIRECTOR')">               
+               <form th:action="@{/admissions/updateStatus/{id}(id=${admission.admissionId})}" method="post">
+                   <h4>입학 신청 상태 변경</h4>
+                   <div class="form-group my-3">                   
+                       <label for="status">새로운 상태:</label>
+                       <select class="form-select" id="status" name="status">
+                           <option value="PENDING" th:selected="${admission.status == 'PENDING'}">대기중</option>
+                           <option value="APPROVED" th:selected="${admission.status == 'APPROVED'}">승인됨</option>
+                           <option value="REJECTED" th:selected="${admission.status == 'REJECTED'}">거절됨</option>
+                       </select>
+                   </div>
+                      <div class="form-group my-3">
+                      <label for="reason_rejected">입학 신청 거절 시 사유를 남겨주세요</label>
+                      <textarea class="form-control" name="reason" id="reason_rejected" rows="4"></textarea>
+                   </div>
+                   <button type="submit" class="btn btn-dark btn-sm">상태 변경</button>
+               </form>
+           </div>
+           <div th:if="${#strings.equals(admission.status, 'PENDING')}" class="cancel-form" sec:authorize="hasRole('ROLE_USER')">
+              <a class="btn btn-dark btn-sm" th:href="@{|/admissions/cancel/${admission.admissionId}|}">입학신청취소</a>
+            </div>
+           <div class="text-center mt-4">
+               <a th:href="@{/admissions/admissionsList}" class="btn btn-secondary">목록으로 돌아가기</a>
+           </div>
         </div>
         <div th:if="${admission==null}" class="row justify-content-center mt-4">
-        	<div class="col-md-6 text-center">
-        		<div class="alert alert-danger" role="alert">
-          			입학 신청한 기록이 없습니다.
-        		</div>
-      		</div>
-      		<div class="text-center mt-4">
-            	<a th:href="@{/dogs/myDogList}" class="btn btn-secondary">목록으로 돌아가기</a>
-        	</div>
+           <div class="col-md-6 text-center">
+              <div class="alert alert-danger" role="alert">
+                   입학 신청한 기록이 없습니다.
+              </div>ㅈ
+            </div>
+            <div class="text-center mt-4">
+               <a th:href="@{/dogs/myDogList}" class="btn btn-secondary">목록으로 돌아가기</a>
+           </div>
         </div>
         
         

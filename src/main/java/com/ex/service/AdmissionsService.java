@@ -2,10 +2,15 @@ package com.ex.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ex.data.AdmissionsDTO;
@@ -96,12 +101,12 @@ public class AdmissionsService {
         dto.setWalk(entity.getWalk());
         dto.setNumberofweeks(entity.getNumberofweeks());
         dto.setSignificant(entity.getSignificant());
+        dto.setReason(entity.getReason());
         return dto;
     }
 
 
-
-    public AdmissionsDTO updateAdmissionStatus(Integer admissionId, String newStatus) {
+    public void updateAdmissionStatus(Integer admissionId, String newStatus, String reason) {
         AdmissionsEntity admission = admissionRepository.findById(admissionId)
                 .orElseThrow(() -> new RuntimeException("Admission not found"));
 
@@ -111,12 +116,10 @@ public class AdmissionsService {
             admission.setApprovalDate(new Date());
         } else {
             admission.setApprovalDate(null);
+            admission.setReason(reason);
         }
-
-        AdmissionsEntity updatedAdmission = admissionRepository.save(admission);
-        return convertToDTO(updatedAdmission);
+        admissionRepository.save(admission);
     }
-    
     
     public List<AdmissionsDTO> getAdmissionsByUsername(String username) {
         MembersEntity member = membersService.findByUsername(username);
@@ -130,8 +133,23 @@ public class AdmissionsService {
                 .filter(admission -> userDogs.contains(admission.getDogs()))
                 .collect(Collectors.toList());
     }
-  
+    public void cancelAdmission(Integer id) {
+        AdmissionsEntity admission = admissionRepository.findById(id).get();
+        admission.setStatus("CANCELED");
+        admissionRepository.save(admission);
+     }
+    public Page<AdmissionsDTO> getAllAdmissionsPaginated(int page) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("admissionId").descending());
+        Page<AdmissionsEntity> entityPage = admissionRepository.findAll(pageable);
+        return entityPage.map(this::convertToDTO);
     }
+
+    public Page<AdmissionsDTO> getAdmissionsByUsernamePaginated(String username, int page) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("admissionId").descending());
+        Page<AdmissionsEntity> entityPage = admissionRepository.findByDogs_Member_Username(username, pageable);
+        return entityPage.map(this::convertToDTO);
+    }
+}
     
 
 

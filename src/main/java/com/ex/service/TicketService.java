@@ -62,7 +62,6 @@ public class TicketService {
 		
 		String day;
 		if (ticketDTO.getGroupType().equals("DAYCARE")) {
-//		    day = "0";
 		    day = null;
 		} else {
 		    day = ticketDTO.getDayofweek();

@@ -1,9 +1,7 @@
 package com.ex.entity;
 import java.time.LocalDate;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,17 +49,18 @@ public class MembersEntity {
 	// 사용자 가입 날짜
 	private LocalDate join_date;
 	
-	// 유저 타입 : check 'REGULAR', 'STAFF'
+	// 유저 타입 : check 'REGULAR', 'TEACHER', 'DIRECTOR', 'ADMIN'
 	private String user_type;
 	
 	@Column(nullable=false)
 	// 사용자 비밀번호
 	private String password;
 	
-	@JsonManagedReference
 	@OneToMany(mappedBy="member", cascade=CascadeType.REMOVE)
+	@JsonManagedReference
 	private List<DogsEntity> dogs;
 	
-	
-	
+	@OneToMany(mappedBy="teachers", cascade=CascadeType.REMOVE)
+	@JsonManagedReference
+	private List<MonthcareGroupsEntity> month;
 }

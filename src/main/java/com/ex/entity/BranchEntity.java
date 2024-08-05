@@ -1,5 +1,7 @@
 package com.ex.entity;
-
+import java.util.List;
+import org.hibernate.annotations.ColumnDefault;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "branches")
+@Table(name = "BRANCHES")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,20 +19,22 @@ public class BranchEntity {
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="branches_seq")
     @Column(name = "BRANCH_ID")
-    private Integer branch_id;
-    
-    @Column(nullable = false)
+    private Integer branchId;
+
+    @Column(name = "NAME")
     private String name;
-    
-    @Column(nullable = false)
+
+    @Column(name = "ADDRESS")
     private String address;
-    
-    @Column(nullable = false)
+
+    @Column(name = "PHONE")
     private String phone;
     
-    @Column(nullable = false)
-    private Integer manager_id;
+    @Column(name = "ACTIVE")
+    @ColumnDefault("true")
+    private boolean active;    
     
-    @Column(nullable = false)
-    private boolean active = true;
+    @OneToMany(mappedBy="branches", cascade=CascadeType.REMOVE)
+    @JsonManagedReference
+    private List<MonthcareGroupsEntity> month;
 }

@@ -30,10 +30,8 @@ public class DailyReportsController {
 	
 	@GetMapping("")
 	public String main(DailyReportsDTO daReportsDTO, Principal principal, Model model) {
-		List<DailyReportsDTO> list = dailyReportsService.dailyReportsList(principal.getName());
-//		List<DailyReportsDTO> list = dailyReportsService.getDiary(principal.getName());
+		List<DailyReportsDTO> list = dailyReportsService.getDailyReportsList(principal.getName());
 		model.addAttribute("list", list);
-		System.out.println("list.size() ::: " + list.size());
 //		diaryService.DiaryAll(principal.getName());
 		return "calendar/calendar";
 	}
@@ -65,7 +63,7 @@ public class DailyReportsController {
 	// 일지등록수행
 	@PostMapping("create")
 	public String create(DailyReportsDTO dailyReportsDTO, Principal principal, @RequestParam("selectDate") String selectDate) {
-//		this.dailyReportsService.create(dailyReportsDTO, principal.getName(), selectDate);
+		this.dailyReportsService.create(dailyReportsDTO, principal.getName(), selectDate);
 		return "redirect:calendar/";
 	}
 	

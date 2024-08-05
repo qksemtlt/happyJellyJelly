@@ -24,7 +24,7 @@ public class VaccinationsEntity {
 	@Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vaccinations_seq")
     @SequenceGenerator(name = "vaccinations_seq", sequenceName = "vaccinations_seq", allocationSize = 1)
-	private Integer vaccionation_id;
+	private Integer vaccination_id;
 	
 	private String vaccine_type;
 	private Date vaccination_date;

@@ -27,6 +27,7 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "dogs")
+
 public class DogsEntity {
 
 	@Id

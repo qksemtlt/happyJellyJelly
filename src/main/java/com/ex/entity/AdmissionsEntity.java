@@ -57,10 +57,12 @@ public class AdmissionsEntity {
       private String reason; // 반려사유
       
       @OneToOne
+      @JsonManagedReference
       @JoinColumn(name="subscription_id")
       private SubscriptionsEntity subscription;
       
       @OneToOne
+      @JsonManagedReference
       @JoinColumn(name="dogassignment_id")
       private DogAssignmentsEntity dogassign;
       

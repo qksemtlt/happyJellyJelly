@@ -121,18 +121,7 @@ public class AdmissionsService {
         admissionRepository.save(admission);
     }
     
-    public List<AdmissionsDTO> getAdmissionsByUsername(String username) {
-        MembersEntity member = membersService.findByUsername(username);
-        List<DogsEntity> userDogs = dogRepository.findByMember(member);
-        
-        // 모든 입학신청서를 가져옵니다.
-        List<AdmissionsDTO> allAdmissions = getAllAdmissions();
-        
-        // 사용자의 강아지에 해당하는 입학신청서만 필터링합니다.
-        return allAdmissions.stream()
-                .filter(admission -> userDogs.contains(admission.getDogs()))
-                .collect(Collectors.toList());
-    }
+ 
     public void cancelAdmission(Integer id) {
         AdmissionsEntity admission = admissionRepository.findById(id).get();
         admission.setStatus("CANCELED");

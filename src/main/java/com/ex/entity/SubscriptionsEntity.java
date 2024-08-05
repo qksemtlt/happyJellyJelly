@@ -42,6 +42,7 @@ public class SubscriptionsEntity {
 	private TicketEntity ticket;
 	
 	@OneToOne
+	@JsonBackReference
 	@JoinColumn(name="admission_id")
 	private AdmissionsEntity admissions;
 }

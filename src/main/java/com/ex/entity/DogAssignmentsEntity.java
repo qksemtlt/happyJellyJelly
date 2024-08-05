@@ -40,6 +40,7 @@ public class DogAssignmentsEntity {
 	 private MonthcareGroupsEntity monthgroup;
 	 
 	 @OneToOne
+	 @JsonBackReference
 	 @JoinColumn(name="admission_id")
 	 private AdmissionsEntity admission;
 }

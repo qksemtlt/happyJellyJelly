@@ -21,33 +21,50 @@
             <input type="hidden" name="id" th:value="${ticketDTO.id}">
             <div class="form-group">
                 <label for="ticketname">이용권 이름</label>
-                <input type="text" class="form-control" id="ticketname" name="ticketname" th:value="${ticketDTO.ticketname}" required>
+                <input type="text" class="form-control" id="ticketname" name="ticketname" th:value="${ticketDTO.ticketname}" required readonly>
             </div>
             <div class="form-group">
                 <label for="price">금액</label>
-                <input type="number" class="form-control" id="price" name="price" th:value="${ticketDTO.price}" required>
+                <input type="number" class="form-control" id="price" name="price" th:value="${ticketDTO.price}" required readonly>
             </div>
             <div class="form-group">
                 <label for="groupType">이용권 종류</label>
-                <select class="form-control" id="groupType" name="groupType" required>
+                <select class="form-control" id="groupType" name="groupType" required disabled>
                     <option value="REGULAR" th:selected="${ticketDTO.groupType == 'REGULAR'}">정기권</option>
                     <option value="DAYCARE" th:selected="${ticketDTO.groupType == 'DAYCARE'}">횟수권</option>
                 </select>
             </div>
-            <div class="form-group">
+            <div class="form-group" th:if="${ticketDTO.groupType != 'DAYCARE'}">
                 <label for="dayofweek">요일</label>
                 <div>
-                    <label><input type="checkbox" name="dayofweek" value="1" th:checked="${#strings.contains(ticketDTO.dayofweek, '1')}"> 일요일</label>
-                    <label><input type="checkbox" name="dayofweek" value="2" th:checked="${#strings.contains(ticketDTO.dayofweek, '2')}"> 월요일</label>
-                    <label><input type="checkbox" name="dayofweek" value="3" th:checked="${#strings.contains(ticketDTO.dayofweek, '3')}"> 화요일</label>
-                    <label><input type="checkbox" name="dayofweek" value="4" th:checked="${#strings.contains(ticketDTO.dayofweek, '4')}"> 수요일</label>
-                    <label><input type="checkbox" name="dayofweek" value="5" th:checked="${#strings.contains(ticketDTO.dayofweek, '5')}"> 목요일</label>
-                    <label><input type="checkbox" name="dayofweek" value="6" th:checked="${#strings.contains(ticketDTO.dayofweek, '6')}"> 금요일</label>
-                    <label><input type="checkbox" name="dayofweek" value="7" th:checked="${#strings.contains(ticketDTO.dayofweek, '7')}"> 토요일</label>
+                    <label><input type="checkbox" name="dayofweek" value="1" th:checked="${#strings.contains(ticketDTO.dayofweek, '1')}" disabled> 일요일</label>
+                    <label><input type="checkbox" name="dayofweek" value="2" th:checked="${#strings.contains(ticketDTO.dayofweek, '2')}" disabled> 월요일</label>
+                    <label><input type="checkbox" name="dayofweek" value="3" th:checked="${#strings.contains(ticketDTO.dayofweek, '3')}" disabled> 화요일</label>
+                    <label><input type="checkbox" name="dayofweek" value="4" th:checked="${#strings.contains(ticketDTO.dayofweek, '4')}" disabled> 수요일</label>
+                    <label><input type="checkbox" name="dayofweek" value="5" th:checked="${#strings.contains(ticketDTO.dayofweek, '5')}" disabled> 목요일</label>
+                    <label><input type="checkbox" name="dayofweek" value="6" th:checked="${#strings.contains(ticketDTO.dayofweek, '6')}" disabled> 금요일</label>
+                    <label><input type="checkbox" name="dayofweek" value="7" th:checked="${#strings.contains(ticketDTO.dayofweek, '7')}" disabled> 토요일</label>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">수정</button>
-            <button type="button" class="btn btn-secondary" onclick="window.location.href='/tickets/list'">취소</button>
+            <div class="form-group" th:if="${ticketDTO.groupType == 'DAYCARE'}">
+                <label for="ticketcount">횟수</label>
+                <div>
+                    <!-- 횟수 필드 추가 -->
+					<input type="number" class="form-control" id="ticketcount" name="ticketcount" th:value="${ticketDTO.ticketcount}" required readonly>
+                </div>
+            </div>
+			<div class="form-group" >
+                <label for="groupType">이용권 판매상태</label>
+                <select class="form-control" id="salesstatus" name="salesstatus" required >
+                    <option value="1" th:selected="${ticketDTO.salesstatus == '1'}">정상판매</option>
+                    <option value="0" th:selected="${ticketDTO.salesstatus == '0'}">판매중지</option>
+                </select>
+            </div>
+			<br />
+			<div class="form-group">
+            	<button type="submit" class="btn btn-primary">수정</button>
+            	<button type="button" class="btn btn-secondary" onclick="window.location.href='/tickets/list'">취소</button>
+			</div>
         </form>
     </div>
 

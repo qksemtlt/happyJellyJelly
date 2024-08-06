@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ex.data.DailyReportsDTO;
 import com.ex.data.TicketDTO;
@@ -27,10 +28,9 @@ public class TicketController {
 	private TicketService ticketService;
 
 	@GetMapping("list")
-    public String list(TicketDTO ticketDTO, Principal principal, Model model) {
-        // 여기서 실제로 DB에서 데이터를 가져오는 서비스 메서드를 호출해야 합니다.
-        List<TicketDTO> ticketsList = ticketService.getTicketsList();
-        model.addAttribute("ticketsList", ticketsList);
+    public String list(TicketDTO ticketDTO, Principal principal, Model model
+    		, @RequestParam(value = "page", defaultValue = "0") int page) {
+        model.addAttribute("ticketsList", ticketService.getTicketsAll(page));
         return "tickets/ticketList";
     }
 	
@@ -51,5 +51,11 @@ public class TicketController {
     	TicketDTO ticketDTO = ticketService.getTicketById(id);
     	model.addAttribute("ticketDTO", ticketDTO);
     	return "tickets/ticketDetail";
+    }
+    
+    @PostMapping("update")
+    public String updateTicket(TicketDTO ticketDTO) {
+    	ticketService.updateTicket(ticketDTO, ticketDTO.getId());
+    	return "redirect:/tickets/list";
     }
 }

@@ -31,6 +31,7 @@ public class TicketEntity {
    private String groupType;      // 이용권종류
    private Integer salesstatus;   // 판매상태
    private String dayofweek;      // 요일 ex)월수금=135
+   private Integer ticketcount;   // 판매상태
    
    @OneToMany(mappedBy="ticket", cascade=CascadeType.REMOVE)
    @JsonManagedReference

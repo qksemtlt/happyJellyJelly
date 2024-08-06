@@ -23,4 +23,5 @@ public class TicketDTO {
    private String groupType;					// 이용권종류
    private Integer salesstatus;					// 판매상태
    private String dayofweek;					// 요일 ex)월수금=135
+   private Integer ticketcount;					// 횟수권갯수(예약가능갯수)
 }

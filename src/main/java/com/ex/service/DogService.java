@@ -124,5 +124,5 @@ public class DogService {
 	
 	public List<DogsEntity> findDogsByMember(MembersEntity member) {
         return dogRepository.findByMember(member);
-	}
+    }
 }

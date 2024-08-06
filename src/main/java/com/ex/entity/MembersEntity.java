@@ -52,6 +52,9 @@ public class MembersEntity {
 	// 유저 타입 : check 'REGULAR', 'TEACHER', 'DIRECTOR', 'ADMIN'
 	private String user_type;
 	
+	
+	private Integer branch_id;
+	
 	@Column(nullable=false)
 	// 사용자 비밀번호
 	private String password;

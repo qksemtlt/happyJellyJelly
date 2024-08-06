@@ -1,6 +1,9 @@
 package com.ex.entity;
+import java.time.LocalDate;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,16 +27,18 @@ public class VaccinationsEntity {
 	@Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vaccinations_seq")
     @SequenceGenerator(name = "vaccinations_seq", sequenceName = "vaccinations_seq", allocationSize = 1)
-	private Integer vaccination_id;
-	
-	private String vaccine_type;
-	private Date vaccination_date;
-	private Date expiry_date;
-	private String filename;
+	@Column(name = "VACCINATION_ID")
+    private Integer vaccinationId;
 	
 	@ManyToOne
 	@JsonBackReference
-	@JoinColumn(name="admission_id")
-	private AdmissionsEntity admissions;
+	@JoinColumn(name="dog_id")
+	private DogsEntity dogs;
 	
+	private String vaccine_type;
+	private LocalDate vaccination_date;
+	private LocalDate expiry_date;
+	private String filename;
+	
+
 }

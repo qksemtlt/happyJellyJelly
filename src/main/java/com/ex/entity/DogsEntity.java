@@ -27,7 +27,6 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "dogs")
-
 public class DogsEntity {
 
 	@Id
@@ -48,6 +47,8 @@ public class DogsEntity {
 	@ManyToOne
 	@JsonBackReference
 	private MembersEntity member;		// MEMBERS 테이블 식별번호(견주)
+	
+	
 		
 	@OneToMany(mappedBy="dogs", cascade=CascadeType.REMOVE)
 	@JsonManagedReference

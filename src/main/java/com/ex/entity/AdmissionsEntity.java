@@ -56,17 +56,14 @@ public class AdmissionsEntity {
       private String  significant; // 특이사항
       private String reason; // 반려사유
       
-      @OneToOne
-      @JsonManagedReference
+      @OneToOne(mappedBy = "admissions")
+      @JsonBackReference
       @JoinColumn(name="subscription_id")
       private SubscriptionsEntity subscription;
       
-      @OneToOne
-      @JsonManagedReference
+      @OneToOne(mappedBy = "admission")
+      @JsonBackReference
       @JoinColumn(name="dogassignment_id")
       private DogAssignmentsEntity dogassign;
       
-      @OneToMany(mappedBy="admissions")
-      @JsonManagedReference
-      private List<VaccinationsEntity> vaccine;
-    }
+}

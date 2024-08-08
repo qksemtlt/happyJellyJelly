@@ -2,6 +2,8 @@ package com.ex.data;
 
 import java.time.LocalDate;
 import java.util.Date;
+
+import com.ex.entity.DailyReportsEntity;
 import com.ex.entity.DaycareGroupsEntity;
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MonthcareGroupsEntity;
@@ -22,5 +24,7 @@ public class AttendanceDTO {
 	private MonthcareGroupsEntity monthgroup;	// MONTHCAREGROUPS 테이블 참조키
 	private LocalDate attendancedate;			// 출석일자
 	private String status;						// 출석상태
+	private DailyReportsEntity dailyreport;		// 알림장
+	private String notes;						// 특이사항
 	
 }

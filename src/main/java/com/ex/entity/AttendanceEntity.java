@@ -52,4 +52,6 @@ public class AttendanceEntity {
 	
 	@OneToOne
 	private DailyReportsEntity dailyreport;		// 알림장
+	
+	private String notes;						// 특이사항
 }

@@ -19,6 +19,9 @@
           <a class="nav-link active" aria-current="page" href="/tickets/list">이용권</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/calendar/">알림장</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" th:href="@{/members/login}" sec:authorize="isAnonymous()">로그인</a>
           <a class="nav-link" th:href="@{/members/logout}" sec:authorize="isAuthenticated()">로그아웃</a>
         </li>

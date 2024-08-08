@@ -1,6 +1,10 @@
 package com.ex.entity;
 
 import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,17 +31,21 @@ public class AttendanceEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "attendance_seq")
 	@SequenceGenerator(name = "attendance_seq", sequenceName = "attendance_seq", allocationSize=1, initialValue = 1)
-	private Integer attendance_id;				// ATTENDANCE 고유 식별 번호
+	@Column(name = "ATTENDANCE_ID")
+	private Integer id;							// ATTENDANCE 고유 식별 번호
 	
 	@ManyToOne
+	@JsonBackReference
 	private DogsEntity dog;						// DOGS 테이블 참조키
 	
 	@ManyToOne
+	@JsonBackReference
 	private DaycareGroupsEntity daygroup;		// DAYCAREGROUPS 테이블 참조키
 	
 	@ManyToOne
+	@JsonBackReference
 	private MonthcareGroupsEntity monthgroup;	// MONTHCAREGROUPS 테이블 참조키
 	
-	private LocalDate attendance_date;			// 출석일자
+	private LocalDate attendancedate;			// 출석일자
 	private String status;						// 출석상태
 }

@@ -3,6 +3,8 @@ package com.ex.entity;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,9 +35,11 @@ public class DailyReportsEntity {
 	private Integer id ;					// DAILYREPORTS테이블 식별번호
 	
 	@ManyToOne
+	@JsonBackReference
 	private DogsEntity dogs ;				// DOGS테이블 식별번호
 	
 	@ManyToOne
+	@JsonBackReference
 	private AttendanceEntity attendance ;	// ATTENDANCE테이블 식별번호(출석부)
 	
 	private LocalDate report_date;			// 작성일자
@@ -48,6 +52,7 @@ public class DailyReportsEntity {
 	private String title;					// 알림장제목
 	
 	@ManyToOne
+	@JsonBackReference
 	private MembersEntity members;			//  테이블 id 컬럼
 
 }

@@ -31,10 +31,10 @@ public class DogService {
 		DogsDTO dogsDTO = null;
 		if(dogEntityOptional.isPresent()) {
 			DogsEntity dogsEntity = dogEntityOptional.get();
-			dogsDTO = DogsDTO.builder().dog_id(dogsEntity.getDogId()).dogname(dogsEntity.getDogname())
-					.breed(dogsEntity.getBreed()).gender(dogsEntity.getGender()).birth_date(dogsEntity.getBirth_date())
-					.dog_serialnum(dogsEntity.getDog_serialnum()).member(me)
-					.neutering(dogsEntity.getNeutering()).dog_profile(dogsEntity.getDog_profile())
+			dogsDTO = DogsDTO.builder().dogId(dogsEntity.getDogId()).dogname(dogsEntity.getDogname())
+					.breed(dogsEntity.getBreed()).gender(dogsEntity.getGender()).birthDate(dogsEntity.getBirthDate())
+					.dog_serialnum(dogsEntity.getDogSerialnum()).member(me)
+					.neutering(dogsEntity.getNeutering()).dog_profile(dogsEntity.getDogProfile())
 					.weight(dogsEntity.getWeight()).build();			
 		}
 		return dogsDTO;		
@@ -45,8 +45,8 @@ public class DogService {
 		if(op.isPresent()) {
 			MembersEntity me = op.get();
 			DogsEntity de = DogsEntity.builder().dogname(dogsDTO.getDogname()).breed(dogsDTO.getBreed())
-					.weight(dogsDTO.getWeight()).birth_date(dogsDTO.getBirth_date())
-					.gender(dogsDTO.getGender()).dog_serialnum(dogsDTO.getDog_serialnum())
+					.weight(dogsDTO.getWeight()).birthDate(dogsDTO.getBirthDate())
+					.gender(dogsDTO.getGender()).dogSerialnum(dogsDTO.getDog_serialnum())
 					.neutering(dogsDTO.getNeutering()).member(me).build();
 			dogRepository.save(de);
 		}
@@ -61,9 +61,9 @@ public class DogService {
 			List<DogsEntity> dogs = me.getDogs();
 			list = new ArrayList<>(dogs.size());
 			for(DogsEntity mydogs : dogs) {
-				dogsDTO = new DogsDTO().builder().dog_id(mydogs.getDogId()).dogname(mydogs.getDogname()).breed(mydogs.getBreed())
-						.birth_date(mydogs.getBirth_date()).gender(mydogs.getGender()).dog_serialnum(mydogs.getDog_serialnum())
-						.dog_profile(mydogs.getDog_profile()).neutering(mydogs.getNeutering())
+				dogsDTO = new DogsDTO().builder().dogId(mydogs.getDogId()).dogname(mydogs.getDogname()).breed(mydogs.getBreed())
+						.birthDate(mydogs.getBirthDate()).gender(mydogs.getGender()).dog_serialnum(mydogs.getDogSerialnum())
+						.dog_profile(mydogs.getDogProfile()).neutering(mydogs.getNeutering())
 						.weight(mydogs.getWeight()).build();
 				list.add(dogsDTO);
 			}
@@ -98,26 +98,26 @@ public class DogService {
 		Optional <DogsEntity> op = dogRepository.findById(id);
 		if(op.isPresent()) {
 			DogsEntity de = op.get();
-			de.setDog_profile(sysname);
+			de.setDogProfile(sysname);
 			dogRepository.save(de);
 		}		
 	}
 	
 	public boolean deleteDogProfile(Integer id) {
 		DogsEntity de = dogRepository.findById(id).get();
-		String sysname = de.getDog_profile();
+		String sysname = de.getDogProfile();
 		File file = new File(UPLOAD_PATH+sysname);
 		return file.delete();
 	}
 	
 	public void modifyDogs(DogsDTO dogsDTO) {
-		Optional<DogsEntity> op = dogRepository.findById(dogsDTO.getDog_id());
+		Optional<DogsEntity> op = dogRepository.findById(dogsDTO.getDogId());
 		if(op.isPresent()) {
 			DogsEntity de = op.get();
 			de.setDogname(dogsDTO.getDogname());
 			de.setBreed(dogsDTO.getBreed());
 			de.setGender(dogsDTO.getGender());
-			de.setBirth_date(dogsDTO.getBirth_date());
+			de.setBirthDate(dogsDTO.getBirthDate());
 			dogRepository.save(de);
 		}		
 	}

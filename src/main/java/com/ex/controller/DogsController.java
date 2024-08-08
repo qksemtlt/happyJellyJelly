@@ -57,7 +57,7 @@ public class DogsController {
    @PreAuthorize("isAuthenticated()")
    public String dogupdate(DogsDTO dogsDTO) {
       dogService.modifyDogs(dogsDTO);
-      return String.format("redirect:/dogs/detail/%s", dogsDTO.getDog_id());
+      return String.format("redirect:/dogs/detail/%s", dogsDTO.getDogId());
    }
    
    @GetMapping("addDogs")

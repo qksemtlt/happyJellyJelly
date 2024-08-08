@@ -36,10 +36,15 @@ public class DogsEntity {
 	private Integer dogId;				// DOGS 테이블 식별번호
 	private String dogname;				// 강아지 이름
 	private String breed;				// 강아지 품종
-	private LocalDate birth_date;		// 강아지 생일
+	
+	@Column(name="BIRTH_DATE")
+	private LocalDate birthDate;		// 강아지 생일
 	private char gender;				// 강아지 성별
-	private String dog_serialnum;		// 강아지 일련번호
-	private String dog_profile;			// 강아지 프로필사진 파일명
+	@Column(name="DOG_SERIALNUM")
+	private String dogSerialnum;		// 강아지 일련번호
+	
+	@Column(name="DOG_PROFILE")
+	private String dogProfile;			// 강아지 프로필사진 파일명
 	private Integer neutering;			// 중성화여부
 	
 	@Column(precision=10, scale=1)

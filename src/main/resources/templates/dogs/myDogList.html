@@ -14,7 +14,7 @@
       <div th:if="${dogList != null and not #lists.isEmpty(dogList)}" th:each="dog : ${dogList}" class="col">
         <div class="card h-100 border-0">
           <div class="image-container" style="height: 200px; display: flex; justify-content: center; align-items: center; overflow: hidden;">
-            <a th:href="@{|/dogs/detail/${dog.dog_id}|}" style="display: block; height: 100%;">
+            <a th:href="@{|/dogs/detail/${dog.dogId}|}" style="display: block; height: 100%;">
               <img th:if="${dog.dog_profile == null}" src="/images/dog_imoji.png" class="card-img-top" style="height: 100%; width: auto; object-fit: contain;" th:alt="${dog.dogname}">
               <img th:if="${dog.dog_profile != null}" th:src="@{'/dogs/display?filename=' + ${dog.dog_profile}}" class="card-img-top" style="height: 100%; width: auto; object-fit: contain;" th:alt="${dog.dogname}">
             </a>

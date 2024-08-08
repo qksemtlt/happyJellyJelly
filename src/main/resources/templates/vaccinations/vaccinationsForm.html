@@ -45,7 +45,7 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label for="dogSelect">강아지 선택</label>
-                        <select id="dogSelect" name="dogs.dog_id" class="form-control" required onchange="updateDogInfo(this.value)">
+                        <select id="dogSelect" name="dogs.dogId" class="form-control" required onchange="updateDogInfo(this.value)">
                             <option value="">-- 강아지를 선택하세요 --</option>
                             <option th:each="dog : ${userDogs}" 
                                     th:value="${dog.dogId}" 
@@ -123,14 +123,14 @@
 
         function updateDogInfo(selectedDogId) {
             console.log("Selected dog ID:", selectedDogId);
-            var selectedDog = userDogs.find(dog => dog.dog_id == selectedDogId);
+            var selectedDog = userDogs.find(dog => dog.dogId == selectedDogId);
             console.log("Selected dog:", selectedDog);
             
             var infoDiv = document.getElementById('selectedDogInfo');
             if (selectedDog) {
                 document.getElementById('dogName').textContent = "이름: " + selectedDog.dogname;
                 document.getElementById('dogBreed').textContent = "견종: " + selectedDog.breed;
-                document.getElementById('dogBirthDate').textContent = "생년월일: " + selectedDog.birth_date;
+                document.getElementById('dogBirthDate').textContent = "생년월일: " + selectedDog.birthDate;
                 infoDiv.style.display = 'block';
             } else {
                 infoDiv.style.display = 'none';

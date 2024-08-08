@@ -29,13 +29,13 @@
     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4 my-5">
             <form action="/dogs/profile" method="post" enctype="multipart/form-data">
 	            <input type="file" name="profile">
-	            <input type="hidden" name="dog_id" th:value="${dogdetail.dog_id}">
+	            <input type="hidden" name="dogId" th:value="${dogdetail.dogId}">
 	            <input type="submit" value="사진등록" class="btn btn-warning me-md-2">
             </form>
     </div>
     <form th:action="@{/dogs/update}" method="post" th:object="${dogsDTO}" th:if="${dogdetail != null}" class="needs-validation" novalidate>
         <div class="row g-3">
-        <input type="hidden" name="dog_id" th:value="${dogdetail.dog_id}">
+        <input type="hidden" name="dogId" th:value="${dogdetail.dogId}">
             <div class="col-md-6">
                 <label for="classInfo" class="form-label">반정보</label>
                 <select class="form-select" id="classInfo" name="classInfo">
@@ -65,7 +65,7 @@
             </div>
             <div class="col-md-6">
                 <label for="birthDate" class="form-label">생년월일</label>
-                <input type="date" class="form-control" id="birthDate" name="birth_date" th:value="${dogdetail.birth_date}">
+                <input type="date" class="form-control" id="birthDate" name="birthDate" th:value="${dogdetail.birthDate}">
             </div>
             <div class="col-md-6">
                 <label for="dog_serialnum" class="form-label">일련번호</label>
@@ -73,11 +73,11 @@
             </div>
             <div class="col-md-6">
                 <label for="admissionDate" class="form-label">입학일자</label>
-                <input type="date" class="form-control" id="admissionDate" name="admissionDate" th:value="${dogdetail.birth_date}">
+                <input type="date" class="form-control" id="admissionDate" name="admissionDate" th:value="${dogdetail.birthDate}">
             </div>
             <div class="col-md-6">
                 <label for="graduationDate" class="form-label">퇴소(예정)일자</label>
-                <input type="date" class="form-control" id="graduationDate" name="graduationDate" th:value="${dogdetail.birth_date}">
+                <input type="date" class="form-control" id="graduationDate" name="graduationDate" th:value="${dogdetail.birthDate}">
             </div>
             <div class="col-md-6">
                 <label class="form-label">견주</label>

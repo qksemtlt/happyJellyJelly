@@ -23,7 +23,7 @@ import com.ex.repository.DogsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+
 @Service
 @RequiredArgsConstructor
 public class VaccinationsService {
@@ -31,14 +31,7 @@ public class VaccinationsService {
     private final DogsRepository dogsRepository;
 	private final String UPLOAD_PATH="C:\\spring\\upload\\";
 
-    public void saveVaccination(VaccinationsDTO vaccinationDTO, MultipartFile file) {
-        String filename = profile(file);
-        vaccinationDTO.setFilename(filename);
-        VaccinationsEntity vaccination = convertToEntity(vaccinationDTO);
-        vaccinationsRepository.save(vaccination);
-    }
-    
-    
+   
 
     @Transactional
     public void saveVaccinationWithFile(VaccinationsDTO vaccinationDTO, MultipartFile file) {

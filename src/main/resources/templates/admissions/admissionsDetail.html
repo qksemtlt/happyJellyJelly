@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>입학 신청 상세</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Happy Jelly - 입학 신청 상세</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
         .table th {
             background-color: #f8f9fa;
@@ -20,7 +22,7 @@
             padding: 40px;
             background-color: white;
         }
-        h1 {
+        h2 {
             text-align: center;
             margin-bottom: 30px;
             font-weight: bold;
@@ -41,66 +43,173 @@
             background-color: #f8f9fa;
             border-radius: 5px;
         }
+        .vaccination-table {
+            margin-top: 20px;
+        }
+        .vaccination-table th {
+            background-color: #f8f9fa;
+        }
+        .modal-image {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>입학 신청 상세</h1>
-        <table class="table table-bordered">
-            <tbody>
-                <tr>
-                    <th scope="row">입학신청 번호:</th>
-                    <td th:text="${admission.admissionId}"></td>
-                </tr>
-                <tr>
-                    <th scope="row">강아지:</th>
-                    <td th:text="${admission.dogId}"></td>
-                </tr>
-                <tr>
-                    <th scope="row">신청 날짜:</th>
-                    <td th:text="${#dates.format(admission.applicationDate, 'yyyy-MM-dd')}"></td>
-                </tr>
-                <tr>
-                    <th scope="row">상태:</th>
-                    <td th:text="${admission.status}"></td>
-                </tr>
-                <tr>
-                    <th scope="row">승인 날짜:</th>
-                    <td th:text="${admission.approvalDate != null ? #dates.format(admission.approvalDate, 'yyyy-MM-dd') : '아직 승인되지 않음'}"></td>
-                </tr>
-                <tr>
-                    <th scope="row">희망 구독 유형:</th>
-                    <td th:text="${admission.desiredSubsType}"></td>
-                </tr>
-                <tr>
-                    <th scope="row">희망 이용 횟수:</th>
-                    <td th:text="${admission.desiredUsageCount}"></td>
-                </tr>
-                <tr>
-                    <th scope="row">희망 주간 이용 일수:</th>
-                    <td th:text="${admission.desiredDaysPerWeek}"></td>
-                </tr>
-            </tbody>
-        </table>
-        
-           <div class="status-form">
-            <h4>입학 신청 상태 변경</h4>
-            <form th:action="@{/admissions/updateStatus/{id}(id=${admission.admissionId})}" method="post">
-                <div class="form-group">
-                    <label for="status">새로운 상태:</label>
-                    <select class="form-control" id="status" name="status">
-                        <option value="APPROVED" th:selected="${admission.status == 'APPROVED'}">대기중</option>
-                        <option value="REJECTED" th:selected="${admission.status == 'REJECTED'}">승인됨</option>
-                        <option value="PENDING" th:selected="${admission.status == 'PENDING'}">거절됨</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">상태 변경</button>
-            </form>
+    <nav th:replace="~{navbar::navbarFragment}"></nav>
+
+    <div layout:fragment="content" class="container">
+        <h2 class="text-center mb-4">입학 신청 상세</h2>
+        <div th:if="${admission!=null}">
+           <table class="table table-bordered">
+               <tbody>
+                   <tr>
+                       <th scope="row">입학신청 번호:</th>
+                       <td th:text="${admission.admissionId}"></td>
+                   </tr>
+                   <tr>
+                       <th scope="row">강아지:</th>
+                       <td th:text="${admission.dogs.dogname}"></td>
+                   </tr>
+                   <tr>
+                   <th scope="row">상태:</th>
+                       <td th:switch="${admission.status}">
+                           <span th:case="'PENDING'">대기중</span>
+                           <span th:case="'APPROVED'">승인됨</span>
+                           <span th:case="'REJECTED'">거절됨</span>
+                           <span th:case="*" th:text="${admission.status}"></span>
+                       </td>
+                   </tr>
+                   <tr>
+                       <th scope="row">승인 날짜:</th>
+                       <td th:text="${admission.approvalDate != null ? #dates.format(admission.approvalDate, 'yyyy-MM-dd') : '아직 승인되지 않음'}"></td>
+                   </tr>
+                   <tr>
+                       <th scope="row">희망 구독 유형:</th>
+                       <td th:text="${admission.desiredSubsType}"></td>
+                   </tr>
+                   <tr>
+                       <th scope="row">배변 훈련:</th>
+                       <td th:text="${admission.pottytraining}"></td>
+                   </tr>
+                   <tr>
+                       <th scope="row">마킹:</th>
+                       <td th:text="${admission.marking}"></td>
+                   </tr>
+                   <tr>
+                       <th scope="row">급여 형태:</th>
+                       <td th:text="${admission.ration}"></td>
+                   </tr>
+                   <tr>
+                       <th scope="row">식욕:</th>
+                       <td th:text="${admission.appetite}"></td>
+                   </tr>
+                   <tr>
+                       <th scope="row">주 산책 횟수:</th>
+                       <td th:text="${admission.numberofweeks}"></td>
+                   </tr>
+                   <tr>
+                       <th scope="row">거절 사유:</th>
+                       <td th:text="${admission.reason}"></td>
+                   </tr>
+               </tbody>
+           </table>
+
+           <!-- 백신 정보 테이블 수정 -->
+           <table class="table table-bordered vaccination-table" th:if="${vaccinations != null and !vaccinations.empty}">
+               <thead>
+                   <tr>
+                       <th>백신 종류</th>
+                       <th>접종 날짜</th>
+                       <th>유효 기간</th>
+                       <th>증명서 파일</th>
+                   </tr>
+               </thead>
+               <tbody>
+                   <tr th:each="vaccination : ${vaccinations}">
+                       <td>
+                           <span th:each="type, iterStat : ${#strings.arraySplit(vaccination.vaccineType, ',')}">
+                               <span th:switch="${type}">
+                                   <span th:case="'DHPPL'">종합백신(DHPPL)</span>
+                                   <span th:case="'Rabies'">광견병</span>
+                                   <span th:case="'Kennel_Cough'">켄넬코프</span>
+                                   <span th:case="*" th:text="${type}"></span>
+                               </span>
+                               <span th:if="${!iterStat.last}">, </span>
+                           </span>
+                       </td>
+                       <td th:text="${#temporals.format(vaccination.vaccination_date, 'yyyy-MM-dd')}"></td>
+                       <td th:text="${#temporals.format(vaccination.expiry_date, 'yyyy-MM-dd')}"></td>
+                       <td>
+                           <a th:if="${vaccination.filename != null and vaccination.filename != ''}"
+                              href="#" th:text="${vaccination.filename}"
+                              data-bs-toggle="modal" th:data-bs-target="'#imageModal' + ${vaccination.vaccinationId}">
+                              파일명
+                           </a>
+                           <span th:unless="${vaccination.filename != null and vaccination.filename != ''}">파일 없음</span>
+                           
+                           <!-- 모달 추가 -->
+                           <div class="modal fade" th:id="'imageModal' + ${vaccination.vaccinationId}" tabindex="-1" aria-hidden="true">
+                               <div class="modal-dialog modal-lg">
+                                   <div class="modal-content">
+                                       <div class="modal-header">
+                                           <h5 class="modal-title">백신 증명서</h5>
+                                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                       </div>
+                                       <div class="modal-body">
+                                           <img th:src="@{/admissions/vaccinations/file/{filename}(filename=${vaccination.filename})}" 
+                                                alt="백신 증명서" class="modal-image">
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>
+                       </td>
+                   </tr>
+               </tbody>
+           </table>
+           <div th:if="${vaccinations == null or vaccinations.empty}" class="alert alert-info mt-3">
+               백신 접종 정보가 없습니다.
+           </div>
+
+           <div class="status-form" sec:authorize="hasRole('ROLE_DIRECTOR')">               
+               <form th:action="@{/admissions/updateStatus/{id}(id=${admission.admissionId})}" method="post">
+                   <h4>입학 신청 상태 변경</h4>
+                   <div class="form-group my-3">                   
+                       <label for="status">새로운 상태:</label>
+                       <select class="form-select" id="status" name="status">
+                           <option value="PENDING" th:selected="${admission.status == 'PENDING'}">대기중</option>
+                           <option value="APPROVED" th:selected="${admission.status == 'APPROVED'}">승인됨</option>
+                           <option value="REJECTED" th:selected="${admission.status == 'REJECTED'}">거절됨</option>
+                       </select>
+                   </div>
+                   <div class="form-group my-3">
+                      <label for="reason_rejected">입학 신청 거절 시 사유를 남겨주세요</label>
+                      <textarea class="form-control" name="reason" id="reason_rejected" rows="4"></textarea>
+                   </div>
+                   <button type="submit" class="btn btn-dark btn-sm">상태 변경</button>
+               </form>
+           </div>
+           <div th:if="${#strings.equals(admission.status, 'PENDING')}" class="cancel-form" sec:authorize="hasRole('ROLE_USER')">
+              <a class="btn btn-dark btn-sm" th:href="@{|/admissions/cancel/${admission.admissionId}|}">입학신청취소</a>
+           </div>
+           <div class="text-center mt-4">
+               <a th:href="@{/admissions/admissionsList}" class="btn btn-secondary">목록으로 돌아가기</a>
+           </div>
         </div>
-        
-        <div class="text-center mt-4">
-            <a th:href="@{/admissions/admissionsList}" class="btn btn-secondary">목록으로 돌아가기</a>
+        <div th:if="${admission==null}" class="row justify-content-center mt-4">
+           <div class="col-md-6 text-center">
+              <div class="alert alert-danger" role="alert">
+                   입학 신청한 기록이 없습니다.
+              </div>
+           </div>
+           <div class="text-center mt-4">
+               <a th:href="@{/dogs/myDogList}" class="btn btn-secondary">목록으로 돌아가기</a>
+           </div>
         </div>
     </div>
+
+    <th:block layout:fragment="script">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    </th:block>
 </body>
 </html>

@@ -1,11 +1,11 @@
 package com.ex.entity;
-
-import java.time.LocalDate;
-
+import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
@@ -16,29 +16,31 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "DOGASSIGNMENTS")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name="DOGASSIGNMENTS")
 public class DogAssignmentsEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DOGASSIGN_SEQ")							
-	@SequenceGenerator(name = "DOGASSIGN_SEQ", sequenceName = "DOGASSIGN_SEQ", allocationSize=1, initialValue = 1)
-	private Integer dogassignment_id;
-	
-	@ManyToOne
-	private DogsEntity dogs;
-	
-	private Integer daygroup_id;
-	
-	private Integer monthgroup_id; 
-	
-	private LocalDate start_date;
-    private LocalDate end_date;
+	 @Id
+	 @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "dogassign_seq")
+	 @SequenceGenerator(name = "dogassign_seq", sequenceName = "dogassign_seq", allocationSize=1, initialValue = 1)
+	 private Integer dogassignment_id;
+	 
+	 private Date start_date;
+	 private Date end_date;
+	 
+	 @ManyToOne
+	 @JsonBackReference
+	 @JoinColumn(name="dog_id")
+	 private DogsEntity dogs;
+	 
+	 @ManyToOne
+	 @JsonBackReference
+	 private MonthcareGroupsEntity monthgroup;
+	 
+	 @OneToOne
+	 @JsonBackReference
+	 @JoinColumn(name="admission_id")
+	 private AdmissionsEntity admission;
 }
-
-
-
-
-

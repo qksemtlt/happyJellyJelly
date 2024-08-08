@@ -7,8 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ex.data.DailyReportsDTO;
 import com.ex.entity.DailyReportsEntity;
+import com.ex.entity.MembersEntity;
 
-public interface DailyReportsRepository extends JpaRepository<DailyReportsEntity, Long> {
+public interface DailyReportsRepository extends JpaRepository<DailyReportsEntity, Integer> {
 
+	public List<DailyReportsEntity> findByMembers(MembersEntity members);
 
 }

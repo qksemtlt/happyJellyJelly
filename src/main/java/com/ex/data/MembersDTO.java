@@ -36,4 +36,6 @@ public class MembersDTO {
 	
 	public interface SignUp {}
     public interface PasswordChange {}
+    
+    private Integer branch_id;
 }

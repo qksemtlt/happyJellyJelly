@@ -1,10 +1,52 @@
 <html layout:decorate="~{layout}">
     <div layout:fragment="content" class="container my-3">
+    
+    <script src="/js/jquery-3.7.1.min.js"></script>
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+	<script>
+	   Kakao.init('8566acd89ae3c2c077f81169d36e5646'); // 사용하려는 앱의 JavaScript 키 입력
+	   
+	   function kakaoLogin(){
+	      window.Kakao.Auth.login({
+	         scope:'profile_nickname,account_email',
+	         success: function(authObj){
+	            console.log(authObj);  // 토큰 출력
+	            window.Kakao.API.request({
+	               url: '/v2/user/me',
+	               success: res => {
+	                  const name = res.properties.nickname;
+	                  console.log(res.kakao_account.email);
+	                  console.log(res.properties);
+	                  
+	                  $.ajax({
+	                	url : "/members/socialCheck",
+	                	data : {username:res.kakao_account.email, name:name},
+	                	success : function(data){
+	                		$("#k_username").val(res.kakao_account.email);
+	                		$("#k_password").val("12");
+	                		$("#loginForm").submit();
+	                	}
+	                  });
+	                  
+	               }
+	            });
+	            
+	         }
+	      });
+	   }
+	</script>
+	
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <h4 class="text-center mb-4">로그인</h4>
                 
-                <form th:action="@{/members/login}" method="post">
+                <!-- 카카오 로그인 스크립트 적용되는 form 태그 / 아이디, 비번 hidden으로 넘김 -->
+                <form th:action="@{/members/login}" method="post" id="loginForm">                	
+                	<input type="hidden" id="k_username" name="username"/>
+                	<input type="hidden" id="k_password" name="password"/>
+                </form>
+                
+                <form th:action="@{/members/login}" method="post" >
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                     
                     <div th:if="${param.error}">
@@ -35,7 +77,7 @@
                 <div class="text-center mb-4">
                     <h5 class="mb-3">간편 로그인</h5>
                     <div class="d-grid gap-2">
-                        <a href="#" class="btn btn-warning">카카오 로그인</a>
+                        <a href="javascript:kakaoLogin()" class="btn btn-warning">카카오 로그인</a>
                         <a href="#" class="btn btn-success">네이버 로그인</a>
                     </div>
                 </div>
@@ -47,4 +89,6 @@
             </div>
         </div>
     </div>
+    
+	
 </html>

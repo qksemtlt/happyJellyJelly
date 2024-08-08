@@ -38,7 +38,7 @@
 <body>
     <div layout:fragment="content" class="container my-3">
         <div class="border-bottom my-3 pb-2">
-            <h3 class="text-dark-gray">다이어리 조회 - <span th:text="${selectDate}"></span></h3>
+            <h3 class="text-dark-gray"><span th:text="${selectDate}"></span><span th:text="${daReportsDTO.title}"></span></h3>
         </div>
         
         <div class="mb-3" th:if="${daReportsDTO != null}">
@@ -52,7 +52,6 @@
                                 <th>식욕</th>
                                 <th>건강상태</th>
                                 <th>배변활동</th>
-                                <th>알림장내용</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -62,18 +61,15 @@
                                 <td th:text="${daReportsDTO.meals}"></td>
                                 <td th:text="${daReportsDTO.health}"></td>
                                 <td th:text="${daReportsDTO.bowel}"></td>
-                                <td th:text="${daReportsDTO.contents}"></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
+            
             <div class="card mt-3">
-                <div class="card-header">
-                    <h4 class="card-header-title text-dark-gray mb-0" th:text="${diaryDTO.title}"></h4>
-                </div>
                 <div class="card-body">
-                    <div class="card-text text-dark-gray" style="white-space: pre-line;" th:text="${diaryDTO.content}"></div>
+                    <div class="card-text text-dark-gray" style="white-space: pre-line;" th:text="${daReportsDTO.contents}"></div>
                 </div>
             </div>
         </div>

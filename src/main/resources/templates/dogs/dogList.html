@@ -33,22 +33,21 @@
         </select>
         <input type="submit" value="검색">
     </form>
-	<a href="#" >반 추가</a>
+
     <div>
 <!--         <span>승인완료: </span><span th:text="${approvedCount}">0</span>마리 -->
 <!--         <span>승인대기: </span><span th:text="${pendingCount}">0</span>마리 -->
     </div>
 
     <table>
+        <tr><td><a href="#" >반 추가</a></td></tr>
         <tr>
             <th>반 이름</th>
-            <th>입학일자</th>
             <th>보호자</th>
             <th>강아지 이름</th>
             <th>품종</th>
         </tr>
 		<tr th:each="dogs : ${dogsList}">
-            <td th:text="${dogs.member.join_date}"></td>
             <td th:text="${dogs.member.join_date}"></td>
             <td th:text="${dogs.member.name}">보호자 성함</td>
 <!--             <td th:text="${dogs.dog_id}">보호자</td> -->

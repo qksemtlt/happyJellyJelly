@@ -1,11 +1,14 @@
 package com.ex.entity;
-
 import java.time.LocalDate;
+import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -22,21 +25,23 @@ import lombok.NoArgsConstructor;
 @Builder
 public class VaccinationsEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VACCINATIONS _SEQ")							
-	@SequenceGenerator(name = "VACCINATIONS _SEQ", sequenceName = "VACCINATIONS _SEQ", allocationSize=1, initialValue = 1)
-	private Integer vaccination_id ;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VACCINATIONS_SEQ")
+    @SequenceGenerator(name = "VACCINATIONS_SEQ", sequenceName = "VACCINATIONS_SEQ", allocationSize = 1)
+	@Column(name = "VACCINATION_ID")
+    private Integer vaccinationId;
 	
 	@ManyToOne
+	@JsonBackReference
+	@JoinColumn(name="dog_id")
 	private DogsEntity dogs;
 	
-	private String	vaccine_type;
+	@Column(name = "VACCINE_TYPE")
+	private String vaccineType;
 	
-	private LocalDate vaccination_date ;
 	
-	private LocalDate expiry_date ;
-	
+	private LocalDate vaccination_date;
+	private LocalDate expiry_date;
 	private String filename;
-	@ManyToOne
-	private AdmissionsEntity  admissions;
 	
+
 }

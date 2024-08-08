@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>출석부</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .summary {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav th:replace="~{navbar::navbarFragment}"></nav>
+    <div class="container">
+        <h2 class="text-center mb-4">출석부</h2>
+        <div class="text-center">
+            <button class="btn btn-primary" onclick="navigateDate(-1)">&lt;</button>
+            <span th:text="${currentDate}">2024-07-11</span>
+            <button class="btn btn-primary" onclick="navigateDate(1)">&gt;</button>
+        </div>
+        <div class="form-group mt-4">
+            <label for="groupSelect">반 선택</label>
+            <select class="form-control" id="groupSelect" name="groupSelect" onchange="filterByGroup()">
+                <option value="전체">전체</option>
+                <option th:each="group : ${monthGroups}" th:value="${group.id}" th:text="${group.name}"></option>
+            </select>
+        </div>
+        <div class="summary text-center">
+            <span>전체 인원: <span th:text="${totalCount}">8</span></span> |
+            <span>출석: <span th:text="${presentCount}">7</span></span> |
+            <span>결석: <span th:text="${absentCount}">1</span></span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>일자</th>
+                    <th>강아지 이름</th>
+                    <th>출석</th>
+                    <th>입실 시간</th>
+                    <th>퇴실 시간</th>
+                    <th>특이사항</th>
+                    <th>학부모</th>
+                    <th>알림장</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="attendance : ${attendances}">
+                    <td th:text="${attendance.attendancedate}">2024-07-11</td>
+                    <td th:text="${attendance.dog.dog_id}">
+<!--						<a th:href="@{/dogs/details/{id}(id=${attendance.dog.id})}" th:text="${attendance.dog.name}">빵간</a>-->
+					</td>
+                    <td th:text="${attendance.status}">출석</td>
+<!--                    <td th:text="${attendance.checkInTime}">10:00</td>-->
+<!--                    <td th:text="${attendance.checkOutTime}">20:00</td>-->
+<!--                    <td th:text="${attendance.notes}">특이사항</td>-->
+<!--                    <td th:text="${attendance.dog.parentName}">이지현</td>-->
+                    <td>
+<!--                        <button class="btn btn-info" onclick="navigateToAlert(${attendance.id})">알림장</button>-->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <th:block layout:fragment="script">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            function navigateDate(offset) {
+                // 현재 날짜를 얻어온 뒤 offset을 적용하여 새로운 날짜를 설정합니다.
+                var currentDate = new Date(document.querySelector('[th\\:text="${currentDate}"]').textContent);
+                currentDate.setDate(currentDate.getDate() + offset);
+                window.location.href = `/attendance?date=${currentDate.toISOString().split('T')[0]}`;
+            }
+
+            function filterByGroup() {
+                // 선택된 그룹의 ID를 가져와서 해당 그룹으로 필터링된 출석부를 요청합니다.
+                var groupSelect = document.getElementById("groupSelect");
+                var groupId = groupSelect.value;
+                window.location.href = `/attendance?group=${groupId}`;
+            }
+
+            function navigateToAlert(attendanceId) {
+                // 알림장 작성 여부에 따라 다른 URL로 이동합니다.
+                fetch(`/alert/check/${attendanceId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.exists) {
+                            window.location.href = `/alert/view/${attendanceId}`;
+                        } else {
+                            window.location.href = `/alert/create/${attendanceId}`;
+                        }
+                    });
+            }
+        </script>
+    </th:block>
+</body>
+</html>

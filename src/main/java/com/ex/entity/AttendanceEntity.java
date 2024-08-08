@@ -32,6 +32,8 @@ public class AttendanceEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "attendance_seq")
 	@SequenceGenerator(name = "attendance_seq", sequenceName = "attendance_seq", allocationSize=1, initialValue = 1)
+	
+
 	@Column(name = "ATTENDANCE_ID")
 	private Integer id;							// ATTENDANCE 고유 식별 번호
 	

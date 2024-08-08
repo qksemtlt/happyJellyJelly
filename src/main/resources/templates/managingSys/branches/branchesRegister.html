@@ -20,7 +20,7 @@
                             <h5 class="mb-0">새 매장 등록</h5>
                         </div>
                         <div class="card-body">
-                            <form id="branchForm" th:action="@{/branch/register}" method="post" th:object="${branch}">
+                            <form id="branchForm" th:action="@{/managingSys/branch/register}" method="post" th:object="${branch}">
                                 <div class="mb-3">
                                     <label for="name" class="form-label">매장명</label>
                                     <input type="text" class="form-control" id="name" th:field="*{name}" required>
@@ -40,7 +40,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class='bx bx-save btn-icon'></i>등록
                                 </button>
-                                <a href="/branch/" class="btn btn-secondary">
+                                <a href="/managingSys/SysMain" class="btn btn-secondary">
                                     <i class='bx bx-arrow-back btn-icon'></i>돌아가기
                                 </a>
                             </form>

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.ex.data.MembersDTO;
 import com.ex.service.MembersService;
@@ -19,6 +20,14 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/members/*")
 public class MembersController {
 	private final MembersService membersService;
+	
+	@GetMapping("socialCheck")
+	@ResponseBody
+	public String socialCheck(@RequestParam("username") String username, @RequestParam("name") String name) {
+		int social = membersService.socialCheck(username, name);		
+		return "success";
+	}
+
 	
 	@GetMapping("login")
 	public String login() {

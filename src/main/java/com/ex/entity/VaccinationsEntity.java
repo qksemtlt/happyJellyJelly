@@ -25,8 +25,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class VaccinationsEntity {
 	@Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vaccinations_seq")
-    @SequenceGenerator(name = "vaccinations_seq", sequenceName = "vaccinations_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VACCINATIONS_SEQ")
+    @SequenceGenerator(name = "VACCINATIONS_SEQ", sequenceName = "VACCINATIONS_SEQ", allocationSize = 1)
 	@Column(name = "VACCINATION_ID")
     private Integer vaccinationId;
 	
@@ -35,7 +35,10 @@ public class VaccinationsEntity {
 	@JoinColumn(name="dog_id")
 	private DogsEntity dogs;
 	
-	private String vaccine_type;
+	@Column(name = "VACCINE_TYPE")
+	private String vaccineType;
+	
+	
 	private LocalDate vaccination_date;
 	private LocalDate expiry_date;
 	private String filename;

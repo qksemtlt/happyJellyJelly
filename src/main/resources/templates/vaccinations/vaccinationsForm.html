@@ -37,7 +37,7 @@
 
     <div class="container">
         <h2 class="text-center mb-4 form-title">백신접종등록</h2>
-        <form th:action="@{/vaccinations/save}" method="post" enctype="multipart/form-data">
+       <form th:action="@{/vaccinations/save}" method="post" enctype="multipart/form-data">
             <div th:if="${not #lists.isEmpty(userDogs)}" class="card mb-4">
                 <div class="card-header section-title">
                     <i class="fas fa-dog mr-2"></i>강아지 정보
@@ -48,7 +48,7 @@
                         <select id="dogSelect" name="dogs.dog_id" class="form-control" required onchange="updateDogInfo(this.value)">
                             <option value="">-- 강아지를 선택하세요 --</option>
                             <option th:each="dog : ${userDogs}" 
-                                    th:value="${dog.dog_id}" 
+                                    th:value="${dog.dogId}" 
                                     th:text="${dog.dogname}">
                             </option>
                         </select>
@@ -73,25 +73,25 @@
                     <div class="form-group">
                         <label>백신 종류 (중복 선택 가능)</label>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="DHPPL" id="DHPPL" name="vaccineTypes">
+                            <input class="form-check-input" type="checkbox" value="DHPPL" id="DHPPL" name="vaccineType">
                             <label class="form-check-label" for="DHPPL">종합백신(DHPPL)</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="Rabies" id="Rabies" name="vaccineTypes">
+                            <input class="form-check-input" type="checkbox" value="Rabies" id="Rabies" name="vaccineType">
                             <label class="form-check-label" for="Rabies">광견병</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="Kennel_Cough" id="Kennel_Cough" name="vaccineTypes">
+                            <input class="form-check-input" type="checkbox" value="Kennel_Cough" id="Kennel_Cough" name="vaccineType">
                             <label class="form-check-label" for="Kennel_Cough">켄넬코프</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="other" id="other" name="vaccineTypes" onchange="toggleOtherVaccine(this)">
+                            <input class="form-check-input" type="checkbox" value="other" id="other" name="vaccineType" onchange="toggleOtherVaccine(this)">
                             <label class="form-check-label" for="other">기타</label>
                         </div>
                     </div>
                     <div id="otherVaccineDiv" class="form-group" style="display:none;">
                         <label for="otherVaccine">기타 백신 종류</label>
-                        <input type="text" id="otherVaccine" name="otherVaccine" class="form-control">
+                        <input type="text" id="otherVaccine" name="vaccineType" class="form-control">
                     </div>
                     <div class="form-group">
                         <label for="vaccinationDate">접종 날짜</label>
@@ -101,10 +101,10 @@
                         <label for="expiryDate">유효 기간</label>
                         <input type="date" id="expiryDate" name="expiry_date" class="form-control" required>
                     </div>
-                    <div class="form-group">
-                        <label for="vaccinationFile">접종 증명서 파일</label>
-                        <input type="file" id="vaccinationFile" name="vaccinationFile" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
-                    </div>
+                     <div class="form-group">
+                         <label for="file">접종 증명서 파일</label>
+                         <input type="file" id="file" name="file" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+                     </div>
                 </div>
             </div>
 

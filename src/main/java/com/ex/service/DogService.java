@@ -31,7 +31,7 @@ public class DogService {
 		DogsDTO dogsDTO = null;
 		if(dogEntityOptional.isPresent()) {
 			DogsEntity dogsEntity = dogEntityOptional.get();
-			dogsDTO = DogsDTO.builder().dog_id(dogsEntity.getDog_id()).dogname(dogsEntity.getDogname())
+			dogsDTO = DogsDTO.builder().dog_id(dogsEntity.getDogId()).dogname(dogsEntity.getDogname())
 					.breed(dogsEntity.getBreed()).gender(dogsEntity.getGender()).birth_date(dogsEntity.getBirth_date())
 					.dog_serialnum(dogsEntity.getDog_serialnum()).member(me)
 					.neutering(dogsEntity.getNeutering()).dog_profile(dogsEntity.getDog_profile())
@@ -61,7 +61,7 @@ public class DogService {
 			List<DogsEntity> dogs = me.getDogs();
 			list = new ArrayList<>(dogs.size());
 			for(DogsEntity mydogs : dogs) {
-				dogsDTO = new DogsDTO().builder().dog_id(mydogs.getDog_id()).dogname(mydogs.getDogname()).breed(mydogs.getBreed())
+				dogsDTO = new DogsDTO().builder().dog_id(mydogs.getDogId()).dogname(mydogs.getDogname()).breed(mydogs.getBreed())
 						.birth_date(mydogs.getBirth_date()).gender(mydogs.getGender()).dog_serialnum(mydogs.getDog_serialnum())
 						.dog_profile(mydogs.getDog_profile()).neutering(mydogs.getNeutering())
 						.weight(mydogs.getWeight()).build();

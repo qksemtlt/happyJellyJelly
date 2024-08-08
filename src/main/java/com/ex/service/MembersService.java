@@ -29,7 +29,7 @@ public class MembersService {
 		if(op.isPresent()) {
 			MembersEntity me = op.get();
 			membersDTO.setUsername(me.getUsername());
-			return "찾으신 아이디는" + membersDTO.getUsername() + "입니다.";
+			return "찾으신 아이디는 [" + membersDTO.getUsername() + "] 입니다.";
 		}else {
 			return "찾으시는 아이디가 없습니다. 정보를 확인해주세요";
 		}		
@@ -62,7 +62,7 @@ public class MembersService {
 			MembersDTO membersDTO = MembersDTO.builder().username(me.getUsername())
 					.name(me.getName()).email(me.getEmail())
 					.phone(me.getPhone()).join_date(me.getJoin_date())
-					.user_type(me.getUser_type()).build();
+					.user_type(me.getUser_type()).branch_id(me.getBranch_id()).build();
 			return membersDTO;
 		}else {
 			throw new RuntimeException("user not found");
@@ -80,9 +80,23 @@ public class MembersService {
 		MembersEntity me = membersRepository.findByUsername(username).get();
 		membersRepository.delete(me);
 	}
-	// 추가
-	 public MembersEntity findByUsername(String username) {
-	        return membersRepository.findByUsername(username)
-	            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-	    }
+	
+	public MembersEntity findByUsername(String username) {
+        return membersRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+	
+	public int socialCheck(String username, String name) {
+		Optional<MembersEntity> op = membersRepository.findByUsername(username);
+		if(op.isPresent()) {
+			return 1;
+		}else {
+			MembersEntity me = MembersEntity.builder().username(username).
+					name(name).password(passwordEncoder.encode("12")).
+					join_date(LocalDate.now()).user_type("REGULAR")
+					.email(username).build();
+			membersRepository.save(me);
+			return 0;
+		}
+	}
 }

@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class VaccinationsDTO {
 	private Integer vaccinationId ;
 	private DogsEntity dogs;
-	private String	vaccine_type;
+	private String	vaccineType;
 	private LocalDate	vaccination_date ;
 	private LocalDate	expiry_date ;
 	private String	filename;

@@ -40,7 +40,7 @@ public class AdmissionsService {
     public void createAdmission(AdmissionsDTO admissionDTO) {
         log.info("Starting creation of admission with DTO: {}", admissionDTO);
 
-        DogsEntity dog = dogRepository.findById(admissionDTO.getDogs().getDog_id())
+        DogsEntity dog = dogRepository.findById(admissionDTO.getDogs().getDogId())
                 .orElseThrow(() -> new RuntimeException("Dog not found"));
         
         log.info("Found dog: {}", dog);
@@ -137,6 +137,10 @@ public class AdmissionsService {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("admissionId").descending());
         Page<AdmissionsEntity> entityPage = admissionRepository.findByDogs_Member_Username(username, pageable);
         return entityPage.map(this::convertToDTO);
+    }
+    public int checkPending(String status, Integer dog_id) {
+    	int checkPending = admissionRepository.countByStatusAndDogs_DogId(status, dog_id);
+    	return checkPending;
     }
 }
     

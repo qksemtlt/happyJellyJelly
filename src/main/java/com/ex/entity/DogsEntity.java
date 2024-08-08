@@ -32,7 +32,8 @@ public class DogsEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "dogs_seq")								// 시퀀스 생성
 	@SequenceGenerator(name = "dogs_seq", sequenceName = "dogs_seq", allocationSize=1, initialValue = 1)	// 시퀀스 설정
-	private Integer dog_id;				// DOGS 테이블 식별번호
+	@Column(name="DOG_ID")
+	private Integer dogId;				// DOGS 테이블 식별번호
 	private String dogname;				// 강아지 이름
 	private String breed;				// 강아지 품종
 	private LocalDate birth_date;		// 강아지 생일
@@ -47,8 +48,6 @@ public class DogsEntity {
 	@ManyToOne
 	@JsonBackReference
 	private MembersEntity member;		// MEMBERS 테이블 식별번호(견주)
-	
-	
 		
 	@OneToMany(mappedBy="dogs", cascade=CascadeType.REMOVE)
 	@JsonManagedReference

@@ -64,8 +64,9 @@
             </thead>
             <tbody>
                 <tr th:each="attendance : ${attendances}">
-                    <td th:text="${attendance.attendancedate}">2024-07-11</td>
-                    <td th:text="${attendance.dog.dog_id}">
+                    <td th:text="${attendance.attendancedate}"></td>
+<!--                    <td>-->
+                    <td th:text="${attendance.dog.dogname}">
 <!--						<a th:href="@{/dogs/details/{id}(id=${attendance.dog.id})}" th:text="${attendance.dog.name}">빵간</a>-->
 					</td>
                     <td th:text="${attendance.status}">출석</td>

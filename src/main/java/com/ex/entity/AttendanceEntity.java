@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -48,4 +49,7 @@ public class AttendanceEntity {
 	
 	private LocalDate attendancedate;			// 출석일자
 	private String status;						// 출석상태
+	
+	@OneToOne
+	private DailyReportsEntity dailyreport;		// 알림장
 }

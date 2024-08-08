@@ -1,19 +1,18 @@
 package com.ex.data;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class BranchListResponseDTO {
-    private List<BranchDTO> branches;
+@NoArgsConstructor
+@Builder
+public class BranchesListResponseDTO {
+    private List<BranchesDTO> branches;
     private long totalElements;
     private int totalPages;
 }
-

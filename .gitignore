@@ -38,5 +38,5 @@ out/
 
 api_key.java
 
-src/main/resources/templates/login.html
+src/main/resources/templates/members/login.html
 

@@ -56,9 +56,9 @@ public class MonthcareGroupsService {
 		List<MembersDTO> membersDTOList = new ArrayList<>();
 		List<MembersEntity> membersEntityList = membersRepository.findAll();
 		for(MembersEntity me : membersEntityList) {
-			if(me.getUser_type().equals("TEACHER")&&me.getBranch_id()==branch_id) {
+			if(me.getUserType().equals("TEACHER")&&me.getBranchId()==branch_id) {
 				MembersDTO membersDTO = new MembersDTO();
-				membersDTO.setMemberId(me.getMember_id());
+				membersDTO.setMemberId(me.getMemberId());
 				membersDTO.setUsername(me.getUsername());
 				membersDTO.setName(me.getName());
 				membersDTOList.add(membersDTO);

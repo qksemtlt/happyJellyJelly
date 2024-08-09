@@ -10,7 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -56,4 +55,8 @@ public class AttendanceEntity {
 	private DailyReportsEntity dailyreport;		// 알림장
 	
 	private String notes;						// 특이사항
+	
+	@ManyToOne
+	@JsonBackReference
+	private BranchEntity branch;				// BRANCH 테이블 참조키
 }

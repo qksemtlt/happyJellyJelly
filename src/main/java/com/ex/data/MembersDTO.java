@@ -36,9 +36,8 @@ public class MembersDTO {
 	private String phone;
 	private String user_type;
 	private LocalDate join_date;
+	private Integer branch_id;
 	
 	public interface SignUp {}
     public interface PasswordChange {}
-    
-    private Integer branch_id;
 }

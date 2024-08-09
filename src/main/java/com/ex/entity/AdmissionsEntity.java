@@ -3,7 +3,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.util.Date;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -11,7 +15,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "ADMISSIONS")
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -44,8 +49,7 @@ public class AdmissionsEntity {
       @Column(name = "DESIRED_USAGE_COUNT")
       private Integer desiredUsageCount;
 
-      @Column(name = "DESIRED_DAYS_PER_WEEK")
-      private Integer desiredDaysPerWeek;
+
       
       private String  appetite; // 식욕
       private String  marking; //마킹
@@ -71,7 +75,11 @@ public class AdmissionsEntity {
       @JoinColumn(name = "branch_id")
       private BranchEntity branch;
       
+      @ManyToOne(cascade = CascadeType.MERGE)
+      @JoinColumn(name = "id")
+      @ToString.Exclude
+      private MonthcareGroupsEntity mothcaregroups;
       
-      	
+     
       
 }

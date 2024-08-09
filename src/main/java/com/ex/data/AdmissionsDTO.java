@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.ex.entity.BranchEntity;
 import com.ex.entity.DogsEntity;
+import com.ex.entity.MonthcareGroupsEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +23,6 @@ public class AdmissionsDTO {
     private Date approvalDate;	// 승인날짜 
     private String desiredSubsType; // 구독 타입
     private Integer desiredUsageCount;  // 희망날짜
-    private Integer desiredDaysPerWeek; // 
     private String  pottytraining; // 배변훈련
     private String  marking; //마킹
     private String  ration; // 급여 형태
@@ -32,4 +32,5 @@ public class AdmissionsDTO {
     private String  significant; // 특이사항
     private String reason; // 반려사유
     private BranchEntity branch;
+    private MonthcareGroupsEntity mothcaregroups;
 }

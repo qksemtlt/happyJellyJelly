@@ -37,4 +37,6 @@ public class BranchEntity {
     @OneToMany(mappedBy="branches", cascade=CascadeType.REMOVE)
     @JsonManagedReference
     private List<MonthcareGroupsEntity> month;
+    
+    
 }

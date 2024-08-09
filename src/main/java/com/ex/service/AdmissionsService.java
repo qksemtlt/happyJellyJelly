@@ -1,8 +1,5 @@
 package com.ex.service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,9 +13,11 @@ import org.springframework.stereotype.Service;
 import com.ex.data.AdmissionsDTO;
 import com.ex.data.MonthcareGroupsDTO;
 import com.ex.entity.AdmissionsEntity;
+import com.ex.entity.BranchEntity;
 import com.ex.entity.DogsEntity;
-import com.ex.entity.MembersEntity;
+import com.ex.entity.MonthcareGroupsEntity;
 import com.ex.repository.AdmissionsRepository;
+import com.ex.repository.BranchesRepository;
 import com.ex.repository.DogsRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -31,23 +30,34 @@ public class AdmissionsService {
     private final AdmissionsRepository admissionRepository;
     private final DogsRepository dogRepository;
     private final MembersService membersService;
+    private final BranchesRepository branchRepository;
     private final MonthcareGroupsService monthcareGroupsService;
 
-    
-    
     public void createAdmission(AdmissionsDTO admissionDTO) {
         log.info("Starting creation of admission with DTO: {}", admissionDTO);
 
         DogsEntity dog = dogRepository.findById(admissionDTO.getDogs().getDogId())
                 .orElseThrow(() -> new RuntimeException("Dog not found"));
         
-        log.info("Found dog: {}", dog);
+        BranchEntity branch = branchRepository.findById(admissionDTO.getBranch().getBranchId())
+                .orElseThrow(() -> new RuntimeException("Branch not found"));
+        
+        MonthcareGroupsDTO groupDTO = monthcareGroupsService.getMonthGroup(admissionDTO.getMothcaregroups().getId());
+        MonthcareGroupsEntity group = MonthcareGroupsEntity.builder()
+                .id(groupDTO.getId())
+                .name(groupDTO.getName())
+                .description(groupDTO.getDescription())
+                .capacity(groupDTO.getCapacity())
+                .teachers(groupDTO.getTeacher())
+                .branches(groupDTO.getBranches())
+                .build();
+
+        log.info("Found dog: {}, branch: {}, group: {}", dog, branch, group);
 
         AdmissionsEntity ae = AdmissionsEntity.builder()
                 .dogs(dog)       
                 .applicationDate(new Date())
                 .status("PENDING")
-                .desiredDaysPerWeek(3)
                 .desiredSubsType("REGULAR")
                 .pottytraining(admissionDTO.getPottytraining())
                 .marking(admissionDTO.getMarking())
@@ -56,10 +66,9 @@ public class AdmissionsService {
                 .walk(admissionDTO.getWalk())
                 .numberofweeks(admissionDTO.getNumberofweeks())
                 .significant(admissionDTO.getSignificant())
-                .branch(admissionDTO.getBranch())
-                
+                .branch(branch)
+                .mothcaregroups(group)
                 .build();
-
         log.info("Created AdmissionsEntity: {}", ae);
 
         try {
@@ -71,7 +80,6 @@ public class AdmissionsService {
         }
     }
      
-    // 강아지 전체 출력
     public List<AdmissionsDTO> getAllAdmissions() {
         return admissionRepository.findAll().stream()
                 .map(this::convertToDTO)
@@ -93,7 +101,6 @@ public class AdmissionsService {
         dto.setApprovalDate(entity.getApprovalDate());
         dto.setDesiredSubsType(entity.getDesiredSubsType());
         dto.setDesiredUsageCount(entity.getDesiredUsageCount());
-        dto.setDesiredDaysPerWeek(entity.getDesiredDaysPerWeek());
         dto.setPottytraining(entity.getPottytraining());
         dto.setMarking(entity.getMarking());
         dto.setRation(entity.getRation());
@@ -103,9 +110,9 @@ public class AdmissionsService {
         dto.setSignificant(entity.getSignificant());
         dto.setReason(entity.getReason());
         dto.setBranch(entity.getBranch());
+        dto.setMothcaregroups(entity.getMothcaregroups());
         return dto;
     }
-
 
     public void updateAdmissionStatus(Integer admissionId, String newStatus, String reason) {
         AdmissionsEntity admission = admissionRepository.findById(admissionId)
@@ -122,12 +129,13 @@ public class AdmissionsService {
         admissionRepository.save(admission);
     }
     
- 
     public void cancelAdmission(Integer id) {
-        AdmissionsEntity admission = admissionRepository.findById(id).get();
+        AdmissionsEntity admission = admissionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Admission not found"));
         admission.setStatus("CANCELED");
         admissionRepository.save(admission);
-     }
+    }
+
     public Page<AdmissionsDTO> getAllAdmissionsPaginated(int page) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("admissionId").descending());
         Page<AdmissionsEntity> entityPage = admissionRepository.findAll(pageable);
@@ -139,26 +147,16 @@ public class AdmissionsService {
         Page<AdmissionsEntity> entityPage = admissionRepository.findByDogs_Member_Username(username, pageable);
         return entityPage.map(this::convertToDTO);
     }
+
     public int checkPending(String status, Integer dog_id) {
-    	int checkPending = admissionRepository.countByStatusAndDogs_DogId(status, dog_id);
-    	return checkPending;
+        return admissionRepository.countByStatusAndDogs_DogId(status, dog_id);
     }
-    public List<MonthcareGroupsDTO> getBranchGroups(Integer branchId) {
+
+    public List<BranchEntity> getAllBranches() {
+        return branchRepository.findAll();
+    }
+
+    public List<MonthcareGroupsDTO> getGroupsByBranch(Integer branchId) {
         return monthcareGroupsService.getMonthcareGroupByBranch(branchId);
     }
-    
 }
-    
-
-
-
-
-
-
-
-
-
-
-
-
-

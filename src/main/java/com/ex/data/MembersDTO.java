@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class MembersDTO {
+	
+	private Integer memberId;
+	
 	@NotEmpty(message="아이디는 필수입력 사항입니다.")
 	private String username;
 	

@@ -2,15 +2,19 @@ package com.ex.controller;
 
 
 import com.ex.data.AdmissionsDTO;
+import com.ex.data.BranchesDTO;
 import com.ex.data.DogsDTO;
+import com.ex.data.MonthcareGroupsDTO;
 import com.ex.data.VaccinationsDTO;
 import com.ex.entity.AdmissionsEntity;
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
 import com.ex.entity.VaccinationsEntity;
 import com.ex.service.AdmissionsService;
+import com.ex.service.BranchesService;
 import com.ex.service.DogService;
 import com.ex.service.MembersService;
+import com.ex.service.MonthcareGroupsService;
 import com.ex.service.VaccinationsService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +33,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admissions")
@@ -40,11 +46,14 @@ public class AdmissionsController {
         private final DogService dogService;      
         private final MembersService membersService;
         private final VaccinationsService vaccinationsService;
+        private final BranchesService branchesService;
+        private final MonthcareGroupsService monthcareGroupsService;
             
         // 
         @GetMapping("")
         @PreAuthorize("isAuthenticated()")
-        public String AdmissionForm(Model model, Principal principal) {
+        public String AdmissionForm(Model model, Principal principal,
+        							@RequestParam(name = "branchId", required = false) Integer branchId) {
             // 현재 로그인한 사용자 정보 가져오기
             String username = principal.getName();
             MembersEntity member = membersService.findByUsername(username);
@@ -66,11 +75,22 @@ public class AdmissionsController {
                     dogsWithoutPendingAdmissions.add(dog); // 저장 시킴?
                 }
             }
+            List<BranchesDTO> branches = branchesService.getAllBranches();
+            model.addAttribute("branches", branches);
+            
+            Map<Integer, List<MonthcareGroupsDTO>> branchGroups = new HashMap<>();
+            for (BranchesDTO branch : branches) {
+                List<MonthcareGroupsDTO> groups = monthcareGroupsService.getMonthcareGroupByBranch(branch.getBranchId());
+                branchGroups.put(branch.getBranchId(), groups);
+            }
+            model.addAttribute("userDogs", branchGroups);
 
             // 모델에 정보 추가
             model.addAttribute("userDogs", dogsWithoutPendingAdmissions);
             return "admissions/admissions";
         }
+        
+        
         
         @GetMapping("/{id}")
         @PreAuthorize("isAuthenticated()")

@@ -2,6 +2,7 @@ package com.ex.data;
 
 import java.util.Date;
 
+import com.ex.entity.BranchEntity;
 import com.ex.entity.DogsEntity;
 
 import lombok.AllArgsConstructor;
@@ -30,4 +31,5 @@ public class AdmissionsDTO {
     private Integer numberofweeks; // 주 산책횟수
     private String  significant; // 특이사항
     private String reason; // 반려사유
+    private BranchEntity branch;
 }

@@ -14,7 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ex.data.AdmissionsDTO;
-
+import com.ex.data.MonthcareGroupsDTO;
 import com.ex.entity.AdmissionsEntity;
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
@@ -31,11 +31,9 @@ public class AdmissionsService {
     private final AdmissionsRepository admissionRepository;
     private final DogsRepository dogRepository;
     private final MembersService membersService;
+    private final MonthcareGroupsService monthcareGroupsService;
 
     
-    
-   
-
     
     public void createAdmission(AdmissionsDTO admissionDTO) {
         log.info("Starting creation of admission with DTO: {}", admissionDTO);
@@ -58,6 +56,8 @@ public class AdmissionsService {
                 .walk(admissionDTO.getWalk())
                 .numberofweeks(admissionDTO.getNumberofweeks())
                 .significant(admissionDTO.getSignificant())
+                .branch(admissionDTO.getBranch())
+                
                 .build();
 
         log.info("Created AdmissionsEntity: {}", ae);
@@ -102,6 +102,7 @@ public class AdmissionsService {
         dto.setNumberofweeks(entity.getNumberofweeks());
         dto.setSignificant(entity.getSignificant());
         dto.setReason(entity.getReason());
+        dto.setBranch(entity.getBranch());
         return dto;
     }
 
@@ -142,6 +143,10 @@ public class AdmissionsService {
     	int checkPending = admissionRepository.countByStatusAndDogs_DogId(status, dog_id);
     	return checkPending;
     }
+    public List<MonthcareGroupsDTO> getBranchGroups(Integer branchId) {
+        return monthcareGroupsService.getMonthcareGroupByBranch(branchId);
+    }
+    
 }
     
 

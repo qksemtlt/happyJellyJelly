@@ -66,4 +66,12 @@ public class AdmissionsEntity {
       @JoinColumn(name="dogassignment_id")
       private DogAssignmentsEntity dogassign;
       
+      
+      @ManyToOne(cascade = CascadeType.PERSIST)
+      @JoinColumn(name = "branch_id")
+      private BranchEntity branch;
+      
+      
+      	
+      
 }

@@ -19,8 +19,8 @@ public class MembersService {
 	public void createMember(MembersDTO membersDTO) {
 		MembersEntity me = MembersEntity.builder().username(membersDTO.getUsername())
 					.password(passwordEncoder.encode(membersDTO.getPassword())).email(membersDTO.getEmail())
-					.name(membersDTO.getName()).phone(membersDTO.getPhone()).user_type(membersDTO.getUser_type())
-					.join_date(LocalDate.now()).build();
+					.name(membersDTO.getName()).phone(membersDTO.getPhone()).userType(membersDTO.getUser_type())
+					.joinDate(LocalDate.now()).build();
 		membersRepository.save(me);
 	}
 	
@@ -61,8 +61,8 @@ public class MembersService {
 			MembersEntity me = op.get();
 			MembersDTO membersDTO = MembersDTO.builder().username(me.getUsername())
 					.name(me.getName()).email(me.getEmail())
-					.phone(me.getPhone()).join_date(me.getJoin_date())
-					.user_type(me.getUser_type()).branch_id(me.getBranch_id()).build();
+					.phone(me.getPhone()).join_date(me.getJoinDate())
+					.user_type(me.getUserType()).branch_id(me.getBranchId()).build();
 			return membersDTO;
 		}else {
 			throw new RuntimeException("user not found");
@@ -86,17 +86,14 @@ public class MembersService {
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 	
-	public int socialCheck(String username, String name) {
+	public void socialCheck(String username, String name) {
 		Optional<MembersEntity> op = membersRepository.findByUsername(username);
-		if(op.isPresent()) {
-			return 1;
-		}else {
+		if(op.isEmpty()) {
 			MembersEntity me = MembersEntity.builder().username(username).
 					name(name).password(passwordEncoder.encode("12")).
-					join_date(LocalDate.now()).user_type("REGULAR")
-					.email(username).build();
+					joinDate(LocalDate.now()).userType("REGULAR")
+					.build();
 			membersRepository.save(me);
-			return 0;
 		}
 	}
 }

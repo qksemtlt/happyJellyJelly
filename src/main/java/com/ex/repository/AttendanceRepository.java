@@ -13,4 +13,8 @@ import java.time.LocalDate;
 public interface AttendanceRepository extends JpaRepository<AttendanceEntity, Integer>{
 
 	List<AttendanceEntity> findByAttendancedate(LocalDate attendancedate);
+
+	
+//	List<AttendanceEntity> findByAttendancedateAndBranchEntity_BranchId(LocalDate attendancedate, Integer branch_id);
+//	List<AttendanceEntity> findByAttendancedateAndMonthgroup(LocalDate currentDate, Integer month_id);
 }

@@ -23,9 +23,8 @@ public class MembersController {
 	
 	@GetMapping("socialCheck")
 	@ResponseBody
-	public String socialCheck(@RequestParam("username") String username, @RequestParam("name") String name) {
-		int social = membersService.socialCheck(username, name);		
-		return "success";
+	public void socialCheck(@RequestParam("username") String username, @RequestParam("name") String name) {
+		membersService.socialCheck(username, name);		
 	}
 
 	
@@ -164,5 +163,10 @@ public class MembersController {
         }
 		membersService.deleteMember(membersDTO.getUsername());		
 		return "redirect:/members/logout";
+	}
+	
+	@GetMapping("callback")
+	public String callback() {
+		return "callback";
 	}
 }

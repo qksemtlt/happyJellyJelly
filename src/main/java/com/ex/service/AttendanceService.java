@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.ex.data.AttendanceDTO;
 import com.ex.entity.AttendanceEntity;
+import com.ex.entity.BranchEntity;
 import com.ex.entity.MembersEntity;
+import com.ex.entity.MonthcareGroupsEntity;
 import com.ex.repository.AttendanceRepository;
 import com.ex.repository.MembersRepository;
 import com.ex.repository.TestMapper;
@@ -49,12 +51,20 @@ public class AttendanceService {
 	}
 
 	// 일자,지점1,반1 출석부 조회
-//	public List<AttendanceDTO> getAttendanceMonthgroup(LocalDate currentDate, Integer month_id){
-//		// 반이름getMonthGroup
-//		return attendanceRepository.findByAttendancedateAndMonthgroup(currentDate, month_id).stream()
-//				.map(this::convertToDTO)
-//				.collect(Collectors.toList());
-//	}
+	public List<AttendanceDTO> getAttendanceByDateAndBranchAndMonthGroup(LocalDate attendancedate
+												, BranchEntity branch, MonthcareGroupsEntity monthgroup) {
+		if(monthgroup != null) {
+			return attendanceRepository.findByAttendancedateAndBranchAndMonthgroup(attendancedate, branch, monthgroup)
+					.stream()
+					.map(this::convertToDTO)
+					.collect(Collectors.toList());
+		}else {
+			return attendanceRepository.findByAttendancedateAndBranch(attendancedate, branch)
+					.stream()
+					.map(this::convertToDTO)
+					.collect(Collectors.toList());
+		}
+    }
 	
 	// USER_TYPE != REGULAR >>> 일반 수정
 	// USER_TYPE == REGULAR >>> 특이사항만 수정

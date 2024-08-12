@@ -55,7 +55,8 @@
             <tbody>
                 <tr th:each="attendance : ${attendances}">
                     <td th:text="${attendance.attendancedate}"></td>
-                    <td th:text="${attendance.dog.dogname}"></td>
+<!--                    <td th:text="${attendance.dog.dogname}"></td>-->
+                    <td th:text="${attendance.dog_dog_id}"></td>
                     <td th:text="${attendance.status}"></td>
                     <td th:text="${attendance.notes}"></td>
                     <td>

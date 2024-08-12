@@ -1,12 +1,8 @@
 package com.ex.data;
-
 import java.time.LocalDate;
-import java.util.List;
-
 import com.ex.entity.AttendanceEntity;
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

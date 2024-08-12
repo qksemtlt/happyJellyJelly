@@ -1,21 +1,14 @@
 package com.ex.controller;
-
 import java.security.Principal;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.ex.data.CalendarDTO;
 import com.ex.data.DailyReportsDTO;
-import com.ex.entity.DailyReportsEntity;
 import com.ex.service.DailyReportsService;
 
 import lombok.RequiredArgsConstructor;
@@ -64,7 +57,7 @@ public class DailyReportsController {
 	@PostMapping("create")
 	public String create(DailyReportsDTO dailyReportsDTO, Principal principal, @RequestParam("selectDate") String selectDate) {
 		this.dailyReportsService.create(dailyReportsDTO, principal.getName(), selectDate);
-		return "redirect:calendar/";
+		return "redirect:calendar";
 	}
 	
 

@@ -13,4 +13,5 @@ public interface AdmissionsRepository extends JpaRepository<AdmissionsEntity, In
     Page<AdmissionsEntity> findByDogs_Member_Username(String username, Pageable pageable);  
     Page<AdmissionsEntity>findAll(Pageable pageable);
     public int countByStatusAndDogs_DogId(String status, Integer dog_id);
+    Page<AdmissionsEntity> findByBranch_BranchId(Integer branchId, Pageable pageable);
 }

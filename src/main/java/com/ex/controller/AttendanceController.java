@@ -1,16 +1,13 @@
 package com.ex.controller;
-
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.ex.data.AttendanceDTO;
 import com.ex.data.MonthcareGroupsDTO;
 import com.ex.entity.MembersEntity;
@@ -35,8 +32,6 @@ public class AttendanceController {
 	private MembersService membersService;
 	@Autowired
 	private MonthcareGroupsService monthcareGroupsService;
-	
-	private final TestMapper testMapper;
 	
 	@GetMapping("test")
 	@ResponseBody

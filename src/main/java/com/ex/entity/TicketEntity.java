@@ -36,4 +36,8 @@ public class TicketEntity {
    @OneToMany(mappedBy="ticket", cascade=CascadeType.REMOVE)
    @JsonManagedReference
    private List<SubscriptionsEntity> subscription;
+   
+   @OneToMany(mappedBy="ticket", cascade=CascadeType.REMOVE)
+   @JsonManagedReference
+   private List<MonthcareGroupsEntity> month;
 }

@@ -12,10 +12,13 @@ import com.ex.data.MonthcareGroupsDTO;
 import com.ex.entity.AdmissionsEntity;
 import com.ex.entity.BranchEntity;
 import com.ex.entity.DogsEntity;
+import com.ex.entity.MembersEntity;
 import com.ex.entity.MonthcareGroupsEntity;
 import com.ex.repository.AdmissionsRepository;
 import com.ex.repository.BranchesRepository;
 import com.ex.repository.DogsRepository;
+import com.ex.repository.MembersRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,30 +30,14 @@ public class AdmissionsService {
     private final DogsRepository dogRepository;
     private final BranchesRepository branchRepository;
     private final MonthcareGroupsService monthcareGroupsService;
+    private final MembersRepository membersRepository;
    
     public void createAdmission(AdmissionsDTO admissionDTO) {
-        log.info("Starting creation of admission with DTO: {}", admissionDTO);
-        System.out.println("=========dogId============"+admissionDTO.getDogs().getDogId());
         DogsEntity dog = dogRepository.findById(admissionDTO.getDogs().getDogId())
-                .orElseThrow(() -> new RuntimeException("Dog not found"));  
-        
-        System.out.println("=========branchId============"+admissionDTO.getBranch().getBranchId());
+                .orElseThrow(() -> new RuntimeException("Dog not found"));        
         BranchEntity branch = branchRepository.findById(admissionDTO.getBranch().getBranchId())
                 .orElseThrow(() -> new RuntimeException("Branch not found"));
-        System.out.println("=========monthId============"+admissionDTO.getMothcaregroups().getId());
         MonthcareGroupsDTO groupDTO = monthcareGroupsService.getMonthGroup(admissionDTO.getMothcaregroups().getId());
-        
-        System.out.println("============groupDTO============="+groupDTO);
-        MonthcareGroupsEntity group = MonthcareGroupsEntity.builder()
-                .id(groupDTO.getId())
-                .name(groupDTO.getName())
-                .description(groupDTO.getDescription())
-                .capacity(groupDTO.getCapacity())
-                .teachers(groupDTO.getTeacher())
-                .branches(groupDTO.getBranches())
-                .build();
-
-        log.info("Found dog: {}, branch: {}, group: {}", dog, branch, group);
 
         AdmissionsEntity ae = AdmissionsEntity.builder()
                 .dogs(dog)       
@@ -65,7 +52,7 @@ public class AdmissionsService {
                 .numberofweeks(admissionDTO.getNumberofweeks())
                 .significant(admissionDTO.getSignificant())
                 .branch(branch)
-                .mothcaregroups(group)
+                .monthcaregroups(admissionDTO.getMothcaregroups())
                 .build();
         log.info("Created AdmissionsEntity: {}", ae);
 
@@ -78,12 +65,7 @@ public class AdmissionsService {
         }
     }
      
-    // 강아지 전체 출력
-    public List<AdmissionsDTO> getAllAdmissions() {
-        return admissionRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
+  
     
     public AdmissionsDTO getAdmissionById(Integer id) {
         return admissionRepository.findById(id)
@@ -109,7 +91,7 @@ public class AdmissionsService {
         dto.setSignificant(entity.getSignificant());
         dto.setReason(entity.getReason());
         dto.setBranch(entity.getBranch());
-        dto.setMothcaregroups(entity.getMothcaregroups());
+        dto.setMothcaregroups(entity.getMonthcaregroups());
         return dto;
     }
 
@@ -158,4 +140,26 @@ public class AdmissionsService {
     public List<MonthcareGroupsDTO> getGroupsByBranch(Integer branchId) {
         return monthcareGroupsService.getMonthcareGroupByBranch(branchId);
     }
-}
+    
+   
+    // 지점 관리자용 메서드
+    public Page<AdmissionsDTO> getAdmissionsByBranchPaginated(Integer branchId, int page) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("admissionId").descending());
+        Page<AdmissionsEntity> entityPage = admissionRepository.findByBranch_BranchId(branchId, pageable);
+        return entityPage.map(this::convertToDTO);
+    }
+    
+    
+    public Page<AdmissionsDTO> getAdmissionsByRole(String username, int page) {
+        if (username.startsWith("admin_")) {
+            return getAllAdmissionsPaginated(page);
+        } else if (username.startsWith("director_")) {
+            MembersEntity member = membersRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+            return getAdmissionsByBranchPaginated(member.getBranchId(), page);
+        } else {
+            return getAdmissionsByUsernamePaginated(username, page);
+        }
+    }
+    }
+    

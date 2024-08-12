@@ -33,10 +33,12 @@ public class MembersController {
 		return "members/login";
 	}
 	
+	
 	@GetMapping("signup")
 	public String signup(MembersDTO membersDTO) {
 		return "members/signup";
 	}
+	
 	
 	@PostMapping("signup")
 	public String signup(@Validated(MembersDTO.SignUp.class) MembersDTO membersDTO, BindingResult bindingResult) {
@@ -57,10 +59,12 @@ public class MembersController {
 		return "redirect:/members/login";
 	}
 	
+	
 	@GetMapping("idLostForm")
 	public String idLost() {
 		return "members/id_lost";
 	}
+	
 	
 	@PostMapping("idLostPro")
 	public String idLost(MembersDTO membersDTO, Model model) {
@@ -69,10 +73,12 @@ public class MembersController {
 		return "members/findUsername";
 	}
 	
+	
 	@GetMapping("pwLostForm")
 	public String pwLost(MembersDTO membersDTO) {
 		return "members/passwdForm";
 	}
+	
 	
 	@PostMapping("pwLost")
 	public String pwLost(MembersDTO membersDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
@@ -85,6 +91,7 @@ public class MembersController {
 			return "members/passwdForm";
 		}
 	}
+	
 	
 	@GetMapping("pwChange")
 	public String pwChange(@RequestParam(value = "username", required = false) String username, Principal principal, Model model) {
@@ -99,6 +106,7 @@ public class MembersController {
 	    model.addAttribute("membersDTO", new MembersDTO());  
 	    return "members/passwdChange";
 	}
+	
 	
 	@PostMapping("pwChange")
 	public String pwChange(@Validated(MembersDTO.PasswordChange.class) MembersDTO membersDTO, BindingResult bindingResult, Principal principal) {
@@ -126,11 +134,13 @@ public class MembersController {
 		return "redirect:/members/login";
 	}
 	
+	
 	@GetMapping("mypage")
 	@PreAuthorize("isAuthenticated()")
 	public String mypage() {
 		return "members/mypage";
 	}
+	
 	
 	@GetMapping("infoUpdate")
 	@PreAuthorize("isAuthenticated()")
@@ -140,6 +150,7 @@ public class MembersController {
 		return "members/info_update";
 	}
 	
+	
 	@PostMapping("infoUpdate")
 	@PreAuthorize("isAuthenticated()")
 	public String infoUpdate(MembersDTO membersDTO) {
@@ -147,12 +158,14 @@ public class MembersController {
 		return "members/mypage";
 	}
 	
+	
 	@GetMapping("deleteAccount")
 	@PreAuthorize("isAuthenticated()")
 	public String deleteAccount(Principal principal, Model model, MembersDTO membersDTO) {
 		model.addAttribute("username", principal.getName());
 		return "members/delete_account";
 	}
+	
 	
 	@PostMapping("deleteAccount")
 	@PreAuthorize("isAuthenticated()")
@@ -164,6 +177,7 @@ public class MembersController {
 		membersService.deleteMember(membersDTO.getUsername());		
 		return "redirect:/members/logout";
 	}
+	
 	
 	@GetMapping("callback")
 	public String callback() {

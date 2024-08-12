@@ -25,17 +25,18 @@ public class MonthcareGroupsController {
 	@GetMapping("list")
 	@PreAuthorize("isAuthenticated()")
 	public String monthcareGroupList(Model model, Principal principal) {
-		Integer branch_id = membersService.readMembersInfo(principal.getName()).getBranch_id();
+		Integer branch_id = membersService.readMembersInfo(principal.getName()).getBranchId();
 		List<MonthcareGroupsDTO> monthcareList = monthcareGroupService.getMonthcareGroupByBranch(branch_id);
 		model.addAttribute("monthcare", monthcareList);
 		model.addAttribute("branch_id", branch_id);
 		return "monthcaregroups/monthgroup_list";
 	}
 	
+	
 	@GetMapping("create")
 	@PreAuthorize("isAuthenticated()")
 	public String createMonthcareGroup(Model model, MonthcareGroupsDTO monthDTO, Principal principal) {
-		Integer branch_id = membersService.readMembersInfo(principal.getName()).getBranch_id();
+		Integer branch_id = membersService.readMembersInfo(principal.getName()).getBranchId();
 		model.addAttribute("branch_id", branch_id);
 		model.addAttribute("monthDTO",monthDTO);
 		List<MembersDTO> teacher = monthcareGroupService.getTeachers(branch_id);
@@ -43,13 +44,15 @@ public class MonthcareGroupsController {
 		return "monthcaregroups/add_monthgroup";
 	}
 	
+	
 	@PostMapping("create")
 	@PreAuthorize("isAuthenticated()")
 	public String createMonthcareGroup(MonthcareGroupsDTO monthDTO, Principal principal) {
-		Integer branch_id = membersService.readMembersInfo(principal.getName()).getBranch_id();
+		Integer branch_id = membersService.readMembersInfo(principal.getName()).getBranchId();
 		monthcareGroupService.createMonthcareGroup(branch_id, monthDTO);
-		return String.format("redirect:/month/list/%s", branch_id);
+		return "redirect:/month/list";
 	}
+	
 	
 	@GetMapping("delete/{id}")
 	@PreAuthorize("isAuthenticated()")
@@ -57,16 +60,18 @@ public class MonthcareGroupsController {
 		return "";
 	}
 	
+	
 	@GetMapping("update/{id}")
 	@PreAuthorize("isAuthenticated()")
 	public String updateMonthcareGroup(@PathVariable("id") Integer month_id, Model model, Principal principal) {
 		MonthcareGroupsDTO monthDTO = monthcareGroupService.getMonthGroup(month_id);
 		model.addAttribute("monthDTO", monthDTO);
-		Integer branch_id = membersService.readMembersInfo(principal.getName()).getBranch_id();
+		Integer branch_id = membersService.readMembersInfo(principal.getName()).getBranchId();
 		List<MembersDTO> teacher = monthcareGroupService.getTeachers(branch_id);
 		model.addAttribute("teachers", teacher);
 		return "monthcaregroups/update_monthgroup";
 	}
+	
 	
 	@PostMapping("update")
 	@PreAuthorize("isAuthenticated()")

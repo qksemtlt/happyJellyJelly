@@ -1,9 +1,6 @@
 package com.ex.data;
-
 import java.time.LocalDate;
-
 import com.ex.entity.DogsEntity;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

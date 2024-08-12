@@ -24,9 +24,9 @@
   		<div class="mb-3">
   			<label class="form-label" for="teacher">담당 교사</label>
   			<div th:if="${not #lists.isEmpty(teachers)}">
-  				<select class="form-select" id="teacher" name="teacher.member_id" required>
+  				<select class="form-select" id="teacher" name="teacher.memberId" required>
   					<option th:each="teacher : ${teachers}"
-  							th:value="${teacher.member_id}"
+  							th:value="${teacher.memberId}"
   							th:text="${teacher.name}">
   				</select>
   			</div>

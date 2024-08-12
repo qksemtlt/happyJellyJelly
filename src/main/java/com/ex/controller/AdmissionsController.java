@@ -77,11 +77,12 @@ public class AdmissionsController {
         @PreAuthorize("isAuthenticated()")
         public String createAdmission(@ModelAttribute AdmissionsDTO admissionDTO, RedirectAttributes redirectAttributes) {
             try {
-            
+            	System.out.println("=========================================="+admissionDTO);
                 admissionsService.createAdmission(admissionDTO);
                 redirectAttributes.addFlashAttribute("successMessage", "입학 신청이 성공적으로 완료되었습니다.");
                 return "redirect:/admissions/admissionsList";
-            } catch (RuntimeException e) {
+            } catch (Exception e) {
+            	System.out.println("=========================================="+admissionDTO);
                 redirectAttributes.addFlashAttribute("errorMessage", "입학 신청 중 오류가 발생했습니다: " + e.getMessage());
                 return "redirect:/admissions";
             }

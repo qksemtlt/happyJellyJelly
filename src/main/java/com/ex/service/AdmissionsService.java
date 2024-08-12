@@ -13,12 +13,13 @@ import com.ex.entity.AdmissionsEntity;
 import com.ex.entity.BranchEntity;
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
-import com.ex.entity.MonthcareGroupsEntity;
+
 import com.ex.repository.AdmissionsRepository;
 import com.ex.repository.BranchesRepository;
 import com.ex.repository.DogsRepository;
 import com.ex.repository.MembersRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,17 +33,31 @@ public class AdmissionsService {
     private final MonthcareGroupsService monthcareGroupsService;
     private final MembersRepository membersRepository;
    
+    @Transactional
     public void createAdmission(AdmissionsDTO admissionDTO) {
-        DogsEntity dog = dogRepository.findById(admissionDTO.getDogs().getDogId())
-                .orElseThrow(() -> new RuntimeException("Dog not found"));        
-        BranchEntity branch = branchRepository.findById(admissionDTO.getBranch().getBranchId())
-                .orElseThrow(() -> new RuntimeException("Branch not found"));
-        MonthcareGroupsDTO groupDTO = monthcareGroupsService.getMonthGroup(admissionDTO.getMothcaregroups().getId());
+        log.info("Starting createAdmission with DTO: {}", admissionDTO);
+        
+        try {
+            // 1. Dog 조회
+            DogsEntity dog = dogRepository.findById(admissionDTO.getDogs().getDogId())
+                .orElseThrow(() -> new RuntimeException("Dog not found with id: " + admissionDTO.getDogs().getDogId()));
+            log.info("Found dog: {}", dog);
 
-        AdmissionsEntity ae = AdmissionsEntity.builder()
-                .dogs(dog)       
+            // 2. Branch 조회
+            BranchEntity branch = branchRepository.findById(admissionDTO.getBranch().getBranchId())
+                .orElseThrow(() -> new RuntimeException("Branch not found with id: " + admissionDTO.getBranch().getBranchId()));
+            log.info("Found branch: {}", branch);
+
+            // 3. MonthcareGroup 조회
+            MonthcareGroupsDTO groupDTO = monthcareGroupsService.getMonthGroup(admissionDTO.getMonthcaregroups().getId());
+            log.info("Found monthcare group: {}", groupDTO);
+
+            // 4. AdmissionsEntity 생성
+            AdmissionsEntity ae = AdmissionsEntity.builder()
+                .dogs(dog)
                 .applicationDate(new Date())
                 .status("PENDING")
+                .desiredDate(admissionDTO.getDesiredDate())
                 .pottytraining(admissionDTO.getPottytraining())
                 .marking(admissionDTO.getMarking())
                 .ration(admissionDTO.getRation())
@@ -51,16 +66,16 @@ public class AdmissionsService {
                 .numberofweeks(admissionDTO.getNumberofweeks())
                 .significant(admissionDTO.getSignificant())
                 .branch(branch)
-                .monthcaregroups(admissionDTO.getMothcaregroups())
+                .monthcaregroups(admissionDTO.getMonthcaregroups())
                 .build();
-        log.info("Created AdmissionsEntity: {}", ae);
+            log.info("Created AdmissionsEntity: {}", ae);
 
-        try {
+            // 5. Entity 저장
             AdmissionsEntity savedEntity = admissionRepository.save(ae);
             log.info("Successfully saved admission: {}", savedEntity);
         } catch (Exception e) {
-            log.error("Error while saving admission", e);
-            throw e;
+            log.error("Error in createAdmission", e);
+            throw new RuntimeException("Failed to create admission: " + e.getMessage(), e);
         }
     }
      
@@ -79,6 +94,7 @@ public class AdmissionsService {
         dto.setApplicationDate(entity.getApplicationDate());
         dto.setStatus(entity.getStatus());
         dto.setApprovalDate(entity.getApprovalDate());
+        dto.setDesiredDate(entity.getDesiredDate());
         dto.setPottytraining(entity.getPottytraining());
         dto.setMarking(entity.getMarking());
         dto.setRation(entity.getRation());
@@ -88,7 +104,7 @@ public class AdmissionsService {
         dto.setSignificant(entity.getSignificant());
         dto.setReason(entity.getReason());
         dto.setBranch(entity.getBranch());
-        dto.setMothcaregroups(entity.getMonthcaregroups());
+        dto.setMonthcaregroups(entity.getMonthcaregroups());
         return dto;
     }
 

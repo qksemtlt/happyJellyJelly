@@ -58,7 +58,7 @@
 <body>
     <nav th:replace="~{navbar::navbarFragment}"></nav>
 
-   <div layout:fragment="content" class="container">
+    <div layout:fragment="content" class="container">
         <h2 class="text-center mb-4">입학 신청 상세</h2>
         <div th:if="${admission!=null}">
            <table class="table table-bordered">
@@ -72,7 +72,7 @@
                        <td th:text="${admission.dogs.dogname}"></td>
                    </tr>
                    <tr>
-                       <th scope="row">상태:</th>
+                   <th scope="row">상태:</th>
                        <td th:switch="${admission.status}">
                            <span th:case="'PENDING'">대기중</span>
                            <span th:case="'APPROVED'">승인됨</span>
@@ -81,25 +81,10 @@
                        </td>
                    </tr>
                    <tr>
-                       <th scope="row">신청 날짜:</th>
-                       <td th:text="${#dates.format(admission.applicationDate, 'yyyy-MM-dd')}"></td>
-                   </tr>
-                   <tr>
                        <th scope="row">승인 날짜:</th>
                        <td th:text="${admission.approvalDate != null ? #dates.format(admission.approvalDate, 'yyyy-MM-dd') : '아직 승인되지 않음'}"></td>
                    </tr>
-                   <tr>
-                       <th scope="row">희망 날짜:</th>
-                       <td th:text="${admission.desiredDate != null ? #dates.format(admission.desiredDate, 'yyyy-MM-dd') : '정보 없음'}"></td>
-                   </tr>
-                   <tr>
-                       <th scope="row">희망 구독 유형:</th>
-                       <td th:text="${admission.desiredSubsType}"></td>
-                   </tr>
-                   <tr>
-                       <th scope="row">희망 사용 횟수:</th>
-                       <td th:text="${admission.desiredUsageCount}"></td>
-                   </tr>
+                   		
                    <tr>
                        <th scope="row">배변 훈련:</th>
                        <td th:text="${admission.pottytraining}"></td>
@@ -117,36 +102,12 @@
                        <td th:text="${admission.appetite}"></td>
                    </tr>
                    <tr>
-                       <th scope="row">하루 산책 횟수:</th>
-                       <td th:text="${admission.walk}"></td>
-                   </tr>
-                   <tr>
                        <th scope="row">주 산책 횟수:</th>
                        <td th:text="${admission.numberofweeks}"></td>
                    </tr>
                    <tr>
-                       <th scope="row">특이사항:</th>
-                       <td th:text="${admission.significant}"></td>
-                   </tr>
-                   <tr>
                        <th scope="row">거절 사유:</th>
                        <td th:text="${admission.reason}"></td>
-                   </tr>
-                   <tr>
-                       <th scope="row">지점:</th>
-                       <td th:text="${admission.branch != null ? admission.branch.branchName : '정보 없음'}"></td>
-                   </tr>
-                   <tr>
-                       <th scope="row">반:</th>
-                       <td th:text="${admission.monthcaregroups != null ? admission.monthcaregroups.groupName : '정보 없음'}"></td>
-                   </tr>
-                   <tr>
-                       <th scope="row">반 설명:</th>
-                       <td th:text="${admission.monthcaregroups != null ? admission.monthcaregroups.groupDescription : '정보 없음'}"></td>
-                   </tr>
-                   <tr>
-                       <th scope="row">가격:</th>
-                       <td th:text="${admission.monthcaregroups != null and admission.monthcaregroups.ticket != null} ? ${#numbers.formatDecimal(admission.monthcaregroups.ticket.price, 0, 'COMMA', 0, 'POINT')} + '원' : '정보 없음'"></td>
                    </tr>
                </tbody>
            </table>

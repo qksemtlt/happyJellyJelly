@@ -43,7 +43,6 @@ public class AdmissionsService {
                 .dogs(dog)       
                 .applicationDate(new Date())
                 .status("PENDING")
-                .desiredSubsType("REGULAR")
                 .pottytraining(admissionDTO.getPottytraining())
                 .marking(admissionDTO.getMarking())
                 .ration(admissionDTO.getRation())
@@ -80,8 +79,6 @@ public class AdmissionsService {
         dto.setApplicationDate(entity.getApplicationDate());
         dto.setStatus(entity.getStatus());
         dto.setApprovalDate(entity.getApprovalDate());
-        dto.setDesiredSubsType(entity.getDesiredSubsType());
-        dto.setDesiredUsageCount(entity.getDesiredUsageCount());
         dto.setPottytraining(entity.getPottytraining());
         dto.setMarking(entity.getMarking());
         dto.setRation(entity.getRation());

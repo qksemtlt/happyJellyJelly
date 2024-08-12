@@ -40,11 +40,7 @@ public class AdmissionsEntity {
       @Column(name = "APPROVAL_DATE")
       private Date approvalDate;
 
-      @Column(name = "DESIRED_SUBS_TYPE")
-      private String desiredSubsType;
-
-      @Column(name = "DESIRED_USAGE_COUNT")
-      private Integer desiredUsageCount;
+ 
 
 
       

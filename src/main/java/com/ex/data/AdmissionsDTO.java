@@ -19,7 +19,7 @@ public class AdmissionsDTO {
     private String status;		//신청상태
     private Date approvalDate;	// 승인날짜 
     private String desiredSubsType; // 구독 타입
-    private Integer desiredUsageCount;  // 희망날짜
+    private Date  desiredUsageCount;  // 희망날짜
     private String  pottytraining; // 배변훈련
     private String  marking; //마킹
     private String  ration; // 급여 형태

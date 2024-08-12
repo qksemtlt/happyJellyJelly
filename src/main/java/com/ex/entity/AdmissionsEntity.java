@@ -44,7 +44,7 @@ public class AdmissionsEntity {
       private String desiredSubsType;
 
       @Column(name = "DESIRED_USAGE_COUNT")
-      private Integer desiredUsageCount;
+      private Date  desiredUsageCount;  // 희망날짜
 
 
       

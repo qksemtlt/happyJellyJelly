@@ -8,6 +8,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
         body {
+        	font-family: 'Noto Sans KR', sans-serif;
             background-color: #f8f9fa;
         }
         .container {
@@ -61,6 +62,7 @@
             border-radius: 15px;
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <nav th:replace="~{navbar::navbarFragment}"></nav>
@@ -98,7 +100,7 @@
                      <tr>
                         <th scope="row">희망 날짜</th>
                         <td th:text="${#temporals.format(admission.desiredDate, 'yyyy년 MM월 dd일')}"></td>
-                    </tr>
+                     </tr>
                     <tr>
                         <th scope="row">승인 날짜</th>
                         <td th:text="${admission.approvalDate != null ? #dates.format(admission.approvalDate, 'yyyy년 MM월 dd일') : '아직 승인되지 않음'}"></td>
@@ -232,10 +234,17 @@
                     <button type="submit" class="btn btn-primary">상태 변경</button>
                 </form>
             </div>
-
+            <!-- 결제하기 버튼 -->
+			<div th:if="${#strings.equals(admission.status, 'APPROVED')}" class="mt-4" sec:authorize="hasRole('ROLE_USER')">
+				<div class="col-12 text-end">
+               		<a class="btn btn-dark" href="/kakao/kakaoPay">결제하기</a>
+               </div>
+            </div>
             <!-- 취소 버튼 -->
             <div th:if="${#strings.equals(admission.status, 'PENDING')}" class="mt-4" sec:authorize="hasRole('ROLE_USER')">
-               <a class="btn btn-danger" th:href="@{|/admissions/cancel/${admission.admissionId}|}">입학신청취소</a>
+               <div class="col-12 text-end">
+               		<a class="btn btn-danger" th:href="@{|/admissions/cancel/${admission.admissionId}|}">입학신청취소</a>
+               </div>
             </div>
 
             <!-- 목록으로 돌아가기 버튼 -->

@@ -1,34 +1,25 @@
 package com.ex.service;
-
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.ex.data.VaccinationsDTO;
 import com.ex.entity.VaccinationsEntity;
 import com.ex.repository.VaccinationsRepository;
-import com.ex.repository.DogsRepository;
-
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 
 @Service
 @RequiredArgsConstructor
 public class VaccinationsService {
     private final VaccinationsRepository vaccinationsRepository;
-    private final DogsRepository dogsRepository;
 	private final String UPLOAD_PATH="C:\\spring\\upload\\";
 
    

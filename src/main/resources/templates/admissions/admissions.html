@@ -145,7 +145,7 @@
         
             <!-- 마이페이지 > 내 강아지 정보 > 강아지 선택 > 입학 신청 누른 경우 select box 없이 해당 강아지 정보 출력 -->    
             <div th:if="${dog_id != null and dog != null}">
-                <input type="hidden" name="dogs.dogId" th:value="${dogId}">
+                <input type="hidden" name="dogs.dogId" th:value="${dog.dogId}">
                 <table>
                     <tr>
                         <th colspan="4" class="section-title">개린이 견적사항</th>

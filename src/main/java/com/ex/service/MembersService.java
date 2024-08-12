@@ -1,7 +1,6 @@
 package com.ex.service;
 import java.time.LocalDate;
 import java.util.Optional;
-
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,7 @@ public class MembersService {
 	public void createMember(MembersDTO membersDTO) {
 		MembersEntity me = MembersEntity.builder().username(membersDTO.getUsername())
 					.password(passwordEncoder.encode(membersDTO.getPassword())).email(membersDTO.getEmail())
-					.name(membersDTO.getName()).phone(membersDTO.getPhone()).userType(membersDTO.getUser_type())
+					.name(membersDTO.getName()).phone(membersDTO.getPhone()).userType(membersDTO.getUserType())
 					.joinDate(LocalDate.now()).build();
 		membersRepository.save(me);
 	}
@@ -61,8 +60,8 @@ public class MembersService {
 			MembersEntity me = op.get();
 			MembersDTO membersDTO = MembersDTO.builder().username(me.getUsername())
 					.name(me.getName()).email(me.getEmail())
-					.phone(me.getPhone()).join_date(me.getJoinDate())
-					.user_type(me.getUserType()).branch_id(me.getBranchId()).build();
+					.phone(me.getPhone()).joinDate(me.getJoinDate())
+					.userType(me.getUserType()).branchId(me.getBranchId()).build();
 			return membersDTO;
 		}else {
 			throw new RuntimeException("user not found");

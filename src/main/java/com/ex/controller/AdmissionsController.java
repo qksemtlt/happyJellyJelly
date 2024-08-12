@@ -1,11 +1,7 @@
 package com.ex.controller;
-
-
 import com.ex.data.AdmissionsDTO;
 import com.ex.data.DogsDTO;
 import com.ex.data.MonthcareGroupsDTO;
-import com.ex.data.VaccinationsDTO;
-import com.ex.entity.AdmissionsEntity;
 import com.ex.entity.BranchEntity;
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
@@ -14,13 +10,9 @@ import com.ex.service.AdmissionsService;
 import com.ex.service.DogService;
 import com.ex.service.MembersService;
 import com.ex.service.VaccinationsService;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +20,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +36,6 @@ public class AdmissionsController {
         private final MembersService membersService;
         private final VaccinationsService vaccinationsService;
             
-        // 
         @GetMapping("")
         @PreAuthorize("isAuthenticated()")
         public String AdmissionForm(Model model, Principal principal) {
@@ -55,19 +45,18 @@ public class AdmissionsController {
 
             // 사용자의 강아지 정보 가져오기
             List<DogsEntity> userDogs = dogService.findDogsByMember(member);
-
+            
             // 지점 목록 가져오기
             List<BranchEntity> branches = admissionsService.getAllBranches();
             model.addAttribute("branches", branches);
-
+            
             List<DogsEntity> dogsWithoutPendingAdmissions = new ArrayList<>();
             Map<Integer, List<MonthcareGroupsDTO>> branchGroups = new HashMap<>();
             for (BranchEntity branch : branches) {
                 List<MonthcareGroupsDTO> groups = admissionsService.getGroupsByBranch(branch.getBranchId());
                 branchGroups.put(branch.getBranchId(), groups);
             }
-         
-        
+            
             for (DogsEntity dog : userDogs) {
                 boolean hasPendingAdmission = dog.getAdmissions().stream()
                         .anyMatch(admission -> admission.getStatus().equals("PENDING"));
@@ -75,17 +64,15 @@ public class AdmissionsController {
                     dogsWithoutPendingAdmissions.add(dog);
                 }
             }
-            	
+
             // 모델에 정보 추가
             model.addAttribute("userDogs", dogsWithoutPendingAdmissions);
             model.addAttribute("admissionDTO", new AdmissionsDTO());
             model.addAttribute("branchGroups", branchGroups);
-            
             return "admissions/admissions";
         }
-
-       
-
+        
+        
         @PostMapping("/create")
         @PreAuthorize("isAuthenticated()")
         public String createAdmission(@ModelAttribute AdmissionsDTO admissionDTO, RedirectAttributes redirectAttributes) {
@@ -101,7 +88,6 @@ public class AdmissionsController {
         }
         
         
-        
         @GetMapping("/{id}")
         @PreAuthorize("isAuthenticated()")
         public String AdmissionForm(@PathVariable("id") Integer id, 
@@ -115,19 +101,31 @@ public class AdmissionsController {
         	   DogsDTO dogsDTO = dogService.selectDog(id, principal.getName());
                model.addAttribute("dog", dogsDTO);
                model.addAttribute("dog_id", id);
-               return "admissions/admissions";
-           }         
+               
+            // 지점 목록 가져오기
+               List<BranchEntity> branches = admissionsService.getAllBranches();
+               model.addAttribute("branches", branches);
+               Map<Integer, List<MonthcareGroupsDTO>> branchGroups = new HashMap<>();
+               for (BranchEntity branch : branches) {
+                   List<MonthcareGroupsDTO> groups = admissionsService.getGroupsByBranch(branch.getBranchId());
+                   branchGroups.put(branch.getBranchId(), groups);
+                   model.addAttribute("branchGroups", branchGroups);
+               }
+               return "admissions/admissions";              
+           }           
         }
-        
-        
-        
+                
+       
         @GetMapping("/admissionsList")
         @PreAuthorize("isAuthenticated()")
         public String admissionsList(Model model, Principal principal,
                                      @RequestParam(value = "page", defaultValue = "0") int page) {
             String username = principal.getName();
             Page<AdmissionsDTO> paginatedAdmissions;
-
+            
+            List<DogsDTO> dogsList = dogService.myDogList(username);
+            model.addAttribute("dogsList", dogsList);
+            
             if (username.startsWith("director_")) {
                 // 관리자: 모든 입학신청서를 가져옴
                 paginatedAdmissions = admissionsService.getAllAdmissionsPaginated(page);
@@ -143,7 +141,6 @@ public class AdmissionsController {
         }
         
         
-        
         @GetMapping("/admissionsDetail/{id}")
         @PreAuthorize("isAuthenticated()")
         public String viewAdmission(@PathVariable("id") Integer id, Model model) {
@@ -157,9 +154,9 @@ public class AdmissionsController {
             }
             
             return "admissions/admissionsDetail";
-     
-        
         }
+        
+        
         @PostMapping("/updateStatus/{id}")
         @PreAuthorize("isAuthenticated()")
         public String updateAdmissionStatus(
@@ -169,12 +166,15 @@ public class AdmissionsController {
             return "redirect:/admissions/admissionsList";
         }
         
-        @PostMapping("/cancel/{id}")
+        
+        @GetMapping("/cancel/{id}")
         @PreAuthorize("isAuthenticated()")
         public String cancelAdmission(@PathVariable("id") Integer id) {
            admissionsService.cancelAdmission(id);
            return "redirect:/admissions/admissionsList";
         }
+        
+        
         @GetMapping("/vaccinations/file/{filename:.+}")
         @ResponseBody
         public ResponseEntity<Resource> serveFile(@PathVariable("filename")  String filename) {
@@ -183,11 +183,10 @@ public class AdmissionsController {
                     .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + file.getFilename() + "\"")
                     .body(file);
         }
-    
         
-    
-    }
         
-       
-        
-   
+        @GetMapping("/notice")
+        public String admissionNotice() {
+        	return "/admissions/admission_notice";
+        }
+}

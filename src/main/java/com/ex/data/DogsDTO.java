@@ -23,9 +23,9 @@ public class DogsDTO {
 	private LocalDate birthDate;		// 강아지 생일
 	private char gender;				// 강아지 성별
 	@NotEmpty(message="동물 등록번호는 필수입력 사항입니다.")
-	private String dog_serialnum;		// 강아지 일련번호
+	private String dogSerialnum;		// 강아지 일련번호
 	
-	private String dog_profile;			// 강아지 프로필사진 파일명
+	private String dogProfile;			// 강아지 프로필사진 파일명
 	private Integer neutering;			// 중성화여부
 	private BigDecimal weight;				// 강아지 몸무게
 	

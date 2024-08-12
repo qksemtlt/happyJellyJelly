@@ -1,15 +1,12 @@
 package com.ex.service;
-
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import com.ex.data.AdmissionsDTO;
 import com.ex.data.MonthcareGroupsDTO;
 import com.ex.entity.AdmissionsEntity;
@@ -19,7 +16,6 @@ import com.ex.entity.MonthcareGroupsEntity;
 import com.ex.repository.AdmissionsRepository;
 import com.ex.repository.BranchesRepository;
 import com.ex.repository.DogsRepository;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,20 +25,22 @@ import lombok.extern.slf4j.Slf4j;
 public class AdmissionsService {
     private final AdmissionsRepository admissionRepository;
     private final DogsRepository dogRepository;
-    private final MembersService membersService;
     private final BranchesRepository branchRepository;
     private final MonthcareGroupsService monthcareGroupsService;
-
+   
     public void createAdmission(AdmissionsDTO admissionDTO) {
         log.info("Starting creation of admission with DTO: {}", admissionDTO);
-
+        System.out.println("=========dogId============"+admissionDTO.getDogs().getDogId());
         DogsEntity dog = dogRepository.findById(admissionDTO.getDogs().getDogId())
-                .orElseThrow(() -> new RuntimeException("Dog not found"));
+                .orElseThrow(() -> new RuntimeException("Dog not found"));  
         
+        System.out.println("=========branchId============"+admissionDTO.getBranch().getBranchId());
         BranchEntity branch = branchRepository.findById(admissionDTO.getBranch().getBranchId())
                 .orElseThrow(() -> new RuntimeException("Branch not found"));
-        
+        System.out.println("=========monthId============"+admissionDTO.getMothcaregroups().getId());
         MonthcareGroupsDTO groupDTO = monthcareGroupsService.getMonthGroup(admissionDTO.getMothcaregroups().getId());
+        
+        System.out.println("============groupDTO============="+groupDTO);
         MonthcareGroupsEntity group = MonthcareGroupsEntity.builder()
                 .id(groupDTO.getId())
                 .name(groupDTO.getName())
@@ -80,6 +78,7 @@ public class AdmissionsService {
         }
     }
      
+    // 강아지 전체 출력
     public List<AdmissionsDTO> getAllAdmissions() {
         return admissionRepository.findAll().stream()
                 .map(this::convertToDTO)
@@ -114,6 +113,7 @@ public class AdmissionsService {
         return dto;
     }
 
+
     public void updateAdmissionStatus(Integer admissionId, String newStatus, String reason) {
         AdmissionsEntity admission = admissionRepository.findById(admissionId)
                 .orElseThrow(() -> new RuntimeException("Admission not found"));
@@ -129,13 +129,12 @@ public class AdmissionsService {
         admissionRepository.save(admission);
     }
     
+ 
     public void cancelAdmission(Integer id) {
-        AdmissionsEntity admission = admissionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Admission not found"));
+        AdmissionsEntity admission = admissionRepository.findById(id).get();
         admission.setStatus("CANCELED");
         admissionRepository.save(admission);
-    }
-
+     }
     public Page<AdmissionsDTO> getAllAdmissionsPaginated(int page) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("admissionId").descending());
         Page<AdmissionsEntity> entityPage = admissionRepository.findAll(pageable);
@@ -147,7 +146,7 @@ public class AdmissionsService {
         Page<AdmissionsEntity> entityPage = admissionRepository.findByDogs_Member_Username(username, pageable);
         return entityPage.map(this::convertToDTO);
     }
-
+    
     public int checkPending(String status, Integer dog_id) {
         return admissionRepository.countByStatusAndDogs_DogId(status, dog_id);
     }

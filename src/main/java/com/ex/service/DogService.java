@@ -33,8 +33,8 @@ public class DogService {
 			DogsEntity dogsEntity = dogEntityOptional.get();
 			dogsDTO = DogsDTO.builder().dogId(dogsEntity.getDogId()).dogname(dogsEntity.getDogname())
 					.breed(dogsEntity.getBreed()).gender(dogsEntity.getGender()).birthDate(dogsEntity.getBirthDate())
-					.dog_serialnum(dogsEntity.getDogSerialnum()).member(me)
-					.neutering(dogsEntity.getNeutering()).dog_profile(dogsEntity.getDogProfile())
+					.dogSerialnum(dogsEntity.getDogSerialnum()).member(me)
+					.neutering(dogsEntity.getNeutering()).dogProfile(dogsEntity.getDogProfile())
 					.weight(dogsEntity.getWeight()).build();			
 		}
 		return dogsDTO;		
@@ -46,7 +46,7 @@ public class DogService {
 			MembersEntity me = op.get();
 			DogsEntity de = DogsEntity.builder().dogname(dogsDTO.getDogname()).breed(dogsDTO.getBreed())
 					.weight(dogsDTO.getWeight()).birthDate(dogsDTO.getBirthDate())
-					.gender(dogsDTO.getGender()).dogSerialnum(dogsDTO.getDog_serialnum())
+					.gender(dogsDTO.getGender()).dogSerialnum(dogsDTO.getDogSerialnum())
 					.neutering(dogsDTO.getNeutering()).member(me).build();
 			dogRepository.save(de);
 		}
@@ -62,8 +62,8 @@ public class DogService {
 			list = new ArrayList<>(dogs.size());
 			for(DogsEntity mydogs : dogs) {
 				dogsDTO = new DogsDTO().builder().dogId(mydogs.getDogId()).dogname(mydogs.getDogname()).breed(mydogs.getBreed())
-						.birthDate(mydogs.getBirthDate()).gender(mydogs.getGender()).dog_serialnum(mydogs.getDogSerialnum())
-						.dog_profile(mydogs.getDogProfile()).neutering(mydogs.getNeutering())
+						.birthDate(mydogs.getBirthDate()).gender(mydogs.getGender()).dogSerialnum(mydogs.getDogSerialnum())
+						.dogProfile(mydogs.getDogProfile()).neutering(mydogs.getNeutering())
 						.weight(mydogs.getWeight()).build();
 				list.add(dogsDTO);
 			}

@@ -48,6 +48,19 @@
     <nav th:replace="~{navbar::navbarFragment}"></nav>
 
     <div class="container" layout:fragment="content">
+    <div th:if="${dogsList == null or #lists.isEmpty(dogsList)}" class="row justify-content-center mt-4">
+    	<div class="row my-3">
+      		<div class="col-12 text-end">
+        		<a href="/dogs/addDogs" class="btn btn-warning btn-sm">강아지 추가</a>
+      		</div>
+    	</div>
+    	<div class="col-md-6 text-center">
+        	<div class="alert alert-danger" role="alert">
+          		입학 신청을 위해 강아지를 먼저 등록해 주세요.	
+        	</div>
+    	</div>
+    </div>
+    <div th:if="${dogsList != null and not #lists.isEmpty(dogsList)}">
         <h2 class="text-center mb-4">입학 신청 목록</h2>
         <div class="btn-container">
             <a th:href="@{/admissions}" class="btn btn-dark">입학 신청</a>
@@ -60,8 +73,7 @@
                     <th>신청 날짜</th>
                     <th>상태</th>
                     <th>희망 구독 유형</th>
-                    <th>배변 훈련</th>
-                    <th>산책 횟수</th>
+                    <th>견주 이름</th>
                     <th>상세보기</th>
                 </tr>
             </thead>
@@ -75,8 +87,7 @@
                         th:text="${admission.status == 'APPROVED' ? '승인됨' : (admission.status == 'REJECTED' ? '거부됨' : (admission.status == 'CANCELED' ? '취소됨' : '대기중'))}">
                     </td>
                     <td th:text="${admission.desiredSubsType}"></td>
-                    <td th:text="${admission.pottytraining}"></td>
-                    <td th:text="${admission.walk}"></td>
+                    <td th:text="${admission.dogs.member.name}"></td>
                     <td>
                         <a th:href="@{/admissions/admissionsDetail/{id}(id=${admission.admissionId})}" class="btn btn-secondary btn-sm">상세보기</a>
                     </td>
@@ -100,7 +111,7 @@
             </ul>
         </div>
     </div>
-
+	</div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

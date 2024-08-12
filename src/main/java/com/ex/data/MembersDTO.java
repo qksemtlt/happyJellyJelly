@@ -34,9 +34,9 @@ public class MembersDTO {
 	
 	@NotEmpty(message="전화번호는 필수입력 사항입니다.")
 	private String phone;
-	private String user_type;
-	private LocalDate join_date;
-	private Integer branch_id;
+	private String userType;
+	private LocalDate joinDate;
+	private Integer branchId;
 	
 	public interface SignUp {}
     public interface PasswordChange {}

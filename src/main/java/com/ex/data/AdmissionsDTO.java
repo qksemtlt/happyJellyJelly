@@ -1,11 +1,8 @@
 package com.ex.data;
-
 import java.util.Date;
-
 import com.ex.entity.BranchEntity;
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MonthcareGroupsEntity;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -122,21 +122,21 @@ public class AdmissionsController {
                                      @RequestParam(value = "page", defaultValue = "0") int page) {
             String username = principal.getName();
             Page<AdmissionsDTO> paginatedAdmissions;
-            
-            List<DogsDTO> dogsList = dogService.myDogList(username);
-            model.addAttribute("dogsList", dogsList);
-            
-            if (username.startsWith("director_")) {
-                // 관리자: 모든 입학신청서를 가져옴
-                paginatedAdmissions = admissionsService.getAllAdmissionsPaginated(page);
-                model.addAttribute("isDirector", true);
-            } else {
-                // 일반 사용자: 해당 사용자의 강아지 입학신청서만 가져옴
-                paginatedAdmissions = admissionsService.getAdmissionsByUsernamePaginated(username, page);
-                model.addAttribute("isDirector", false);
+
+            paginatedAdmissions = admissionsService.getAdmissionsByRole(username, page);
+
+            boolean isDirector = username.startsWith("director_");
+            boolean isAdmin = username.startsWith("admin_");
+
+            model.addAttribute("isDirector", isDirector);
+            model.addAttribute("isAdmin", isAdmin);
+            model.addAttribute("admissionsList", paginatedAdmissions);
+
+            if (!isDirector && !isAdmin) {
+                List<DogsDTO> dogsList = dogService.myDogList(username);
+                model.addAttribute("dogsList", dogsList);
             }
 
-            model.addAttribute("admissionsList", paginatedAdmissions);
             return "admissions/admissionsList";
         }
         

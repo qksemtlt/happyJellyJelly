@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Happy Jelly - 로그인</title>    
+    <script src="/js/jquery-3.7.1.min.js"></script>
+    <script type="text/javascript" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+	    #naver_id_login {
+	        height: 38px; /* 카카오 버튼의 높이에 맞춤 */
+	        border-radius: 6px;
+	        overflow: hidden;
+	    }
+	    #naver_id_login a {
+	    	display : flex !important;
+	    	align-items: center;
+	    	justify-content : center;
+	    	width: 100% !important;
+	    	height : 100% !important;
+	        text-align : center;
+	        text-decoration : none;
+	        background-color : #03C75A;
+	        color : black;
+	        font-size : 16px;
+	    }
+	    #naver_id_login img {
+	        display : none;
+	    }
+	    #naver_id_login a::after{
+	    	content: '네이버 로그인';
+	    }
+	</style>  
+</head>
+<body>
+	<nav th:replace="~{navbar::navbarFragment}"></nav>
+    <div layout:fragment="content" class="container my-3">    
+    
+	<script>
+	   Kakao.init('8566acd89ae3c2c077f81169d36e5646'); // 사용하려는 앱의 JavaScript 키 입력
+	   
+	   function kakaoLogin(){
+	      window.Kakao.Auth.login({
+	         scope:'profile_nickname,account_email',
+	         success: function(authObj){
+	            console.log(authObj);  // 토큰 출력
+	            window.Kakao.API.request({
+	               url: '/v2/user/me',
+	               success: res => {
+	                  const name = res.properties.nickname;
+	                  console.log(res.kakao_account.email);
+	                  console.log(res.properties);
+	                  
+	                  $.ajax({
+	                	url : "/members/socialCheck",
+	                	data : {username:res.kakao_account.email, name:name},
+	                	success : function(data){
+	                		$("#k_username").val(res.kakao_account.email);
+	                		$("#k_password").val("12");
+	                		$("#loginForm").submit();
+	                	}
+	                  });
+	                  
+	               }
+	            });
+	            
+	         }
+	      });
+	   }
+	</script>
+	
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h4 class="text-center mb-4">로그인</h4>
+                
+                <!-- 카카오 로그인 스크립트 적용되는 form 태그 / 아이디, 비번 hidden으로 넘김 -->
+                <form th:action="@{/members/login}" method="post" id="loginForm">                	
+                	<input type="hidden" id="k_username" name="username"/>
+                	<input type="hidden" id="k_password" name="password"/>
+                </form>
+                
+                <form th:action="@{/members/login}" method="post" >
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                    
+                    <div th:if="${param.error}">
+						<div class="alert alert-danger">
+							ID 또는 비밀번호를 확인해주세요.
+						</div>
+					</div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label" for="username">아이디</label>
+                        <input class="form-control" type="text" id="username" name="username"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="password">비밀번호</label>
+                        <input class="form-control" type="password" id="password" name="password"/>
+                    </div>
+                    
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-dark">로그인</button>
+                    </div>
+
+                    <div class="d-flex justify-content-end mb-5">
+                        <a href="/members/idLostForm" class="btn btn-link text-muted">아이디/비밀번호를 잊으셨나요?</a>
+                    </div>
+                </form>
+
+                <div class="text-center mb-4">
+                    <h5 class="mb-3">간편 로그인</h5>
+                    <div class="d-grid gap-2">
+                        <a href="javascript:kakaoLogin()" class="btn btn-warning">카카오 로그인</a>
+        				<div id="naver_id_login"></div>                
+                    </div>                   
+                </div>
+				
+                <div class="text-center mb-4">
+                    <p class="text-muted mb-2">회원이 아니시라면?</p>
+                    <a href="/members/signup" class="btn btn-secondary w-100">회원가입</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- naver에서 제공하는 스크립트 -->
+    <script type="text/javascript">
+	  	var naver_id_login = new naver_id_login("CcrDfmu_5ZJ49IWfQhHZ", "http://localhost:8080/members/callback");
+	  	var state = naver_id_login.getUniqState();
+	  	naver_id_login.setDomain("http://localhost:8080");
+	  	naver_id_login.setState(state);
+	  	naver_id_login.init_naver_id_login();    	 
+  	</script> 
+  </body>    	
+</html>

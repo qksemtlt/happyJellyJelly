@@ -15,8 +15,8 @@
         <div class="card h-100 border-0">
           <div class="image-container" style="height: 200px; display: flex; justify-content: center; align-items: center; overflow: hidden;">
             <a th:href="@{|/dogs/detail/${dog.dogId}|}" style="display: block; height: 100%;">
-              <img th:if="${dog.dog_profile == null}" src="/images/dog_imoji.png" class="card-img-top" style="height: 100%; width: auto; object-fit: contain;" th:alt="${dog.dogname}">
-              <img th:if="${dog.dog_profile != null}" th:src="@{'/dogs/display?filename=' + ${dog.dog_profile}}" class="card-img-top" style="height: 100%; width: auto; object-fit: contain;" th:alt="${dog.dogname}">
+              <img th:if="${dog.dogProfile == null}" src="/images/dog_imoji.png" class="card-img-top" style="height: 100%; width: auto; object-fit: contain;" th:alt="${dog.dogname}">
+              <img th:if="${dog.dogProfile != null}" th:src="@{'/dogs/display?filename=' + ${dog.dogProfile}}" class="card-img-top" style="height: 100%; width: auto; object-fit: contain;" th:alt="${dog.dogname}">
             </a>
           </div>
           <div class="card-body text-center">

@@ -45,7 +45,7 @@ var FullCalendar = (function (exports) {
                 parentEl.insertBefore(styleEl, insertBefore);
             }
             styleEls.set(rootNode, styleEl);
-            hydrateStylesRoot(styleEl); 
+            hydrateStylesRoot(styleEl);
         }
     }
     function hydrateStylesRoot(styleEl) {
@@ -9475,7 +9475,7 @@ var FullCalendar = (function (exports) {
                     // grab before trigger fired in case trigger trashes DOM thru rerendering
                     let hasUrlContainer = elementClosest(ev.target, '.fc-event-forced-url');
 //                    let url = hasUrlContainer ? hasUrlContainer.querySelector('a[href]').href : '/diary/select';
-                    let url = '/calendar/select';
+                    let url = '/diary/select';
                     context.emitter.trigger('eventClick', {
                         el: segEl,
                         event: new EventImpl(component.context, seg.eventRange.def, seg.eventRange.instance),

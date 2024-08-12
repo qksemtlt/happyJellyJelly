@@ -1,31 +1,21 @@
 package com.ex.service;
-
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ex.data.DailyReportsDTO;
 import com.ex.entity.DailyReportsEntity;
 import com.ex.entity.MembersEntity;
 import com.ex.repository.DailyReportsRepository;
 import com.ex.repository.MembersRepository;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class DailyReportsService {
-	
-	@Autowired
+
 	private final DailyReportsRepository dailyReportsRepository;
-	@Autowired
 	private final MembersRepository membersRepository;
-	@Autowired
-	private final MembersService membersService;
 	
 	public List<DailyReportsDTO> getDailyReportsList(String username){
 		List<DailyReportsDTO> list = null;

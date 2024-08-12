@@ -1,12 +1,9 @@
 package com.ex.repository;
-
 import java.time.LocalDate;
 import java.util.List;
-
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
-
 import com.ex.data.AttendanceDTO;
 
 @Repository

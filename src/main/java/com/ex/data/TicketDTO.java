@@ -1,5 +1,4 @@
 package com.ex.data;
-
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

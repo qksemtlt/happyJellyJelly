@@ -22,6 +22,7 @@
                         <div class="card-body">
                             <form id="branchForm" th:action="@{/managingSys/branches/update}" method="post" th:object="${branches}">
                                 <input type="hidden" id="branchId" th:field="*{branchId}">
+                                
                                 <div class="mb-3">
                                     <label for="name" class="form-label">매장명</label>
                                     <input type="text" class="form-control" id="name" th:field="*{branchesName}" required>

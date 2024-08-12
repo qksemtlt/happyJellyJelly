@@ -1,8 +1,5 @@
 package com.ex.controller;
-
 import java.security.Principal;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,11 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.ex.data.DailyReportsDTO;
 import com.ex.data.TicketDTO;
 import com.ex.service.TicketService;
-
 import lombok.RequiredArgsConstructor;
 
 @RequestMapping("/tickets/*")
@@ -34,12 +28,14 @@ public class TicketController {
         return "tickets/ticketList";
     }
 	
+	
 	@GetMapping("/tickets/add")
     public String addTicketForm(Model model) {
         model.addAttribute("ticket", new TicketDTO());
         return "tickets/createTicketForm";
     }
 
+	
     @PostMapping("/tickets/add")
     public String addTicket(@ModelAttribute("ticket") TicketDTO ticketDTO) {
         ticketService.addTicket(ticketDTO);

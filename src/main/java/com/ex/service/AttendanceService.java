@@ -1,21 +1,16 @@
 package com.ex.service;
-
-import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ex.data.AttendanceDTO;
 import com.ex.entity.AttendanceEntity;
 import com.ex.entity.MembersEntity;
 import com.ex.repository.AttendanceRepository;
 import com.ex.repository.MembersRepository;
 import com.ex.repository.TestMapper;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

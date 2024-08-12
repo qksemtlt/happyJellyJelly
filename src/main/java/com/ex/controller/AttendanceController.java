@@ -1,22 +1,17 @@
 package com.ex.controller;
-
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.ex.data.AttendanceDTO;
 import com.ex.entity.MembersEntity;
-import com.ex.repository.TestMapper;
 import com.ex.service.AttendanceService;
 import com.ex.service.MembersService;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -30,8 +25,6 @@ public class AttendanceController {
 	private AttendanceService attendanceService;
 	@Autowired
 	private MembersService membersService;
-	
-	private final TestMapper testMapper;
 	
 	@GetMapping("test")
 	@ResponseBody

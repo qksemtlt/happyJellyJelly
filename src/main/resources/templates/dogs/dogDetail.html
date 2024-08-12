@@ -23,8 +23,8 @@
     <h2 class="text-center mb-4">강아지 상세조회</h2>
     
     <div class="text-center mb-4">
-	    <img th:if="${dogdetail.dog_profile}==null" class="dog-image" src="/images/dog_imoji.png">
-	    <img th:if="${dogdetail.dog_profile}!=null" class="dog-image" th:src="'/dogs/display?filename='+${dogdetail.dog_profile}" alt="강아지 사진">
+	    <img th:if="${dogdetail.dogProfile}==null" class="dog-image" src="/images/dog_imoji.png">
+	    <img th:if="${dogdetail.dogProfile}!=null" class="dog-image" th:src="'/dogs/display?filename='+${dogdetail.dogProfile}" alt="강아지 사진">
 	</div>
     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4 my-5">
             <form action="/dogs/profile" method="post" enctype="multipart/form-data">
@@ -69,7 +69,7 @@
             </div>
             <div class="col-md-6">
                 <label for="dog_serialnum" class="form-label">일련번호</label>
-                <label class="form-control" th:text="${dogdetail.dog_serialnum}"></label>
+                <label class="form-control" th:text="${dogdetail.dogSerialnum}"></label>
             </div>
             <div class="col-md-6">
                 <label for="admissionDate" class="form-label">입학일자</label>
@@ -97,6 +97,7 @@
         <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4" th:object="${dogsDTO}" >
             <button type="submit" class="btn btn-warning me-md-2">수정하기</button>
             <button type="button" class="btn btn-warning me-md-2" onclick="location.href='/dogs/myDogList'">강아지 목록</button>
+            <a th:href="@{/vaccinations/vaccinationsForm}" class="btn btn-dark">접종증명서 제출</a>
             <a th:href="@{|/admissions/${dog_id}|}" class="btn btn-dark">입학신청</a>
         </div>
     </form>

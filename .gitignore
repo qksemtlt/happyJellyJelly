@@ -35,8 +35,3 @@ out/
 
 ### VS Code ###
 .vscode/
-
-api_key.java
-
-src/main/resources/templates/members/login.html
-

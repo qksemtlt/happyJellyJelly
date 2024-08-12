@@ -1,8 +1,6 @@
 package com.ex.data;
-
 import com.ex.entity.BranchEntity;
 import com.ex.entity.TicketEntity;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,10 +1,7 @@
 package com.ex.data;
-
 import java.time.LocalDate;
-
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,8 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Builder
 public class SubscriptionsDTO {
-	private Integer subscription_id;
-	
+	private Integer subscription_id;	
 	private MembersEntity member;
 	private String	subscription_type;
 	private LocalDate	start_date;

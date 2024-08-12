@@ -45,6 +45,12 @@ public class MonthcareGroupsEntity {
    @OneToMany(mappedBy="monthgroup", cascade=CascadeType.REMOVE)
    @JsonManagedReference
    private List<DogAssignmentsEntity> dogAssign;
+   
+   @ManyToOne
+   @JsonBackReference
+   private TicketEntity ticket;
+   
+ 
 }
 
 

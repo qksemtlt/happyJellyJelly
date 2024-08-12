@@ -33,28 +33,11 @@ public class AdmissionsService {
     private final MembersRepository membersRepository;
    
     public void createAdmission(AdmissionsDTO admissionDTO) {
-        log.info("Starting creation of admission with DTO: {}", admissionDTO);
-        System.out.println("=========dogId============"+admissionDTO.getDogs().getDogId());
         DogsEntity dog = dogRepository.findById(admissionDTO.getDogs().getDogId())
-                .orElseThrow(() -> new RuntimeException("Dog not found"));  
-        
-        System.out.println("=========branchId============"+admissionDTO.getBranch().getBranchId());
+                .orElseThrow(() -> new RuntimeException("Dog not found"));        
         BranchEntity branch = branchRepository.findById(admissionDTO.getBranch().getBranchId())
                 .orElseThrow(() -> new RuntimeException("Branch not found"));
-        System.out.println("=========monthId============"+admissionDTO.getMothcaregroups().getId());
         MonthcareGroupsDTO groupDTO = monthcareGroupsService.getMonthGroup(admissionDTO.getMothcaregroups().getId());
-        
-        System.out.println("============groupDTO============="+groupDTO);
-        MonthcareGroupsEntity group = MonthcareGroupsEntity.builder()
-                .id(groupDTO.getId())
-                .name(groupDTO.getName())
-                .description(groupDTO.getDescription())
-                .capacity(groupDTO.getCapacity())
-                .teachers(groupDTO.getTeacher())
-                .branches(groupDTO.getBranches())
-                .build();
-
-        log.info("Found dog: {}, branch: {}, group: {}", dog, branch, group);
 
         AdmissionsEntity ae = AdmissionsEntity.builder()
                 .dogs(dog)       
@@ -69,7 +52,7 @@ public class AdmissionsService {
                 .numberofweeks(admissionDTO.getNumberofweeks())
                 .significant(admissionDTO.getSignificant())
                 .branch(branch)
-                .mothcaregroups(group)
+                .monthcaregroups(admissionDTO.getMothcaregroups())
                 .build();
         log.info("Created AdmissionsEntity: {}", ae);
 
@@ -82,12 +65,7 @@ public class AdmissionsService {
         }
     }
      
-    // 강아지 전체 출력
-    public List<AdmissionsDTO> getAllAdmissions() {
-        return admissionRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
+  
     
     public AdmissionsDTO getAdmissionById(Integer id) {
         return admissionRepository.findById(id)
@@ -113,7 +91,7 @@ public class AdmissionsService {
         dto.setSignificant(entity.getSignificant());
         dto.setReason(entity.getReason());
         dto.setBranch(entity.getBranch());
-        dto.setMothcaregroups(entity.getMothcaregroups());
+        dto.setMothcaregroups(entity.getMonthcaregroups());
         return dto;
     }
 

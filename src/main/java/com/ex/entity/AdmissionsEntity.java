@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "ADMISSIONS")
@@ -72,9 +73,9 @@ public class AdmissionsEntity {
       private BranchEntity branch;
       
       @ManyToOne(cascade = CascadeType.MERGE)
-      @JoinColumn(name = "id")
+      @JsonManagedReference
       @ToString.Exclude
-      private MonthcareGroupsEntity mothcaregroups;
+      private MonthcareGroupsEntity monthcaregroups;
       
      
       

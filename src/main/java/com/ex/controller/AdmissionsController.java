@@ -77,7 +77,7 @@ public class AdmissionsController {
         @PreAuthorize("isAuthenticated()")
         public String createAdmission(@ModelAttribute AdmissionsDTO admissionDTO, RedirectAttributes redirectAttributes) {
             try {
-            	System.out.println(admissionDTO);
+            
                 admissionsService.createAdmission(admissionDTO);
                 redirectAttributes.addFlashAttribute("successMessage", "입학 신청이 성공적으로 완료되었습니다.");
                 return "redirect:/admissions/admissionsList";
@@ -102,15 +102,7 @@ public class AdmissionsController {
                model.addAttribute("dog", dogsDTO);
                model.addAttribute("dog_id", id);
                
-            // 지점 목록 가져오기
-               List<BranchEntity> branches = admissionsService.getAllBranches();
-               model.addAttribute("branches", branches);
-               Map<Integer, List<MonthcareGroupsDTO>> branchGroups = new HashMap<>();
-               for (BranchEntity branch : branches) {
-                   List<MonthcareGroupsDTO> groups = admissionsService.getGroupsByBranch(branch.getBranchId());
-                   branchGroups.put(branch.getBranchId(), groups);
-                   model.addAttribute("branchGroups", branchGroups);
-               }
+        
                return "admissions/admissions";              
            }           
         }

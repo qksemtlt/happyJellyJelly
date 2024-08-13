@@ -1,6 +1,7 @@
 package com.ex.entity;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,24 +26,43 @@ public class SubscriptionsEntity {
 	@Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "subscription_seq")
     @SequenceGenerator(name = "subscription_seq", sequenceName = "subscription_seq", allocationSize = 1)
-	private Integer subscription_id;
-
-	private Date start_date;
-	private Date end_date;
-	private String auto_renewal;
+	@Column(name="SUBSCRIPTION_ID")
+	private Integer subscriptionId;
+	
+	@Column(name="START_DATE")
+	private Date startDate;
+	
+	@Column(name="END_DATE")
+	private Date endDate;
+	
+	@Column(name="AUTO_RENEWAL")
+	private String autoRenewal;
 	private String status;
-	private Integer usage_count;
+	
+	@Column(name="USAGE_COUNT")
+	private Integer usageCount;
 	private Integer amount;
-	private Date payment_date;
+	
+	@Column(name="PAYMENT_DATE")
+	private Date paymentDate;
 	private String paymethod;
 	private Integer refund;
-	
-	@ManyToOne
-	@JsonBackReference
-	private TicketEntity ticket;
 	
 	@OneToOne
 	@JsonBackReference
 	@JoinColumn(name="admission_id")
 	private AdmissionsEntity admissions;
+	
+	@ManyToOne
+	@JsonBackReference
+	private TicketEntity ticket;
+	
+	@ManyToOne
+	@JsonBackReference
+	private DogsEntity dogs;
+	
+	@ManyToOne
+	@JsonBackReference
+	private MembersEntity member;
+	
 }

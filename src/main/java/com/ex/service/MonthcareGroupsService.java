@@ -92,21 +92,4 @@ public class MonthcareGroupsService {
 		}
 	}
 	
-	// 지점id와 선생님id로 
-	public List<MonthcareGroupsDTO> getMonthGroupByTeacherId(Integer branchId, Integer teacherId){
-		List<MonthcareGroupsDTO> monthcareDtoList = new ArrayList<>();
-		List<MonthcareGroupsEntity> monthcareEntityList = monthcareGroupsRepository.findByBranchesAndTeachers(branchId, teacherId);
-		for(MonthcareGroupsEntity me : monthcareEntityList) {
-			MonthcareGroupsDTO dto = new MonthcareGroupsDTO();
-			dto.setId(me.getId());
-			dto.setName(me.getName());
-			dto.setDescription(me.getDescription());
-			dto.setCapacity(me.getCapacity());
-			dto.setBranches(me.getBranches());
-			dto.setTeacher(me.getTeachers());
-			monthcareDtoList.add(dto);
-		}
-		return monthcareDtoList;
-		
-	}
 }

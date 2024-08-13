@@ -26,14 +26,14 @@ public class AttendanceDTO {
 	private String notes; 						// 특이사항
 	
 	// mybatis 전용
-	private Integer attendance_id;
-	private Integer daygroup_id;
-	private Integer monthgroup_id;
-	private Integer dog_dog_id;
-	private Integer daygroup_daygroup_id;
-	private Integer monthgroup_monthgroup_id;
-	private Integer dailyreport_id;
-	private Integer branch_branch_id;
+//	private Integer attendance_id;
+//	private Integer daygroup_id;
+//	private Integer monthgroup_id;
+//	private Integer dog_dog_id;
+//	private Integer daygroup_daygroup_id;
+//	private Integer monthgroup_monthgroup_id;
+//	private Integer dailyreport_id;
+//	private Integer branch_branch_id;
 
 	public void addEntity(AttendanceEntity ae) {
 		this.id = ae.getId();

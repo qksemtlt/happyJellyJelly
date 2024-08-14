@@ -1,5 +1,5 @@
 package com.ex.entity;
-import java.util.Date;
+import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "SUBSCRIPTIONS")
@@ -22,6 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = {"admissions", "ticket", "dogs", "member"})
 public class SubscriptionsEntity {
 	@Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "subscription_seq")
@@ -30,10 +32,10 @@ public class SubscriptionsEntity {
 	private Integer subscriptionId;
 	
 	@Column(name="START_DATE")
-	private Date startDate;
+	private LocalDate startDate;
 	
 	@Column(name="END_DATE")
-	private Date endDate;
+	private LocalDate endDate;
 	
 	@Column(name="AUTO_RENEWAL")
 	private String autoRenewal;
@@ -44,16 +46,25 @@ public class SubscriptionsEntity {
 	private Integer amount;
 	
 	@Column(name="PAYMENT_DATE")
-	private Date paymentDate;
+	private LocalDate paymentDate;
 	private String paymethod;
 	private Integer refund;
-	
-	@ManyToOne
-	@JsonBackReference
-	private TicketEntity ticket;
 	
 	@OneToOne
 	@JsonBackReference
 	@JoinColumn(name="admission_id")
 	private AdmissionsEntity admissions;
+	
+	@ManyToOne
+	@JsonBackReference
+	private TicketEntity ticket;
+	
+	@ManyToOne
+	@JsonBackReference
+	private DogsEntity dogs;
+	
+	@ManyToOne
+	@JsonBackReference
+	private MembersEntity member;
+	
 }

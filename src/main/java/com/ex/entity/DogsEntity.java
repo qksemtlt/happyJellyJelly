@@ -61,4 +61,8 @@ public class DogsEntity {
 	@OneToMany(mappedBy="dogs", cascade=CascadeType.REMOVE)
 	@JsonManagedReference
 	private List<DogAssignmentsEntity> dogAssign;
+	
+	@OneToMany(mappedBy="dogs", cascade=CascadeType.REMOVE)
+	@JsonManagedReference
+	private List<SubscriptionsEntity> subscriptions;
 }

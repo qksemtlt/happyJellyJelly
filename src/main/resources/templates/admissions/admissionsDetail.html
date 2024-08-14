@@ -8,7 +8,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
         body {
-        	font-family: 'Noto Sans KR', sans-serif;
+           font-family: 'Noto Sans KR', sans-serif;
             background-color: #f8f9fa;
         }
         .container {
@@ -263,17 +263,21 @@
             </div>
            
             <!-- 결제 버튼 또는 상태 표시 -->
-          <div th:if="${#strings.equals(admission.status, 'APPROVED') or #strings.equals(admission.status, 'DONE')}"
-    			 class="mt-4"
-   				  sec:authorize="hasRole('ROLE_USER')">
-   					 <div class="col-12 text-end">
-   			     <a th:if="${#strings.equals(admission.status, 'APPROVED')}"
-    				       class="btn btn-dark btn-lg"
-      			     href="/kakao/kakaoPay">결제하기</a>
-       			 <span th:if="${#strings.equals(admission.status, 'DONE')}"
-      						        class="btn btn-success btn-lg disabled">결제 완료</span>
-    		</div>
-			</div>
+             <div th:if="${#strings.equals(admission.status, 'APPROVED') or #strings.equals(admission.status, 'DONE')}" 
+                 class="mt-4" 
+                 sec:authorize="hasRole('ROLE_USER')">
+				<div class="col-12 text-end">
+					<form th:if="${#strings.equals(admission.status, 'APPROVED')}" action="/kakao/kakaoPay" method="post">
+						<input type="hidden" name="admissionId" th:value="${admission.admissionId}">
+						<input type="hidden" name="item_name" th:value="${admission.branch.name}">
+						<input type="hidden" name="total_amount" th:value="${admission.monthcaregroups.ticket.price}">
+						<input type="submit" class="btn btn-dark" value="결제하기">
+					</form>
+					<span th:if="${#strings.equals(admission.status, 'DONE')}" 
+      						class="btn btn-success">결제완료</span>
+					
+               </div>
+            </div>
 
             <!-- 목록으로 돌아가기 버튼 -->
             <div class="text-center mt-4">

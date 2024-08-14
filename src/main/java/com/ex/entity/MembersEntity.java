@@ -69,4 +69,8 @@ public class MembersEntity {
 	@OneToMany(mappedBy="teachers", cascade=CascadeType.REMOVE)
 	@JsonManagedReference
 	private List<MonthcareGroupsEntity> month;
+	
+	@OneToMany(mappedBy="member", cascade=CascadeType.REMOVE)
+	@JsonManagedReference
+	private List<SubscriptionsEntity> subscriptions;
 }

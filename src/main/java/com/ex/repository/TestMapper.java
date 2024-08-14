@@ -11,5 +11,5 @@ import com.ex.data.AttendanceDTO;
 public interface TestMapper {
 
 	// xml과 연동 호출
-	List<AttendanceDTO> dateAndBranchAttendence(@Param("currentDate") LocalDate currentDate,@Param("branchid") Integer branchid);
+	List<AttendanceDTO> dateAndBranchAttendence(@Param("currentDate") LocalDate currentDate, @Param("branchid") Integer branchid);
 }

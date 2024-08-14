@@ -7,13 +7,17 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ex.data.AttendanceDTO;
+import com.ex.data.DogsDTO;
 import com.ex.data.MonthcareGroupsDTO;
 import com.ex.entity.AttendanceEntity;
 import com.ex.entity.BranchEntity;
+import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
 import com.ex.entity.MonthcareGroupsEntity;
 import com.ex.repository.AttendanceRepository;
+import com.ex.repository.DogsRepository;
 import com.ex.repository.MembersRepository;
+import com.ex.repository.MonthcareGroupsRepository;
 import com.ex.repository.TestMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +31,10 @@ public class AttendanceService {
 	private AttendanceRepository attendanceRepository;
 	@Autowired
 	private MembersRepository membersRepository;
+	@Autowired
+	MonthcareGroupsRepository monthcareGroupsRepository;
+	@Autowired
+	DogsRepository dogsRepository;
 	
 	private final TestMapper testMapper;
 	
@@ -59,7 +67,7 @@ public class AttendanceService {
 		
 		// 선택된 반이 있다면 반id로 해당일자 출석부 조회
 		if(monthgroup != null) {
-			System.out.println("(monthgroup != null");
+			System.out.println("(monthgroup != null 선택된 반 있음");
 			MonthcareGroupsEntity mge = new MonthcareGroupsEntity();
 			mge.setId(monthgroup);
 			return attendanceRepository.findByAttendancedateAndMonthgroup(attendancedate, mge)
@@ -82,6 +90,23 @@ public class AttendanceService {
 					.map(this::convertToDTO)
 					.collect(Collectors.toList());
 		}
+    }
+	
+	// 지점별 강아지 출력
+	public List<DogsDTO> findByBranch(Integer branchId) {
+		System.out.println("===============서비스 findByBranch================");
+		System.out.println("branchId ::: " + branchId);
+        List<DogsEntity> dogs = dogsRepository.findByBranch(branchId);
+
+        List<DogsDTO> dogsDTOList = new ArrayList<>();
+
+        for (DogsEntity dog : dogs) {
+            DogsDTO dto = new DogsDTO();
+            dto.setDogId(dog.getDogId());
+            dto.setDogname(dog.getDogname());
+            dogsDTOList.add(dto);
+        }
+        return dogsDTOList;
     }
 	
 	

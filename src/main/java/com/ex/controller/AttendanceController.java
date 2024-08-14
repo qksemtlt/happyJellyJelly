@@ -80,16 +80,19 @@ public class AttendanceController {
         return "attendance/attendanceList";
     }
 	
+	
 	@GetMapping("/createAttendance")
     public String createAttendanceForm(@RequestParam(value = "date", required = false) String date,
 							            Model model, Principal principal) {
 		MembersEntity me = membersService.findByUsername(principal.getName());
 		Integer branchId = me.getBranchId();
-		BranchesDTO brancheDTO = branchesService.getBranchById(branchId);
+		System.out.println("===============컨트롤러 createAttendance=================");
+		System.out.println("branchId ::: " + branchId);
+//		BranchesDTO brancheDTO = branchesService.getBranchById(branchId);
 		BranchEntity be = new BranchEntity();
 		be.setBranchId(branchId);
 		List<MonthcareGroupsDTO> monthGroupList = monthcareGroupsService.getMonthcareGroupByBranch(branchId);
-        List<DogsEntity> dogList = dogService.dogsAll();
+        List<DogsDTO> dogList = attendanceService.findByBranch(branchId);
         model.addAttribute("brancheEntity", be);
         model.addAttribute("monthGroupList", monthGroupList);
         model.addAttribute("dogList", dogList);

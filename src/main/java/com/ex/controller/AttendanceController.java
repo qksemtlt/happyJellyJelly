@@ -84,24 +84,32 @@ public class AttendanceController {
 	@GetMapping("/createAttendance")
     public String createAttendanceForm(@RequestParam(value = "date", required = false) String date,
 							            Model model, Principal principal) {
+		
+		// 지점명을 가져오기 위해 사용자의 근무지 지점정보를 가져와 AttendanceDTO에 대입
 		MembersEntity me = membersService.findByUsername(principal.getName());
 		Integer branchId = me.getBranchId();
-		System.out.println("===============컨트롤러 createAttendance=================");
-		System.out.println("branchId ::: " + branchId);
 //		BranchesDTO brancheDTO = branchesService.getBranchById(branchId);
 		BranchEntity be = new BranchEntity();
 		be.setBranchId(branchId);
+		AttendanceDTO attendanceDTO = new AttendanceDTO();
+		attendanceDTO.setBranch(be);
+		
+		// 지점별 정규반 목록과 강아지 목록조회
 		List<MonthcareGroupsDTO> monthGroupList = monthcareGroupsService.getMonthcareGroupByBranch(branchId);
         List<DogsDTO> dogList = attendanceService.findByBranch(branchId);
+        
         model.addAttribute("brancheEntity", be);
         model.addAttribute("monthGroupList", monthGroupList);
         model.addAttribute("dogList", dogList);
         return "attendance/createAttendance";
     }
 
+	
     @PostMapping("/create")
-    public String createAttendance(AttendanceDTO attendanceDTO) {
-        attendanceService.createAttendance(attendanceDTO);
+    public String createAttendance(@RequestParam("branch") Integer branchId, AttendanceDTO attendanceDTO) {
+    	System.out.println("===============컨트롤러 createAttendance=================");
+    	System.out.println("branchId ::: " + branchId);
+    	attendanceService.createAttendance(branchId, attendanceDTO);
         return "redirect:/attendance";
     }
 	

@@ -10,6 +10,7 @@ import java.util.List;
 public interface AdmissionsRepository extends JpaRepository<AdmissionsEntity, Integer> {
     List<AdmissionsEntity> findByAdmissionId(Integer admissionId);;
     List<AdmissionsEntity> findByStatus(String status);
+    Page<AdmissionsEntity> findByStatus(String status, Pageable pageable);
     Page<AdmissionsEntity> findByDogs_Member_Username(String username, Pageable pageable);  
     Page<AdmissionsEntity>findAll(Pageable pageable);
     public int countByStatusAndDogs_DogId(String status, Integer dog_id);

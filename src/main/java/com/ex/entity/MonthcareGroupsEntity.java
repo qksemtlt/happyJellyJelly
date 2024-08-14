@@ -48,9 +48,7 @@ public class MonthcareGroupsEntity {
    
    @ManyToOne
    @JsonBackReference
-   private TicketEntity ticket;
-   
- 
+   private TicketEntity ticket;   
 }
 
 

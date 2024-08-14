@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class MembersController {
 	private final MembersService membersService;
 	
+	// 카카오, 네이버 로그인 시 가입 내역 유무 확인하는 메서드
 	@GetMapping("socialCheck")
 	@ResponseBody
 	public void socialCheck(@RequestParam("username") String username, @RequestParam("name") String name) {
@@ -40,6 +41,7 @@ public class MembersController {
 	}
 	
 	
+	// 회원 가입 시 유효성 검사 진행 메세지
 	@PostMapping("signup")
 	public String signup(@Validated(MembersDTO.SignUp.class) MembersDTO membersDTO, BindingResult bindingResult) {
 		if(!membersDTO.getPassword().equals(membersDTO.getPassword2())) {
@@ -74,12 +76,15 @@ public class MembersController {
 	}
 	
 	
+	// 비 로그인 상태에서 비밀번호 변경 원할 때 form
 	@GetMapping("pwLostForm")
 	public String pwLost(MembersDTO membersDTO) {
 		return "members/passwdForm";
 	}
 	
 	
+	// 비 로그인 상태에서 개인 정보 입력 후 일치하는 레코드가 있는지 확인하는 메서드
+	// 일치하는 레코드가 1개 있으면 비밀번호 변경 form 으로 넘어감
 	@PostMapping("pwLost")
 	public String pwLost(MembersDTO membersDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 		int count = membersService.passwdLostCheck(membersDTO);		
@@ -93,6 +98,8 @@ public class MembersController {
 	}
 	
 	
+	// 비밀번호 변경하는 form
+	// 비 로그인 상태, 로그인 상태 구별하여 model 에 다른 값 보냄
 	@GetMapping("pwChange")
 	public String pwChange(@RequestParam(value = "username", required = false) String username, Principal principal, Model model) {
 	    if (username != null) {
@@ -108,6 +115,8 @@ public class MembersController {
 	}
 	
 	
+	// 비 로그인(principal==null), 로그인(principal!=null) 상태에 따라 다른 메서드 실행
+	// 비밀번호 변경 유효성 검사 진행
 	@PostMapping("pwChange")
 	public String pwChange(@Validated(MembersDTO.PasswordChange.class) MembersDTO membersDTO, BindingResult bindingResult, Principal principal) {
 		if(principal !=null) {
@@ -179,6 +188,7 @@ public class MembersController {
 	}
 	
 	
+	// 네이버 로그인을 위해 callback.html 호출하는 메서드
 	@GetMapping("callback")
 	public String callback() {
 		return "callback";

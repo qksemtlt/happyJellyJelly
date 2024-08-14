@@ -1,16 +1,16 @@
-<!DOCTYPE html>
-<html lang="ko">
+htmlCopy<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Happy Jelly - 입학신청 폼</title>
-     <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-        	font-family: 'Noto Sans KR', sans-serif;
+            font-family: 'Noto Sans KR', sans-serif;
             background-color: #f8f9fa;
-            font-family: 'Arial', sans-serif;
             color: #333;
         }
         .container {
@@ -68,7 +68,6 @@
             gap: 15px;
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <nav th:replace="~{navbar::navbarFragment}"></nav>
@@ -156,9 +155,42 @@
             </div>
         
             <div th:if="${dog_id != null and dog != null}">
-                <input type="hidden" name="dogs.dogId" th:value="${dog.dogId}">
+                <input type="hidden" name="dogs.dogId" th:value="${dogId}">
                 <table>
-                    <!-- Similar structure as above, but with ${dog} instead of ${userDogs[0]} -->
+                    <tr>
+                        <th>이름</th>
+                        <td><input type="text" name="dogname" th:value="${dog.dogname}" readonly></td>
+                    </tr>
+                    <tr>
+                        <th>몸무게</th>
+                        <td>
+                            <input type="number" step="0.1" name="weight" th:value="${dog.weight}" th:style="${dog.weight == null ? 'display: none;' : ''}">
+                            <span th:if="${dog.weight == null}">정보 없음</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>성별</th>
+                        <td>
+                            <input type="radio" name="gender" id="male" value="M" th:checked="${dog != null and #strings.equals(dog.gender, 'M')}"> <label for="male">남</label>
+                            <input type="radio" name="gender" id="female" value="F" th:checked="${dog != null and #strings.equals(dog.gender, 'F')}"> <label for="female">여</label>
+                            <span th:if="${dog.gender == null}">정보 없음</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>중성화여부</th>
+                        <td>
+                            <input type="radio" name="neutered" id="neutered-yes" value="1" th:checked="${dog.neutering == 1}"> <label for="neutered-yes">중성화완료</label>
+                            <input type="radio" name="neutered" id="neutered-no" value="0" th:checked="${dog.neutering == 0}"> <label for="neutered-no">중성화안됨</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>생년월일</th>
+                        <td><input type="date" name="birthDate" th:value="${dog.birthDate}"></td>
+                    </tr>
+                    <tr>
+                        <th>견종</th>
+                        <td><input type="text" name="breed" th:value="${dog.breed}" readonly></td>
+                    </tr>
                 </table>
             </div>
         
@@ -232,49 +264,25 @@
     </div>
 
     <script th:inline="javascript">
-    // 초기 데이터 로깅
     var userDogs = /*[[${userDogs}]]*/ [];
-    console.log("Initial userDogs:", userDogs);
-
-    // 지점별 반 정보를 저장할 객체
     var branchGroups = /*[[${branchGroups}]]*/ {};
 
-    // 강아지 정보 업데이트 함수
     function updateDogInfo(selectedDogId) {
-        console.log("Selected dog ID:", selectedDogId);
-        
         var selectedDog = userDogs.find(dog => dog.dogId == selectedDogId);
-        console.log("Selected dog:", selectedDog);
-        
         if (selectedDog) {
-            // hidden 필드 업데이트
             document.querySelector('input[name="dogs.dogId"]').value = selectedDog.dogId;
+            document.querySelector('input[name="dogname"]').value = selectedDog.dogname;
+            document.querySelector('input[name="breed"]').value = selectedDog.breed;
+            document.querySelector('input[name="birthDate"]').value = selectedDog.birthDate;
 
-            // 이름
-            var nameInput = document.querySelector('input[name="dogname"]');
-            if (nameInput) nameInput.value = selectedDog.dogname;
-            
-            // 견종
-            var breedInput = document.querySelector('input[name="breed"]');
-            if (breedInput) breedInput.value = selectedDog.breed;
-
-            // 생년월일
-            var birthDateInput = document.querySelector('input[name="birthDate"]');
-            if (birthDateInput) birthDateInput.value = selectedDog.birthDate;
-
-            // 성별
-            var genderRadios = document.querySelectorAll('input[name="gender"]');
-            genderRadios.forEach(radio => {
+            document.querySelectorAll('input[name="gender"]').forEach(radio => {
                 radio.checked = radio.value === selectedDog.gender;
             });
 
-         // 중성화 여부
-            var neuteredRadios = document.querySelectorAll('input[name="neutered"]');
-            neuteredRadios.forEach(radio => {
+            document.querySelectorAll('input[name="neutered"]').forEach(radio => {
                 radio.checked = radio.value == selectedDog.neutering;
             });
 
-            // 몸무게
             var weightInput = document.querySelector('input[name="weight"]');
             var weightSpan = weightInput.nextElementSibling;
             if (selectedDog.weight != null) {
@@ -286,16 +294,6 @@
                 weightInput.style.display = 'none';
                 weightSpan.style.display = '';
             }
-
-            // 예방접종 체크박스 처리 (필요한 경우)
-            if (selectedDog.vaccination) {
-                console.log("Vaccinations:", selectedDog.vaccination);
-                var vaccinations = selectedDog.vaccination.split(',');
-                document.querySelectorAll('input[name="vaccination"]').forEach(function(checkbox) {
-                    checkbox.checked = vaccinations.some(vacc => vacc.trim().toLowerCase() === checkbox.value.toLowerCase());
-                    console.log(checkbox.value, checkbox.checked);
-                });
-            }
         }
     }
 
@@ -304,7 +302,6 @@
         var groupSelect = document.getElementById('groupSelect');
         var selectedBranchId = branchSelect.value;
 
-        // 반 선택 옵션 초기화
         groupSelect.innerHTML = '<option value="">반을 선택해주세요</option>';
 
         if (selectedBranchId && branchGroups[selectedBranchId]) {
@@ -316,9 +313,7 @@
             });
         }
     }
-
-    // 폼 유효성 검사 함수
-    function validateForm() {
+     function validateForm() {
         var selectedDogId = document.querySelector('input[name="dogs.dogId"]').value;
         var selectedBranchId = document.getElementById('branchSelect').value;
         var selectedGroupId = document.getElementById('groupSelect').value;
@@ -336,45 +331,38 @@
             return false;
         }
         
-        // 여기에 추가적인 유효성 검사 로직을 구현할 수 있습니다.
-        // 예: 필수 필드 검사, 날짜 형식 검사 등
-
         return true;
     }
 
-    // 페이지 로드 시 실행되는 초기화 함수
     document.addEventListener('DOMContentLoaded', function() {
         var dogSelect = document.getElementById('dogId');
         if (dogSelect) {
             updateDogInfo(dogSelect.value);
             
-            // 강아지 선택 시 정보 업데이트
             dogSelect.addEventListener('change', function() {
                 updateDogInfo(this.value);
             });
 
-            // 페이지 로드 시 첫 번째 강아지 정보로 초기화
             if (userDogs.length > 0) {
                 updateDogInfo(userDogs[0].dogId);
             }
         }
 
-        // 지점 선택 시 반 목록 업데이트
         var branchSelect = document.getElementById('branchSelect');
         if (branchSelect) {
             branchSelect.addEventListener('change', updateGroups);
         }
 
-        // 폼 제출 이벤트 리스너
-        form.addEventListener('submit', function(e) {
-    if (!validateForm()) {
-        e.preventDefault(); // 폼 제출 중지
+        var form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                if (!validateForm()) {
+                    e.preventDefault();
                 }
             });
         }
-    );
+    });
 
-    // 디버깅을 위한 로그
     console.log("Script loaded. User dogs:", userDogs);
     console.log("Branch groups:", branchGroups);
     </script>

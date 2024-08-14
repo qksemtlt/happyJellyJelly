@@ -6,6 +6,7 @@ import com.ex.entity.BranchEntity;
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
 import com.ex.entity.VaccinationsEntity;
+
 import com.ex.service.AdmissionsService;
 import com.ex.service.DogService;
 import com.ex.service.MembersService;
@@ -77,17 +78,15 @@ public class AdmissionsController {
         @PreAuthorize("isAuthenticated()")
         public String createAdmission(@ModelAttribute AdmissionsDTO admissionDTO, RedirectAttributes redirectAttributes) {
             try {
-            	System.out.println("=========================================="+admissionDTO);
                 admissionsService.createAdmission(admissionDTO);
                 redirectAttributes.addFlashAttribute("successMessage", "입학 신청이 성공적으로 완료되었습니다.");
                 return "redirect:/admissions/admissionsList";
-            } catch (Exception e) {
-            	System.out.println("=========================================="+admissionDTO);
+                
+            } catch (RuntimeException e) {
                 redirectAttributes.addFlashAttribute("errorMessage", "입학 신청 중 오류가 발생했습니다: " + e.getMessage());
                 return "redirect:/admissions";
             }
         }
-        
         
         @GetMapping("/{id}")
         @PreAuthorize("isAuthenticated()")
@@ -96,14 +95,20 @@ public class AdmissionsController {
            String status = "PENDING";
            int checkPending = admissionsService.checkPending(status, id);
            if(checkPending >= 1) {
-        	   redirectAttributes.addFlashAttribute("message", "입학 승인 대기 중입니다.");
-        	   return String.format("redirect:/dogs/detail/%s", id);
+              redirectAttributes.addFlashAttribute("message", "입학 승인 대기 중입니다.");
+              return String.format("redirect:/dogs/detail/%s", id);
            }else {
-        	   DogsDTO dogsDTO = dogService.selectDog(id, principal.getName());
+              DogsDTO dogsDTO = dogService.selectDog(id, principal.getName());
                model.addAttribute("dog", dogsDTO);
                model.addAttribute("dog_id", id);
-               
-        
+               List<BranchEntity> branches = admissionsService.getAllBranches();
+               model.addAttribute("branches", branches);
+               Map<Integer, List<MonthcareGroupsDTO>> branchGroups = new HashMap<>();
+               for (BranchEntity branch : branches) {
+                   List<MonthcareGroupsDTO> groups = admissionsService.getGroupsByBranch(branch.getBranchId());
+                   branchGroups.put(branch.getBranchId(), groups);
+               }
+               model.addAttribute("branchGroups", branchGroups);
                return "admissions/admissions";              
            }           
         }
@@ -112,27 +117,30 @@ public class AdmissionsController {
         @GetMapping("/admissionsList")
         @PreAuthorize("isAuthenticated()")
         public String admissionsList(Model model, Principal principal,
-                                     @RequestParam(value = "page", defaultValue = "0") int page) {
+                @RequestParam(value = "page", defaultValue = "0") int page,
+                @RequestParam(value = "status", required = false) String status) {
+            
             String username = principal.getName();
+            MembersEntity member = membersService.findByUsername(username);
+            
             Page<AdmissionsDTO> paginatedAdmissions;
+            if (status != null && !status.isEmpty()) {
+                paginatedAdmissions = admissionsService.getAdmissionsByStatus(status, page);
+            } else {
+                paginatedAdmissions = admissionsService.getAdmissionsByRole(username, page);
+            }
 
-            paginatedAdmissions = admissionsService.getAdmissionsByRole(username, page);
-
-            boolean isDirector = username.startsWith("director_");
-            boolean isAdmin = username.startsWith("admin_");
-
-            model.addAttribute("isDirector", isDirector);
-            model.addAttribute("isAdmin", isAdmin);
+            model.addAttribute("userType", member.getUserType());
             model.addAttribute("admissionsList", paginatedAdmissions);
+            model.addAttribute("currentStatus", status);
 
-            if (!isDirector && !isAdmin) {
+            if (!("ADMIN".equals(member.getUserType()) || "DIRECTOR".equals(member.getUserType()))) {
                 List<DogsDTO> dogsList = dogService.myDogList(username);
                 model.addAttribute("dogsList", dogsList);
             }
 
             return "admissions/admissionsList";
         }
-        
         
         @GetMapping("/admissionsDetail/{id}")
         @PreAuthorize("isAuthenticated()")
@@ -180,6 +188,6 @@ public class AdmissionsController {
         
         @GetMapping("/notice")
         public String admissionNotice() {
-        	return "/admissions/admission_notice";
+           return "/admissions/admission_notice";
         }
 }

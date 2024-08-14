@@ -20,6 +20,7 @@ public class MonthcareGroupsService {
 	private final BranchesRepository branchRepository;
 	private final MembersRepository membersRepository;
 	
+	// 해당 지점(branch_id)에 속해있는 반 리스트 조회
 	public List<MonthcareGroupsDTO> getMonthcareGroupByBranch(Integer branchId){
 		Optional<BranchEntity> op = branchRepository.findById(branchId);
 		MonthcareGroupsDTO monthcareGroupsDTO = null;
@@ -40,6 +41,7 @@ public class MonthcareGroupsService {
 		return monthcareDTOList;
 	}
 	
+	// 해당 지점의 신규 반 생성
 	public void createMonthcareGroup(Integer branch_id, MonthcareGroupsDTO monthDTO) {
 		Optional<BranchEntity> op = branchRepository.findById(branch_id);
 		if(op.isPresent()) {
@@ -52,6 +54,7 @@ public class MonthcareGroupsService {
 		}
 	}
 	
+	// members 테이블에서 branch_id 조회 후 해당 지점의 선생님 리스트 조회
 	public List<MembersDTO> getTeachers(Integer branch_id){		
 		List<MembersDTO> membersDTOList = new ArrayList<>();
 		List<MembersEntity> membersEntityList = membersRepository.findAll();
@@ -67,6 +70,7 @@ public class MonthcareGroupsService {
 		return membersDTOList;
 	}
 	
+	// 반 아이디 (monthcareGroups id)로 해당 반 정도 조회
 	public MonthcareGroupsDTO getMonthGroup(Integer month_id) {
 		Optional<MonthcareGroupsEntity> op = monthcareGroupsRepository.findById(month_id);
 		if(op.isPresent()) {
@@ -80,6 +84,7 @@ public class MonthcareGroupsService {
 		}
 	}
 	
+	// 반 아이디를 가지고 해당 반 정보 수정
 	public void updateMonthgroup(Integer month_id, MonthcareGroupsDTO monthDTO) {
 		Optional<MonthcareGroupsEntity> op = monthcareGroupsRepository.findById(month_id);
 		if(op.isPresent()) {

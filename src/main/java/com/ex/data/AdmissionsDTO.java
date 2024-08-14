@@ -18,8 +18,8 @@ public class AdmissionsDTO {
     private DogsEntity dogs; // 도그 ㅏ이디
     private Date applicationDate; // 입학신청날짜
     private LocalDate desiredDate; // 희망날짜 
-    private String status;		//신청상태
-    private Date approvalDate;	// 승인날짜 
+    private String status;      //신청상태
+    private Date approvalDate;   // 승인날짜 
     private String  pottytraining; // 배변훈련
     private String  marking; //마킹
     private String  ration; // 급여 형태

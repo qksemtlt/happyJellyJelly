@@ -1,7 +1,7 @@
 package com.ex.service;
+
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,12 +13,10 @@ import com.ex.entity.AdmissionsEntity;
 import com.ex.entity.BranchEntity;
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
-
 import com.ex.repository.AdmissionsRepository;
 import com.ex.repository.BranchesRepository;
 import com.ex.repository.DogsRepository;
 import com.ex.repository.MembersRepository;
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,21 +36,17 @@ public class AdmissionsService {
         log.info("Starting createAdmission with DTO: {}", admissionDTO);
         
         try {
-            // 1. Dog 조회
             DogsEntity dog = dogRepository.findById(admissionDTO.getDogs().getDogId())
                 .orElseThrow(() -> new RuntimeException("Dog not found with id: " + admissionDTO.getDogs().getDogId()));
             log.info("Found dog: {}", dog);
 
-            // 2. Branch 조회
             BranchEntity branch = branchRepository.findById(admissionDTO.getBranch().getBranchId())
                 .orElseThrow(() -> new RuntimeException("Branch not found with id: " + admissionDTO.getBranch().getBranchId()));
             log.info("Found branch: {}", branch);
 
-            // 3. MonthcareGroup 조회
             MonthcareGroupsDTO groupDTO = monthcareGroupsService.getMonthGroup(admissionDTO.getMonthcaregroups().getId());
             log.info("Found monthcare group: {}", groupDTO);
 
-            // 4. AdmissionsEntity 생성
             AdmissionsEntity ae = AdmissionsEntity.builder()
                 .dogs(dog)
                 .applicationDate(new Date())
@@ -70,7 +64,6 @@ public class AdmissionsService {
                 .build();
             log.info("Created AdmissionsEntity: {}", ae);
 
-            // 5. Entity 저장
             AdmissionsEntity savedEntity = admissionRepository.save(ae);
             log.info("Successfully saved admission: {}", savedEntity);
         } catch (Exception e) {
@@ -79,8 +72,6 @@ public class AdmissionsService {
         }
     }
      
-  
-    
     public AdmissionsDTO getAdmissionById(Integer id) {
         return admissionRepository.findById(id)
                 .map(this::convertToDTO)
@@ -108,7 +99,6 @@ public class AdmissionsService {
         return dto;
     }
 
-
     public void updateAdmissionStatus(Integer admissionId, String newStatus, String reason) {
         AdmissionsEntity admission = admissionRepository.findById(admissionId)
                 .orElseThrow(() -> new RuntimeException("Admission not found"));
@@ -124,12 +114,12 @@ public class AdmissionsService {
         admissionRepository.save(admission);
     }
     
- 
     public void cancelAdmission(Integer id) {
         AdmissionsEntity admission = admissionRepository.findById(id).get();
         admission.setStatus("CANCELED");
         admissionRepository.save(admission);
-     }
+    }
+
     public Page<AdmissionsDTO> getAllAdmissionsPaginated(int page) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("admissionId").descending());
         Page<AdmissionsEntity> entityPage = admissionRepository.findAll(pageable);
@@ -154,25 +144,40 @@ public class AdmissionsService {
         return monthcareGroupsService.getMonthcareGroupByBranch(branchId);
     }
     
-   
-    // 지점 관리자용 메서드
     public Page<AdmissionsDTO> getAdmissionsByBranchPaginated(Integer branchId, int page) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("admissionId").descending());
         Page<AdmissionsEntity> entityPage = admissionRepository.findByBranch_BranchId(branchId, pageable);
         return entityPage.map(this::convertToDTO);
     }
     
-    
     public Page<AdmissionsDTO> getAdmissionsByRole(String username, int page) {
-        if (username.startsWith("admin_")) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("admissionId").descending());
+        
+        MembersEntity member = membersRepository.findByUsername(username)
+            .orElseThrow(() -> new RuntimeException("Member not found"));
+
+        String userType = member.getUserType();
+
+        if ("ADMIN".equals(userType)) {
             return getAllAdmissionsPaginated(page);
-        } else if (username.startsWith("director_")) {
-            MembersEntity member = membersRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+        } else if ("DIRECTOR".equals(userType)) {
             return getAdmissionsByBranchPaginated(member.getBranchId(), page);
         } else {
             return getAdmissionsByUsernamePaginated(username, page);
         }
     }
+
+    // 새로 추가된 메서드
+    public Page<AdmissionsDTO> getAdmissionsByStatus(String status, int page) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("admissionId").descending());
+        Page<AdmissionsEntity> entityPage;
+        
+        if (status != null && !status.isEmpty()) {
+            entityPage = admissionRepository.findByStatus(status, pageable);
+        } else {
+            entityPage = admissionRepository.findAll(pageable);
+        }
+        
+        return entityPage.map(this::convertToDTO);
     }
-    
+}

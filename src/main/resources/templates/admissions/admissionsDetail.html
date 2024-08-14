@@ -263,17 +263,17 @@
             </div>
            
             <!-- 결제 버튼 또는 상태 표시 -->
-            <div th:if="${#strings.equals(admission.status, 'APPROVED') or #strings.equals(admission.status, 'DONE')}" 
-                 class="mt-4" 
-                 sec:authorize="hasRole('ROLE_USER')">
-                <div class="col-12 text-end">
-                    <a th:if="${#strings.equals(admission.status, 'APPROVED')}" 
-                       class="btn btn-dark" 
-                       href="/kakao/kakaoPay">결제하기</a>
-                    <span th:if="${#strings.equals(admission.status, 'DONE')}" 
-                          class="badge bg-success">결제 완료</span>
-                </div>
-            </div>
+          <div th:if="${#strings.equals(admission.status, 'APPROVED') or #strings.equals(admission.status, 'DONE')}"
+    			 class="mt-4"
+   				  sec:authorize="hasRole('ROLE_USER')">
+   					 <div class="col-12 text-end">
+   			     <a th:if="${#strings.equals(admission.status, 'APPROVED')}"
+    				       class="btn btn-dark btn-lg"
+      			     href="/kakao/kakaoPay">결제하기</a>
+       			 <span th:if="${#strings.equals(admission.status, 'DONE')}"
+      						        class="btn btn-success btn-lg disabled">결제 완료</span>
+    		</div>
+			</div>
 
             <!-- 목록으로 돌아가기 버튼 -->
             <div class="text-center mt-4">

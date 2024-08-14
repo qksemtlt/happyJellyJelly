@@ -2,7 +2,10 @@ package com.ex.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -150,34 +153,44 @@ public class AdmissionsService {
         return entityPage.map(this::convertToDTO);
     }
     
-    public Page<AdmissionsDTO> getAdmissionsByRole(String username, int page) {
+    public Page<AdmissionsDTO> getAdmissionsByRole(String username, int page, String status) {
+        // 페이지네이션과 정렬을 위한 Pageable 객체 생성. 페이지 크기는 10, admissionId 기준 내림차순 정렬
         Pageable pageable = PageRequest.of(page, 10, Sort.by("admissionId").descending());
-        
+
+        // 주어진 username으로 MembersEntity를 찾음. 없으면 RuntimeException 발생
         MembersEntity member = membersRepository.findByUsername(username)
             .orElseThrow(() -> new RuntimeException("Member not found"));
 
+        // 멤버의 사용자 유형(ADMIN, DIRECTOR, 일반 사용자 등) 가져오기
         String userType = member.getUserType();
-
-        if ("ADMIN".equals(userType)) {
-            return getAllAdmissionsPaginated(page);
-        } else if ("DIRECTOR".equals(userType)) {
-            return getAdmissionsByBranchPaginated(member.getBranchId(), page);
-        } else {
-            return getAdmissionsByUsernamePaginated(username, page);
-        }
-    }
-
-    // 새로 추가된 메서드
-    public Page<AdmissionsDTO> getAdmissionsByStatus(String status, int page) {
-        Pageable pageable = PageRequest.of(page, 10, Sort.by("admissionId").descending());
         Page<AdmissionsEntity> entityPage;
-        
-        if (status != null && !status.isEmpty()) {
-            entityPage = admissionRepository.findByStatus(status, pageable);
-        } else {
+
+        // 사용자 유형에 따라 다른 쿼리 실행
+        if ("ADMIN".equals(userType)) {
+            // 관리자는 모든 입학 신청서를 볼 수 있음
             entityPage = admissionRepository.findAll(pageable);
+        } else if ("DIRECTOR".equals(userType)) {
+            // 디렉터는 자신의 지점의 입학 신청서만 볼 수 있음
+            entityPage = admissionRepository.findByBranch_BranchId(member.getBranchId(), pageable);
+        } else {
+            // 일반 사용자는 자신의 입학 신청서만 볼 수 있음
+            entityPage = admissionRepository.findByDogs_Member_Username(username, pageable);
         }
-        
+
+        // 상태 필터링 (모든 사용자 유형에 적용)
+        if (status != null && !status.isEmpty()) {
+            // 상태가 지정된 경우, 해당 상태와 일치하는 입학 신청서만 필터링
+            List<AdmissionsEntity> filteredList = entityPage.getContent().stream()
+                .filter(admission -> admission.getStatus().equals(status))
+                .collect(Collectors.toList());
+
+            // 필터링된 리스트로 새로운 Page 객체를 생성하고 DTO로 변환하여 반환
+            return new PageImpl<>(filteredList, pageable, filteredList.size())
+                .map(this::convertToDTO);
+        }
+
+        // 상태 필터링이 없는 경우, 원래의 Page 객체를 DTO로 변환하여 반환
         return entityPage.map(this::convertToDTO);
     }
+  
 }

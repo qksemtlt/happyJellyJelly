@@ -61,6 +61,26 @@
             padding: 5px 10px;
             border-radius: 15px;
         }
+        .status-pending {
+            color: #856404 !important;
+            font-weight: bold;
+        }
+        .status-approved {
+            color: #155724 !important;
+            font-weight: bold;
+        }
+        .status-rejected {
+            color: #721c24 !important;
+            font-weight: bold;
+        }
+        .status-canceled {
+            color: #6c757d !important;
+            font-weight: bold;
+        }
+        .status-done {
+            color: #28a745 !important;
+            font-weight: bold;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -83,13 +103,20 @@
                     <tr>
                         <th scope="row">상태</th>
                         <td>
-                            <span th:switch="${admission.status}" class="status-badge"
-                                  th:classappend="${admission.status == 'PENDING' ? 'bg-warning' : 
-                                                    admission.status == 'APPROVED' ? 'bg-success' : 'bg-danger'}">
-                                <span th:case="'PENDING'">대기중</span>
-                                <span th:case="'APPROVED'">승인됨</span>
-                                <span th:case="'REJECTED'">거절됨</span>
-                                <span th:case="*" th:text="${admission.status}"></span>
+                            <span th:class="${
+                                admission.status == 'PENDING' ? 'status-pending' :
+                                admission.status == 'APPROVED' ? 'status-approved' :
+                                admission.status == 'REJECTED' ? 'status-rejected' :
+                                admission.status == 'CANCELED' ? 'status-canceled' :
+                                admission.status == 'DONE' ? 'status-done' : ''
+                            }"
+                            th:text="${
+                                admission.status == 'PENDING' ? '대기중' :
+                                admission.status == 'APPROVED' ? '승인됨' :
+                                admission.status == 'REJECTED' ? '거부됨' :
+                                admission.status == 'CANCELED' ? '취소됨' :
+                                admission.status == 'DONE' ? '결제 완료' : admission.status
+                            }">
                             </span>
                         </td>
                     </tr>
@@ -234,17 +261,18 @@
                     <button type="submit" class="btn btn-primary">상태 변경</button>
                 </form>
             </div>
-            <!-- 결제하기 버튼 -->
-			<div th:if="${#strings.equals(admission.status, 'APPROVED')}" class="mt-4" sec:authorize="hasRole('ROLE_USER')">
-				<div class="col-12 text-end">
-               		<a class="btn btn-dark" href="/kakao/kakaoPay">결제하기</a>
-               </div>
-            </div>
-            <!-- 취소 버튼 -->
-            <div th:if="${#strings.equals(admission.status, 'PENDING')}" class="mt-4" sec:authorize="hasRole('ROLE_USER')">
-               <div class="col-12 text-end">
-               		<a class="btn btn-danger" th:href="@{|/admissions/cancel/${admission.admissionId}|}">입학신청취소</a>
-               </div>
+           
+            <!-- 결제 버튼 또는 상태 표시 -->
+            <div th:if="${#strings.equals(admission.status, 'APPROVED') or #strings.equals(admission.status, 'DONE')}" 
+                 class="mt-4" 
+                 sec:authorize="hasRole('ROLE_USER')">
+                <div class="col-12 text-end">
+                    <a th:if="${#strings.equals(admission.status, 'APPROVED')}" 
+                       class="btn btn-dark" 
+                       href="/kakao/kakaoPay">결제하기</a>
+                    <span th:if="${#strings.equals(admission.status, 'DONE')}" 
+                          class="badge bg-success">결제 완료</span>
+                </div>
             </div>
 
             <!-- 목록으로 돌아가기 버튼 -->

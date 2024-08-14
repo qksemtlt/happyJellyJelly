@@ -6,7 +6,7 @@ import com.ex.entity.BranchEntity;
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
 import com.ex.entity.VaccinationsEntity;
-
+import com.ex.repository.MembersRepository;
 import com.ex.service.AdmissionsService;
 import com.ex.service.DogService;
 import com.ex.service.MembersService;
@@ -117,18 +117,13 @@ public class AdmissionsController {
         @GetMapping("/admissionsList")
         @PreAuthorize("isAuthenticated()")
         public String admissionsList(Model model, Principal principal,
-                @RequestParam(value = "page", defaultValue = "0") int page,
-                @RequestParam(value = "status", required = false) String status) {
-            
+                                     @RequestParam(value = "page", defaultValue = "0") int page,
+                                     @RequestParam(value = "status", required = false) String status) {
+
             String username = principal.getName();
             MembersEntity member = membersService.findByUsername(username);
-            
-            Page<AdmissionsDTO> paginatedAdmissions;
-            if (status != null && !status.isEmpty()) {
-                paginatedAdmissions = admissionsService.getAdmissionsByStatus(status, page);
-            } else {
-                paginatedAdmissions = admissionsService.getAdmissionsByRole(username, page);
-            }
+
+            Page<AdmissionsDTO> paginatedAdmissions = admissionsService.getAdmissionsByRole(username, page, status);
 
             model.addAttribute("userType", member.getUserType());
             model.addAttribute("admissionsList", paginatedAdmissions);
@@ -141,7 +136,6 @@ public class AdmissionsController {
 
             return "admissions/admissionsList";
         }
-        
         @GetMapping("/admissionsDetail/{id}")
         @PreAuthorize("isAuthenticated()")
         public String viewAdmission(@PathVariable("id") Integer id, Model model) {

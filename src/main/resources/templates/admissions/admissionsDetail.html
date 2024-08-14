@@ -7,20 +7,18 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
-        .table th {
+        body {
+        	font-family: 'Noto Sans KR', sans-serif;
             background-color: #f8f9fa;
-            font-weight: bold;
-        }
-        .table td {
-            vertical-align: middle;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin-top: 50px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            padding: 40px;
+            margin-bottom: 50px;
             background-color: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            padding: 40px;
         }
         h2 {
             text-align: center;
@@ -28,180 +26,265 @@
             font-weight: bold;
             color: #343a40;
         }
-        .btn-secondary {
-            background-color: #6c757d;
-            border-color: #6c757d;
+        .table {
+            margin-bottom: 30px;
+        }
+        .table th {
+            background-color: #f1f3f5;
+            font-weight: bold;
+            width: 30%;
+        }
+        .table td {
+            vertical-align: middle;
+        }
+        .btn-custom {
+            background-color: #007bff;
+            border-color: #007bff;
             color: white;
         }
-        .btn-secondary:hover {
-            background-color: #5a6268;
-            border-color: #545b62;
+        .btn-custom:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
         }
-        .status-form {
-            margin-top: 20px;
+        .status-form, .vaccination-table {
+            background-color: #f8f9fa;
+            border-radius: 10px;
             padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-        }
-        .vaccination-table {
-            margin-top: 20px;
-        }
-        .vaccination-table th {
-            background-color: #f8f9fa;
+            margin-top: 30px;
         }
         .modal-image {
             max-width: 100%;
             height: auto;
         }
+        .status-badge {
+            font-size: 0.9em;
+            padding: 5px 10px;
+            border-radius: 15px;
+        }
+        .status-pending {
+            color: #856404 !important;
+            font-weight: bold;
+        }
+        .status-approved {
+            color: #155724 !important;
+            font-weight: bold;
+        }
+        .status-rejected {
+            color: #721c24 !important;
+            font-weight: bold;
+        }
+        .status-canceled {
+            color: #6c757d !important;
+            font-weight: bold;
+        }
+        .status-done {
+            color: #28a745 !important;
+            font-weight: bold;
+        }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <nav th:replace="~{navbar::navbarFragment}"></nav>
 
-    <div layout:fragment="content" class="container">
-        <h2 class="text-center mb-4">입학 신청 상세</h2>
-        <div th:if="${admission!=null}">
-           <table class="table table-bordered">
-               <tbody>
-                   <tr>
-                       <th scope="row">입학신청 번호:</th>
-                       <td th:text="${admission.admissionId}"></td>
-                   </tr>
-                   <tr>
-                       <th scope="row">강아지:</th>
-                       <td th:text="${admission.dogs.dogname}"></td>
-                   </tr>
-                   <tr>
-                   <th scope="row">상태:</th>
-                       <td th:switch="${admission.status}">
-                           <span th:case="'PENDING'">대기중</span>
-                           <span th:case="'APPROVED'">승인됨</span>
-                           <span th:case="'REJECTED'">거절됨</span>
-                           <span th:case="*" th:text="${admission.status}"></span>
-                       </td>
-                   </tr>
-                   <tr>
-                       <th scope="row">승인 날짜:</th>
-                       <td th:text="${admission.approvalDate != null ? #dates.format(admission.approvalDate, 'yyyy-MM-dd') : '아직 승인되지 않음'}"></td>
-                   </tr>
-                   		
-                   <tr>
-                       <th scope="row">배변 훈련:</th>
-                       <td th:text="${admission.pottytraining}"></td>
-                   </tr>
-                   <tr>
-                       <th scope="row">마킹:</th>
-                       <td th:text="${admission.marking}"></td>
-                   </tr>
-                   <tr>
-                       <th scope="row">급여 형태:</th>
-                       <td th:text="${admission.ration}"></td>
-                   </tr>
-                   <tr>
-                       <th scope="row">식욕:</th>
-                       <td th:text="${admission.appetite}"></td>
-                   </tr>
-                   <tr>
-                       <th scope="row">주 산책 횟수:</th>
-                       <td th:text="${admission.numberofweeks}"></td>
-                   </tr>
-                   <tr>
-                       <th scope="row">거절 사유:</th>
-                       <td th:text="${admission.reason}"></td>
-                   </tr>
-               </tbody>
-           </table>
+    <div class="container">
+        <h2 class="mb-4">입학 신청 상세</h2>
+        <div th:if="${admission != null}">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th scope="row">입학신청 번호</th>
+                        <td th:text="${admission.admissionId}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">강아지</th>
+                        <td th:text="${admission.dogs.dogname}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">상태</th>
+                        <td>
+                            <span th:class="${
+                                admission.status == 'PENDING' ? 'status-pending' :
+                                admission.status == 'APPROVED' ? 'status-approved' :
+                                admission.status == 'REJECTED' ? 'status-rejected' :
+                                admission.status == 'CANCELED' ? 'status-canceled' :
+                                admission.status == 'DONE' ? 'status-done' : ''
+                            }"
+                            th:text="${
+                                admission.status == 'PENDING' ? '대기중' :
+                                admission.status == 'APPROVED' ? '승인됨' :
+                                admission.status == 'REJECTED' ? '거부됨' :
+                                admission.status == 'CANCELED' ? '취소됨' :
+                                admission.status == 'DONE' ? '결제 완료' : admission.status
+                            }">
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">신청 날짜</th>
+                        <td th:text="${#dates.format(admission.applicationDate, 'yyyy년 MM월 dd일')}"></td>
+                    </tr>
+                     <tr>
+                        <th scope="row">희망 날짜</th>
+                        <td th:text="${#temporals.format(admission.desiredDate, 'yyyy년 MM월 dd일')}"></td>
+                     </tr>
+                    <tr>
+                        <th scope="row">승인 날짜</th>
+                        <td th:text="${admission.approvalDate != null ? #dates.format(admission.approvalDate, 'yyyy년 MM월 dd일') : '아직 승인되지 않음'}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">배변 훈련</th>
+                        <td th:text="${admission.pottytraining}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">마킹</th>
+                        <td th:text="${admission.marking}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">급여 형태</th>
+                        <td th:text="${admission.ration}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">식욕</th>
+                        <td th:text="${admission.appetite}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">하루 산책 횟수</th>
+                        <td th:text="${admission.walk}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">주 산책 횟수</th>
+                        <td th:text="${admission.numberofweeks}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">특이사항</th>
+                        <td th:text="${admission.significant}"></td>
+                    </tr>
+                    <tr th:if="${admission.status == 'REJECTED'}">
+                        <th scope="row">거절 사유</th>
+                        <td th:text="${admission.reason}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">지점</th>
+                        <td th:text="${admission.branch != null ? admission.branch.name : '정보 없음'}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">반</th>
+                        <td th:text="${admission.monthcaregroups != null ? admission.monthcaregroups.name : '정보 없음'}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">반 설명</th>
+                        <td th:text="${admission.monthcaregroups != null ? admission.monthcaregroups.description : '정보 없음'}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">가격</th>
+                        <td th:text="${admission.monthcaregroups != null and admission.monthcaregroups.ticket != null} ? ${#numbers.formatDecimal(admission.monthcaregroups.ticket.price, 0, 'COMMA', 0, 'POINT')} + '원' : '정보 없음'"></td>
+                    </tr>
+                </tbody>
+            </table>
 
-           <!-- 백신 정보 테이블 수정 -->
-           <table class="table table-bordered vaccination-table" th:if="${vaccinations != null and !vaccinations.empty}">
-               <thead>
-                   <tr>
-                       <th>백신 종류</th>
-                       <th>접종 날짜</th>
-                       <th>유효 기간</th>
-                       <th>증명서 파일</th>
-                   </tr>
-               </thead>
-               <tbody>
-                   <tr th:each="vaccination : ${vaccinations}">
-                       <td>
-                           <span th:each="type, iterStat : ${#strings.arraySplit(vaccination.vaccineType, ',')}">
-                               <span th:switch="${type}">
-                                   <span th:case="'DHPPL'">종합백신(DHPPL)</span>
-                                   <span th:case="'Rabies'">광견병</span>
-                                   <span th:case="'Kennel_Cough'">켄넬코프</span>
-                                   <span th:case="*" th:text="${type}"></span>
-                               </span>
-                               <span th:if="${!iterStat.last}">, </span>
-                           </span>
-                       </td>
-                       <td th:text="${#temporals.format(vaccination.vaccination_date, 'yyyy-MM-dd')}"></td>
-                       <td th:text="${#temporals.format(vaccination.expiry_date, 'yyyy-MM-dd')}"></td>
-                       <td>
-                           <a th:if="${vaccination.filename != null and vaccination.filename != ''}"
-                              href="#" th:text="${vaccination.filename}"
-                              data-bs-toggle="modal" th:data-bs-target="'#imageModal' + ${vaccination.vaccinationId}">
-                              파일명
-                           </a>
-                           <span th:unless="${vaccination.filename != null and vaccination.filename != ''}">파일 없음</span>
-                           
-                           <!-- 모달 추가 -->
-                           <div class="modal fade" th:id="'imageModal' + ${vaccination.vaccinationId}" tabindex="-1" aria-hidden="true">
-                               <div class="modal-dialog modal-lg">
-                                   <div class="modal-content">
-                                       <div class="modal-header">
-                                           <h5 class="modal-title">백신 증명서</h5>
-                                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                       </div>
-                                       <div class="modal-body">
-                                           <img th:src="@{/admissions/vaccinations/file/{filename}(filename=${vaccination.filename})}" 
-                                                alt="백신 증명서" class="modal-image">
-                                       </div>
-                                   </div>
-                               </div>
-                           </div>
-                       </td>
-                   </tr>
-               </tbody>
-           </table>
-           <div th:if="${vaccinations == null or vaccinations.empty}" class="alert alert-info mt-3">
-               백신 접종 정보가 없습니다.
-           </div>
+            <!-- 백신 정보 테이블 -->
+            <div class="vaccination-table" th:if="${vaccinations != null and !vaccinations.empty}">
+                <h4 class="mb-3">백신 정보</h4>
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>백신 종류</th>
+                            <th>접종 날짜</th>
+                            <th>유효 기간</th>
+                            <th>증명서 파일</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="vaccination : ${vaccinations}">
+                            <td>
+                                <span th:each="type, iterStat : ${#strings.arraySplit(vaccination.vaccineType, ',')}">
+                                    <span th:switch="${type}">
+                                        <span th:case="'DHPPL'">종합백신(DHPPL)</span>
+                                        <span th:case="'Rabies'">광견병</span>
+                                        <span th:case="'Kennel_Cough'">켄넬코프</span>
+                                        <span th:case="*" th:text="${type}"></span>
+                                    </span>
+                                    <span th:if="${!iterStat.last}">, </span>
+                                </span>
+                            </td>
+                            <td th:text="${#temporals.format(vaccination.vaccination_date, 'yyyy년 MM월 dd일')}"></td>
+                            <td th:text="${#temporals.format(vaccination.expiry_date, 'yyyy년 MM월 dd일')}"></td>
+                            <td>
+                                <a th:if="${vaccination.filename != null and vaccination.filename != ''}"
+                                   href="#" class="btn btn-sm btn-outline-primary"
+                                   data-bs-toggle="modal" th:data-bs-target="'#imageModal' + ${vaccination.vaccinationId}">
+                                   파일 보기
+                                </a>
+                                <span th:unless="${vaccination.filename != null and vaccination.filename != ''}">파일 없음</span>
+                                
+                                <!-- 모달 -->
+                                <div class="modal fade" th:id="'imageModal' + ${vaccination.vaccinationId}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">백신 증명서</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <img th:src="@{/admissions/vaccinations/file/{filename}(filename=${vaccination.filename})}" 
+                                                     alt="백신 증명서" class="modal-image">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:if="${vaccinations == null or vaccinations.empty}" class="alert alert-info mt-3">
+                백신 접종 정보가 없습니다.
+            </div>
 
-           <div class="status-form" sec:authorize="hasRole('ROLE_DIRECTOR')">               
-               <form th:action="@{/admissions/updateStatus/{id}(id=${admission.admissionId})}" method="post">
-                   <h4>입학 신청 상태 변경</h4>
-                   <div class="form-group my-3">                   
-                       <label for="status">새로운 상태:</label>
-                       <select class="form-select" id="status" name="status">
-                           <option value="PENDING" th:selected="${admission.status == 'PENDING'}">대기중</option>
-                           <option value="APPROVED" th:selected="${admission.status == 'APPROVED'}">승인됨</option>
-                           <option value="REJECTED" th:selected="${admission.status == 'REJECTED'}">거절됨</option>
-                       </select>
-                   </div>
-                   <div class="form-group my-3">
-                      <label for="reason_rejected">입학 신청 거절 시 사유를 남겨주세요</label>
-                      <textarea class="form-control" name="reason" id="reason_rejected" rows="4"></textarea>
-                   </div>
-                   <button type="submit" class="btn btn-dark btn-sm">상태 변경</button>
-               </form>
-           </div>
-           <div th:if="${#strings.equals(admission.status, 'PENDING')}" class="cancel-form" sec:authorize="hasRole('ROLE_USER')">
-              <a class="btn btn-dark btn-sm" th:href="@{|/admissions/cancel/${admission.admissionId}|}">입학신청취소</a>
-           </div>
-           <div class="text-center mt-4">
-               <a th:href="@{/admissions/admissionsList}" class="btn btn-secondary">목록으로 돌아가기</a>
-           </div>
+            <!-- 상태 변경 폼 -->
+            <div class="status-form" sec:authorize="hasRole('ROLE_DIRECTOR')">               
+                <h4 class="mb-3">입학 신청 상태 변경</h4>
+                <form th:action="@{/admissions/updateStatus/{id}(id=${admission.admissionId})}" method="post">
+                    <div class="mb-3">                   
+                        <label for="status" class="form-label">새로운 상태:</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="PENDING" th:selected="${admission.status == 'PENDING'}">대기중</option>
+                            <option value="APPROVED" th:selected="${admission.status == 'APPROVED'}">승인됨</option>
+                            <option value="REJECTED" th:selected="${admission.status == 'REJECTED'}">거절됨</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                       <label for="reason_rejected" class="form-label">입학 신청 거절 시 사유</label>
+                       <textarea class="form-control" name="reason" id="reason_rejected" rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">상태 변경</button>
+                </form>
+            </div>
+           
+            <!-- 결제 버튼 또는 상태 표시 -->
+            <div th:if="${#strings.equals(admission.status, 'APPROVED') or #strings.equals(admission.status, 'DONE')}" 
+                 class="mt-4" 
+                 sec:authorize="hasRole('ROLE_USER')">
+                <div class="col-12 text-end">
+                    <a th:if="${#strings.equals(admission.status, 'APPROVED')}" 
+                       class="btn btn-dark" 
+                       href="/kakao/kakaoPay">결제하기</a>
+                    <span th:if="${#strings.equals(admission.status, 'DONE')}" 
+                          class="badge bg-success">결제 완료</span>
+                </div>
+            </div>
+
+            <!-- 목록으로 돌아가기 버튼 -->
+            <div class="text-center mt-4">
+                <a th:href="@{/admissions/admissionsList}" class="btn btn-secondary">목록으로 돌아가기</a>
+            </div>
         </div>
-        <div th:if="${admission==null}" class="row justify-content-center mt-4">
-           <div class="col-md-6 text-center">
-              <div class="alert alert-danger" role="alert">
-                   입학 신청한 기록이 없습니다.
-              </div>
-           </div>
-           <div class="text-center mt-4">
-               <a th:href="@{/dogs/myDogList}" class="btn btn-secondary">목록으로 돌아가기</a>
-           </div>
+
+        <!-- 입학 신청 기록이 없는 경우 -->
+        <div th:if="${admission == null}" class="alert alert-warning mt-4">
+            <p class="mb-0">입학 신청한 기록이 없습니다.</p>
+            <a th:href="@{/dogs/myDogList}" class="btn btn-primary mt-3">강아지 목록으로 돌아가기</a>
         </div>
     </div>
 

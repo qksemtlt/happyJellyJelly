@@ -1,36 +1,59 @@
-<!DOCTYPE html>
-<html lang="ko">
+htmlCopy<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Happy Jelly - 입학신청 폼</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
         .container {
-            font-family: Arial, sans-serif;
             max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section-title {
+            background-color: #f1f3f5;
+            color: #333;
+            text-align: center;
+            font-size: 18px;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 20px 0;
         }
         table {
             width: 100%;
-            border-collapse: collapse;
             margin-bottom: 20px;
         }
         th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
+            padding: 12px;
+            vertical-align: middle;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #f8f9fa;
             font-weight: bold;
+            width: 30%;
         }
-        .section-title {
-            background-color: #e6e6e6;
-            text-align: center;
-            font-size: 18px;
+        select, input[type="text"], input[type="number"], input[type="date"], textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
         .submit-btn {
             padding: 12px 20px;
@@ -40,32 +63,20 @@
             width: 100%;
             font-size: 18px;
         }
-        .text-area {
-            width: 100%;
-            height: 100px;
-            resize: vertical;
-        }
-        select, input[type="text"], input[type="number"], input[type="date"] {
-            width: 100%;
-            padding: 8px;
-            margin: 4px 0;
-            display: inline-block;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
+        .radio-group {
+            display: flex;
+            gap: 15px;
         }
     </style>
 </head>
 <body>
     <nav th:replace="~{navbar::navbarFragment}"></nav>
 
-    <div class="container" layout:fragment="content">
-        <h2 class="text-center mb-4">입학신청 폼</h2>
+    <div class="container">
+        <h2>입학신청 폼</h2>
         <form th:action="@{/admissions/create}" method="post" th:object="${admissionDTO}">
+            <div class="section-title">지점 및 반 선택</div>
             <table>
-                <tr>
-                    <th colspan="4" class="section-title">지점 및 반 선택</th>
-                </tr>
                 <tr>
                     <th>지점 선택</th>
                     <td>
@@ -77,81 +88,80 @@
                             </option>
                         </select>
                     </td>
+                </tr>
+                <tr>
                     <th>반 선택</th>
                     <td>
-                        <select id="groupSelect" name="mothcaregroups.id" required>
+                        <select id="groupSelect" name="monthcaregroups.id" required>
                             <option value="">반을 선택해주세요</option>
                         </select>
                     </td>
                 </tr>
             </table>
            
-            <!-- navbar의 입학신청 form으로 바로 들어간 경우 username으로 검색 후 해당 사용자의 강아지 목록 select 박스 출력-->
-            <!-- select box에서 선택한 강아지에 따라 Java Script 동작하여 견적사항 내용 변경 -->
+            <div class="section-title">개린이 견적사항</div>
             <div th:if="${dog_id == null or #strings.isEmpty(dog_id)}">
                 <div th:if="${not #lists.isEmpty(userDogs)}">
-                <input type="hidden" name="dogs.dogId" th:value="${userDogs[0].dogId}">
-                <table>
-                    <tr>
-                        <th colspan="4" class="section-title">개린이 견적사항</th>
-                    </tr>
-                    <tr>
-                        <th>강아지 선택</th>
-                        <td colspan="3">
-                            <select id="dogId" name="dogs.dogId" required onchange="updateDogInfo(this.value)">
-                               <option th:each="dog, iterStat : ${userDogs}" 
-                                       th:value="${dog.dogId}" 
-                                       th:text="${dog.dogname}"
-                                       th:selected="${iterStat.first}">
-                              </option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>이름</th>
-                        <td><input type="text" name="dogname" th:value="${userDogs[0].dogname}" readonly></td>
-                        <th>몸무게</th>
-                        <td>
-                            <input type="number" step="0.1" name="weight" th:value="${userDogs[0].weight != null ? userDogs[0].weight : ''}" th:style="${userDogs[0].weight == null ? 'display: none;' : ''}">
-                            <span th:if="${userDogs[0].weight == null}">정보 없음</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>성별</th>
-                        <td>
-                               <input type="radio" name="gender" id="male" value="M" th:checked="${userDogs[0].gender == 'M'}"> <label for="male">남</label>
-                               <input type="radio" name="gender" id="female" value="F" th:checked="${userDogs[0].gender == 'F'}"> <label for="female">여</label>
-                               <span th:if="${userDogs[0].gender == null}">정보 없음</span>
-                        </td>
-                        <th>중성화여부</th>
-                        <td>
-                           <input type="radio" name="neutered" id="neutered-yes" value="1" th:checked="${userDogs[0].neutering == 1}"> <label for="neutered-yes">중성화완료</label>
-                            <input type="radio" name="neutered" id="neutered-no" value="0" th:checked="${userDogs[0].neutering == 0}"> <label for="neutered-no">중성화안됨</label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>생년월일</th>
-                        <td><input type="date" name="birthDate" th:value="${userDogs[0].birthDate}"></td>
-                    </tr>
-                    <tr>
-                        <th>견종</th>
-                        <td><input type="text" name="breed" th:value="${userDogs[0].breed}" readonly></td>
-                      
-                    </tr>
-                </table>
+                    <input type="hidden" name="dogs.dogId" th:value="${userDogs[0].dogId}">
+                    <table>
+                        <tr>
+                            <th>강아지 선택</th>
+                            <td>
+                                <select id="dogId" name="dogs.dogId" required onchange="updateDogInfo(this.value)">
+                                   <option th:each="dog, iterStat : ${userDogs}" 
+                                           th:value="${dog.dogId}" 
+                                           th:text="${dog.dogname}"
+                                           th:selected="${iterStat.first}">
+                                  </option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>이름</th>
+                            <td><input type="text" name="dogname" th:value="${userDogs[0].dogname}" readonly></td>
+                        </tr>
+                        <tr>
+                            <th>몸무게</th>
+                            <td>
+                                <input type="number" step="0.1" name="weight" th:value="${userDogs[0].weight != null ? userDogs[0].weight : ''}" th:style="${userDogs[0].weight == null ? 'display: none;' : ''}">
+                                <span th:if="${userDogs[0].weight == null}">정보 없음</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>성별</th>
+                            <td class="radio-group">
+                                <label><input type="radio" name="gender" value="M" th:checked="${userDogs[0].gender == 'M'}"> 남</label>
+                                <label><input type="radio" name="gender" value="F" th:checked="${userDogs[0].gender == 'F'}"> 여</label>
+                                <span th:if="${userDogs[0].gender == null}">정보 없음</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>중성화여부</th>
+                            <td class="radio-group">
+                                <label><input type="radio" name="neutered" value="1" th:checked="${userDogs[0].neutering == 1}"> 중성화완료</label>
+                                <label><input type="radio" name="neutered" value="0" th:checked="${userDogs[0].neutering == 0}"> 중성화안됨</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>생년월일</th>
+                            <td><input type="date" name="birthDate" th:value="${userDogs[0].birthDate}"></td>
+                        </tr>
+                        <tr>
+                            <th>견종</th>
+                            <td><input type="text" name="breed" th:value="${userDogs[0].breed}" readonly></td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         
-            <!-- 마이페이지 > 내 강아지 정보 > 강아지 선택 > 입학 신청 누른 경우 select box 없이 해당 강아지 정보 출력 -->    
             <div th:if="${dog_id != null and dog != null}">
-                <input type="hidden" name="dogs.dogId" th:value="${dog.dogId}">
+                <input type="hidden" name="dogs.dogId" th:value="${dogId}">
                 <table>
-                    <tr>
-                        <th colspan="4" class="section-title">개린이 견적사항</th>
-                    </tr>
                     <tr>
                         <th>이름</th>
                         <td><input type="text" name="dogname" th:value="${dog.dogname}" readonly></td>
+                    </tr>
+                    <tr>
                         <th>몸무게</th>
                         <td>
                             <input type="number" step="0.1" name="weight" th:value="${dog.weight}" th:style="${dog.weight == null ? 'display: none;' : ''}">
@@ -161,13 +171,15 @@
                     <tr>
                         <th>성별</th>
                         <td>
-                               <input type="radio" name="gender" id="male" value="M" th:checked="${dog != null and #strings.equals(dog.gender, 'M')}"> <label for="male">남</label>
-                               <input type="radio" name="gender" id="female" value="F" th:checked="${dog != null and #strings.equals(dog.gender, 'F')}"> <label for="female">여</label>
-                               <span th:if="${dog.gender == null}">정보 없음</span>
+                            <input type="radio" name="gender" id="male" value="M" th:checked="${dog != null and #strings.equals(dog.gender, 'M')}"> <label for="male">남</label>
+                            <input type="radio" name="gender" id="female" value="F" th:checked="${dog != null and #strings.equals(dog.gender, 'F')}"> <label for="female">여</label>
+                            <span th:if="${dog.gender == null}">정보 없음</span>
                         </td>
+                    </tr>
+                    <tr>
                         <th>중성화여부</th>
                         <td>
-                           <input type="radio" name="neutered" id="neutered-yes" value="1" th:checked="${dog.neutering == 1}"> <label for="neutered-yes">중성화완료</label>
+                            <input type="radio" name="neutered" id="neutered-yes" value="1" th:checked="${dog.neutering == 1}"> <label for="neutered-yes">중성화완료</label>
                             <input type="radio" name="neutered" id="neutered-no" value="0" th:checked="${dog.neutering == 0}"> <label for="neutered-no">중성화안됨</label>
                         </td>
                     </tr>
@@ -182,109 +194,95 @@
                 </table>
             </div>
         
-            <!-- 입학 신청 공통사항 부분은 조건 없음 -->
+            <div class="section-title">입학 희망 정보</div>
             <table>
                 <tr>
-                    <th colspan="4" class="section-title">생활 습관</th>
+                    <th>희망 날짜</th>
+                    <td>
+                        <input type="date" name="desiredDate" required>
+                    </td>
                 </tr>
+            </table>
+
+            <div class="section-title">생활 습관</div>
+            <table>
                 <tr>
                     <th>배변 훈련</th>
-                    <td>
-                        <input type="radio" name="pottytraining" id="toilet-o" value="O"> <label for="toilet-o">O</label>
-                        <input type="radio" name="pottytraining" id="toilet-x" value="X"> <label for="toilet-x">X</label>
+                    <td class="radio-group">
+                        <label><input type="radio" name="pottytraining" value="O"> O</label>
+                        <label><input type="radio" name="pottytraining" value="X"> X</label>
                     </td>
+                </tr>
+                <tr>
                     <th>마킹여부</th>
-                    <td>
-                        <input type="radio" name="marking" id="marking-o" value="O"> <label for="marking-o">O</label>
-                        <input type="radio" name="marking" id="marking-x" value="X"> <label for="marking-x">X</label>
+                    <td class="radio-group">
+                        <label><input type="radio" name="marking" value="O"> O</label>
+                        <label><input type="radio" name="marking" value="X"> X</label>
                     </td>
                 </tr>
                 <tr>
                     <th>급여 형태</th>
-                    <td>
-                        <input type="radio" name="ration" id="ration-free" value="자유급식"> <label for="ration-free">자유급식</label>
-                        <input type="radio" name="ration" id="ration-measured" value="정량급식"> <label for="ration-measured">정량급식</label>
+                    <td class="radio-group">
+                        <label><input type="radio" name="ration" value="자유급식"> 자유급식</label>
+                        <label><input type="radio" name="ration" value="정량급식"> 정량급식</label>
                     </td>
+                </tr>
+                <tr>
                     <th>식욕</th>
-                    <td>
-                        <input type="radio" name="appetite" id="appetite-good" value="상"> <label for="appetite-good">상</label>
-                        <input type="radio" name="appetite" id="appetite-normal" value="중"> <label for="appetite-normal">중</label>
-                        <input type="radio" name="appetite" id="appetite-poor" value="하"> <label for="appetite-poor">하</label>
+                    <td class="radio-group">
+                        <label><input type="radio" name="appetite" value="상"> 상</label>
+                        <label><input type="radio" name="appetite" value="중"> 중</label>
+                        <label><input type="radio" name="appetite" value="하"> 하</label>
                     </td>
                 </tr>
                 <tr>
                     <th>하루 산책횟수</th>
                     <td><input type="number" name="walk"></td>
+                </tr>
+                <tr>
                     <th>주 평균 횟수</th>
                     <td><input type="number" name="numberofweeks"></td>
                 </tr>
             </table>
 
+            <div class="section-title">특이사항</div>
             <table>
                 <tr>
-                    <th class="section-title">특이사항</th>
-                </tr>
-                <tr>
-                   <td><textarea class="form-control" cols="5" name="significant"></textarea></td>
+                    <td colspan="2">
+                        <textarea class="form-control" rows="5" name="significant"></textarea>
+                    </td>
                 </tr>
             </table>
 
-            <button type="submit" class="btn btn-dark submit-btn">신청서 제출</button>
+            <button type="submit" class="btn submit-btn btn-dark">신청서 제출</button>
         </form>
         
-        <!-- 입학신청폼에 접속한 경로에 따라 목록으로 돌아가기 버튼 클릭 시 이동되는 페이지 다르게 설정 -->
-        <div th:if="${dog_id != null and dog != null}" class="text-center mt-4">
-            <a th:href="@{/dogs/myDogList}" class="btn btn-secondary submit-btn">목록으로 돌아가기</a>
-        </div>
-        <div th:if="${dog_id == null or #strings.isEmpty(dog_id)}" class="text-center mt-4">
-            <a th:href="@{/admissions/admissionsList}" class="btn btn-secondary submit-btn">목록으로 돌아가기</a>
+        <div class="text-center mt-4">
+            <a th:if="${dog_id != null and dog != null}" th:href="@{/dogs/myDogList}" class="btn btn-secondary submit-btn">목록으로 돌아가기</a>
+            <a th:if="${dog_id == null or #strings.isEmpty(dog_id)}" th:href="@{/admissions/admissionsList}" class="btn btn-secondary submit-btn">목록으로 돌아가기</a>
         </div>
     </div>
 
     <script th:inline="javascript">
-    // 초기 데이터 로깅
     var userDogs = /*[[${userDogs}]]*/ [];
-    console.log("Initial userDogs:", userDogs);
-
-    // 지점별 반 정보를 저장할 객체
     var branchGroups = /*[[${branchGroups}]]*/ {};
 
-    // 강아지 정보 업데이트 함수
     function updateDogInfo(selectedDogId) {
-        console.log("Selected dog ID:", selectedDogId);
-        
         var selectedDog = userDogs.find(dog => dog.dogId == selectedDogId);
-        console.log("Selected dog:", selectedDog);
-        
         if (selectedDog) {
-            // hidden 필드 업데이트
             document.querySelector('input[name="dogs.dogId"]').value = selectedDog.dogId;
+            document.querySelector('input[name="dogname"]').value = selectedDog.dogname;
+            document.querySelector('input[name="breed"]').value = selectedDog.breed;
+            document.querySelector('input[name="birthDate"]').value = selectedDog.birthDate;
 
-            // 이름
-            var nameInput = document.querySelector('input[name="dogname"]');
-            if (nameInput) nameInput.value = selectedDog.dogname;
-            
-            // 견종
-            var breedInput = document.querySelector('input[name="breed"]');
-            if (breedInput) breedInput.value = selectedDog.breed;
-
-            // 생년월일
-            var birthDateInput = document.querySelector('input[name="birthDate"]');
-            if (birthDateInput) birthDateInput.value = selectedDog.birthDate;
-
-            // 성별
-            var genderRadios = document.querySelectorAll('input[name="gender"]');
-            genderRadios.forEach(radio => {
+            document.querySelectorAll('input[name="gender"]').forEach(radio => {
                 radio.checked = radio.value === selectedDog.gender;
             });
 
-         // 중성화 여부
-            var neuteredRadios = document.querySelectorAll('input[name="neutered"]');
-            neuteredRadios.forEach(radio => {
+            document.querySelectorAll('input[name="neutered"]').forEach(radio => {
                 radio.checked = radio.value == selectedDog.neutering;
             });
 
-            // 몸무게
             var weightInput = document.querySelector('input[name="weight"]');
             var weightSpan = weightInput.nextElementSibling;
             if (selectedDog.weight != null) {
@@ -296,16 +294,6 @@
                 weightInput.style.display = 'none';
                 weightSpan.style.display = '';
             }
-
-            // 예방접종 체크박스 처리 (필요한 경우)
-            if (selectedDog.vaccination) {
-                console.log("Vaccinations:", selectedDog.vaccination);
-                var vaccinations = selectedDog.vaccination.split(',');
-                document.querySelectorAll('input[name="vaccination"]').forEach(function(checkbox) {
-                    checkbox.checked = vaccinations.some(vacc => vacc.trim().toLowerCase() === checkbox.value.toLowerCase());
-                    console.log(checkbox.value, checkbox.checked);
-                });
-            }
         }
     }
 
@@ -314,7 +302,6 @@
         var groupSelect = document.getElementById('groupSelect');
         var selectedBranchId = branchSelect.value;
 
-        // 반 선택 옵션 초기화
         groupSelect.innerHTML = '<option value="">반을 선택해주세요</option>';
 
         if (selectedBranchId && branchGroups[selectedBranchId]) {
@@ -326,9 +313,7 @@
             });
         }
     }
-
-    // 폼 유효성 검사 함수
-    function validateForm() {
+     function validateForm() {
         var selectedDogId = document.querySelector('input[name="dogs.dogId"]').value;
         var selectedBranchId = document.getElementById('branchSelect').value;
         var selectedGroupId = document.getElementById('groupSelect').value;
@@ -346,45 +331,38 @@
             return false;
         }
         
-        // 여기에 추가적인 유효성 검사 로직을 구현할 수 있습니다.
-        // 예: 필수 필드 검사, 날짜 형식 검사 등
-
         return true;
     }
 
-    // 페이지 로드 시 실행되는 초기화 함수
     document.addEventListener('DOMContentLoaded', function() {
         var dogSelect = document.getElementById('dogId');
         if (dogSelect) {
             updateDogInfo(dogSelect.value);
             
-            // 강아지 선택 시 정보 업데이트
             dogSelect.addEventListener('change', function() {
                 updateDogInfo(this.value);
             });
 
-            // 페이지 로드 시 첫 번째 강아지 정보로 초기화
             if (userDogs.length > 0) {
                 updateDogInfo(userDogs[0].dogId);
             }
         }
 
-        // 지점 선택 시 반 목록 업데이트
         var branchSelect = document.getElementById('branchSelect');
         if (branchSelect) {
             branchSelect.addEventListener('change', updateGroups);
         }
 
-        // 폼 제출 이벤트 리스너
-        form.addEventListener('submit', function(e) {
-    if (!validateForm()) {
-        e.preventDefault(); // 폼 제출 중지
+        var form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                if (!validateForm()) {
+                    e.preventDefault();
                 }
             });
         }
-    );
+    });
 
-    // 디버깅을 위한 로그
     console.log("Script loaded. User dogs:", userDogs);
     console.log("Branch groups:", branchGroups);
     </script>

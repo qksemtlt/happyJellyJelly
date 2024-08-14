@@ -22,10 +22,14 @@ public class MonthcareGroupsController {
 	private final MonthcareGroupsService monthcareGroupService;
 	private final MembersService membersService;
 	
+	// 지점별 반 리스트 출력
 	@GetMapping("list")
 	@PreAuthorize("isAuthenticated()")
 	public String monthcareGroupList(Model model, Principal principal) {
+		// 로그인한 username에 해당하는 branch_id 저장
 		Integer branch_id = membersService.readMembersInfo(principal.getName()).getBranchId();
+		
+		// 해당 branch_id의 반 리스트 출력하여 model 로 보냄
 		List<MonthcareGroupsDTO> monthcareList = monthcareGroupService.getMonthcareGroupByBranch(branch_id);
 		model.addAttribute("monthcare", monthcareList);
 		model.addAttribute("branch_id", branch_id);
@@ -33,12 +37,15 @@ public class MonthcareGroupsController {
 	}
 	
 	
+	// 지점별 신규 반 생성
 	@GetMapping("create")
 	@PreAuthorize("isAuthenticated()")
-	public String createMonthcareGroup(Model model, MonthcareGroupsDTO monthDTO, Principal principal) {
+	public String createMonthcareGroup(Model model, MonthcareGroupsDTO monthDTO, Principal principal) {		
 		Integer branch_id = membersService.readMembersInfo(principal.getName()).getBranchId();
 		model.addAttribute("branch_id", branch_id);
 		model.addAttribute("monthDTO",monthDTO);
+		
+		// 해당 지점에 소속되어져 있는 선생님 리스트를 model 에 담아서 view 로 보냄
 		List<MembersDTO> teacher = monthcareGroupService.getTeachers(branch_id);
 		model.addAttribute("teachers", teacher);
 		return "monthcaregroups/add_monthgroup";
@@ -61,6 +68,7 @@ public class MonthcareGroupsController {
 	}
 	
 	
+	// 지점별 반 정보 수정
 	@GetMapping("update/{id}")
 	@PreAuthorize("isAuthenticated()")
 	public String updateMonthcareGroup(@PathVariable("id") Integer month_id, Model model, Principal principal) {

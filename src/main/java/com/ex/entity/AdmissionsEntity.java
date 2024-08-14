@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import java.time.LocalDate;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -31,18 +32,19 @@ public class AdmissionsEntity {
      private DogsEntity dogs;
      
      
-      @Column(name = "APPLICATION_DATE")
+      @Column(name = "APPLICATION_DATE")   // 신청날짜
       private Date applicationDate;
 
       @Column(name = "STATUS")
       private String status;
 
-      @Column(name = "APPROVAL_DATE")
+      @Column(name = "APPROVAL_DATE")   // 승인날짜 
       private Date approvalDate;
 
  
-
-
+      
+      @Column(name ="DESIRED_DATE")
+      private LocalDate desiredDate;
       
       private String  appetite; // 식욕
       private String  marking; //마킹
@@ -62,8 +64,7 @@ public class AdmissionsEntity {
       @JsonBackReference
       @JoinColumn(name="dogassignment_id")
       private DogAssignmentsEntity dogassign;
-      
-      
+       
       @ManyToOne(cascade = CascadeType.PERSIST)
       @JoinColumn(name = "branch_id")
       private BranchEntity branch;
@@ -72,7 +73,5 @@ public class AdmissionsEntity {
       @JsonManagedReference
       @ToString.Exclude
       private MonthcareGroupsEntity monthcaregroups;
-      
-     
-      
+            
 }

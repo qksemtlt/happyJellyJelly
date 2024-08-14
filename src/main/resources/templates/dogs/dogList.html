@@ -48,11 +48,11 @@
             <th>품종</th>
         </tr>
 		<tr th:each="dogs : ${dogsList}">
-            <td th:text="${dogs.member.join_date}"></td>
+            <td th:text="${dogs.member.joinDate}"></td>
             <td th:text="${dogs.member.name}">보호자 성함</td>
 <!--             <td th:text="${dogs.dog_id}">보호자</td> -->
 <!--             <td><a href="/dogs/detail" th:text="${dogs.dogname}">강아지 이름</a></td> -->
-            <td><a th:href="@{|/dogs/detail/${dogs.dog_id}|}" th:text="${dogs.dogname}"></a></td>
+            <td><a th:href="@{|/dogs/detail/${dogs.dogId}|}" th:text="${dogs.dogname}"></a></td>
             <td th:text="${dogs.breed}">강아지 품종</td>
         </tr>
     </table>

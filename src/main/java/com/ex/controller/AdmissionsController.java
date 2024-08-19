@@ -2,14 +2,15 @@ package com.ex.controller;
 import com.ex.data.AdmissionsDTO;
 import com.ex.data.DogsDTO;
 import com.ex.data.MonthcareGroupsDTO;
+import com.ex.data.TicketDTO;
 import com.ex.entity.BranchEntity;
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
 import com.ex.entity.VaccinationsEntity;
-import com.ex.repository.MembersRepository;
 import com.ex.service.AdmissionsService;
 import com.ex.service.DogService;
 import com.ex.service.MembersService;
+import com.ex.service.TicketService;
 import com.ex.service.VaccinationsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -36,6 +37,7 @@ public class AdmissionsController {
         private final DogService dogService;      
         private final MembersService membersService;
         private final VaccinationsService vaccinationsService;
+        private final TicketService ticketService;
             
         @GetMapping("")
         @PreAuthorize("isAuthenticated()")
@@ -181,7 +183,9 @@ public class AdmissionsController {
         
         
         @GetMapping("/notice")
-        public String admissionNotice() {
-           return "/admissions/admission_notice";
+        public String admissionNotice(Model model) {
+        	List<TicketDTO> ticketDTO = ticketService.getTicketsList();
+        	model.addAttribute("ticketDTO", ticketDTO);
+            return "/admissions/admission_notice";
         }
 }

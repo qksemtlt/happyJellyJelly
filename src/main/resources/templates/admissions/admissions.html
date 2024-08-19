@@ -1,4 +1,4 @@
-htmlCopy<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -155,7 +155,7 @@ htmlCopy<!DOCTYPE html>
             </div>
         
             <div th:if="${dog_id != null and dog != null}">
-                <input type="hidden" name="dogs.dogId" th:value="${dogId}">
+                <input type="hidden" name="dogs.dogId" th:value="${dog_id}">
                 <table>
                     <tr>
                         <th>이름</th>
@@ -264,17 +264,28 @@ htmlCopy<!DOCTYPE html>
     </div>
 
     <script th:inline="javascript">
-    var userDogs = /*[[${userDogs}]]*/ [];
-    var branchGroups = /*[[${branchGroups}]]*/ {};
-
+    var userDogs = /*[[${userDogs}]]*/ [] || [];
+    var branchGroups = /*[[${branchGroups}]]*/ {} || {};
+    var dogId = /*[[${dog_id}]]*/ null;
+   
     function updateDogInfo(selectedDogId) {
+        if (dogId != null) return;
+        
         var selectedDog = userDogs.find(dog => dog.dogId == selectedDogId);
+        
         if (selectedDog) {
-            document.querySelector('input[name="dogs.dogId"]').value = selectedDog.dogId;
-            document.querySelector('input[name="dogname"]').value = selectedDog.dogname;
-            document.querySelector('input[name="breed"]').value = selectedDog.breed;
-            document.querySelector('input[name="birthDate"]').value = selectedDog.birthDate;
-
+            var dogIdInput = document.querySelector('input[name="dogs.dogId"]');
+            if (dogIdInput) dogIdInput.value = selectedDog.dogId;
+            
+            var dognameInput = document.querySelector('input[name="dogname"]');
+            if (dognameInput) dognameInput.value = selectedDog.dogname;
+            
+            var breedInput = document.querySelector('input[name="breed"]');
+            if (breedInput) breedInput.value = selectedDog.breed;
+            
+            var birthDateInput = document.querySelector('input[name="birthDate"]');
+            if (birthDateInput) birthDateInput.value = selectedDog.birthDate;
+            
             document.querySelectorAll('input[name="gender"]').forEach(radio => {
                 radio.checked = radio.value === selectedDog.gender;
             });
@@ -284,17 +295,19 @@ htmlCopy<!DOCTYPE html>
             });
 
             var weightInput = document.querySelector('input[name="weight"]');
-            var weightSpan = weightInput.nextElementSibling;
-            if (selectedDog.weight != null) {
-                weightInput.value = selectedDog.weight;
-                weightInput.style.display = '';
-                weightSpan.style.display = 'none';
-            } else {
-                weightInput.value = '';
-                weightInput.style.display = 'none';
-                weightSpan.style.display = '';
+            var weightSpan = weightInput && weightInput.nextElementSibling;
+            if (weightInput && weightSpan) {
+                if (selectedDog.weight != null) {
+                    weightInput.value = selectedDog.weight;
+                    weightInput.style.display = '';
+                    weightSpan.style.display = 'none';
+                } else {
+                    weightInput.value = '';
+                    weightInput.style.display = 'none';
+                    weightSpan.style.display = '';
+                }
             }
-        }
+        } 
     }
 
     function updateGroups() {
@@ -313,15 +326,13 @@ htmlCopy<!DOCTYPE html>
             });
         }
     }
-     function validateForm() {
-        var selectedDogId = document.querySelector('input[name="dogs.dogId"]').value;
+
+    function validateForm() {        
         var selectedBranchId = document.getElementById('branchSelect').value;
         var selectedGroupId = document.getElementById('groupSelect').value;
 
-        if (!selectedDogId) {
-            alert('강아지를 선택해주세요.');
-            return false;
-        }
+        console.log("Validating form - Branch ID:", selectedBranchId, "Group ID:", selectedGroupId);
+
         if (!selectedBranchId) {
             alert('지점을 선택해주세요.');
             return false;
@@ -331,12 +342,13 @@ htmlCopy<!DOCTYPE html>
             return false;
         }
         
+        console.log("Form validation passed");
         return true;
     }
 
     document.addEventListener('DOMContentLoaded', function() {
         var dogSelect = document.getElementById('dogId');
-        if (dogSelect) {
+        if (dogSelect && dogId == null) {
             updateDogInfo(dogSelect.value);
             
             dogSelect.addEventListener('change', function() {
@@ -347,7 +359,7 @@ htmlCopy<!DOCTYPE html>
                 updateDogInfo(userDogs[0].dogId);
             }
         }
-
+      
         var branchSelect = document.getElementById('branchSelect');
         if (branchSelect) {
             branchSelect.addEventListener('change', updateGroups);
@@ -356,15 +368,21 @@ htmlCopy<!DOCTYPE html>
         var form = document.querySelector('form');
         if (form) {
             form.addEventListener('submit', function(e) {
+                console.log("Form submit event triggered");
                 if (!validateForm()) {
+                    console.log("Form validation failed, preventing submission");
                     e.preventDefault();
+                } else {
+                    console.log("Form validation passed, submitting form");
                 }
             });
         }
     });
 
-    console.log("Script loaded. User dogs:", userDogs);
+    console.log("Script loaded. Dog ID:", dogId);
     console.log("Branch groups:", branchGroups);
-    </script>
+    
+    
+</script>
 </body>
 </html>

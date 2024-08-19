@@ -1,9 +1,7 @@
 package com.ex.service;
-
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +14,7 @@ import com.ex.entity.AdmissionsEntity;
 import com.ex.entity.BranchEntity;
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
+import com.ex.entity.SubscriptionsEntity;
 import com.ex.repository.AdmissionsRepository;
 import com.ex.repository.BranchesRepository;
 import com.ex.repository.DogsRepository;
@@ -110,8 +109,7 @@ public class AdmissionsService {
 
         if ("APPROVED".equals(newStatus)) {
             admission.setApprovalDate(new Date());
-        } else {
-            admission.setApprovalDate(null);
+        }else{
             admission.setReason(reason);
         }
         admissionRepository.save(admission);
@@ -192,5 +190,11 @@ public class AdmissionsService {
         // 상태 필터링이 없는 경우, 원래의 Page 객체를 DTO로 변환하여 반환
         return entityPage.map(this::convertToDTO);
     }
+    
+    public void setSubscription (SubscriptionsEntity subs, Integer admissonId) {
+		AdmissionsEntity ae = admissionRepository.findById(admissonId).get();
+		ae.setSubscription(subs);
+		admissionRepository.save(ae);
+	}
   
 }

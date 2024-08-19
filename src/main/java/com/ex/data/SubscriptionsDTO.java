@@ -1,8 +1,9 @@
 package com.ex.data;
 import java.time.LocalDate;
-import java.util.Date;
+import com.ex.entity.AdmissionsEntity;
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
+import com.ex.entity.TicketEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,17 +15,17 @@ import lombok.RequiredArgsConstructor;
 @Builder
 public class SubscriptionsDTO {
 	private Integer subscriptionId;	
-	private MembersEntity member;
-	private String	subscriptionType;
 	private LocalDate	startDate;
 	private LocalDate	endDate;
 	private String	autoRenewal;
-	private String	status;
+	private String	status;	
 	private Integer	usageCount;
-	private String	regularType;
-	private DogsEntity	dogs;
 	private Integer amount;
-	private Date paymentDate;
+	private LocalDate paymentDate;
 	private String paymethod;
 	private Integer refund;
+	private AdmissionsEntity admissions;
+	private TicketEntity ticket;
+	private DogsEntity	dogs;
+	private MembersEntity member;
 }

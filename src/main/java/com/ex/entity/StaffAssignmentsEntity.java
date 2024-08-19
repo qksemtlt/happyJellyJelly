@@ -29,6 +29,8 @@ public class StaffAssignmentsEntity {
 	
 	private Integer	daygroup_id;
 	
+	private Integer	monthgroup_id;
+	
 	private LocalDate start_date;
 	
 	private LocalDate end_date;

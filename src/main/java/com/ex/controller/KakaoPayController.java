@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.ex.data.KakaoPayDTO;
+import com.ex.entity.SubscriptionsEntity;
 import com.ex.service.AdmissionsService;
 import com.ex.service.DogAssignmentsService;
 import com.ex.service.KakaoPayService;
@@ -42,16 +43,14 @@ public class KakaoPayController {
                                   Principal principal) {
         KakaoPayDTO kakaoDTO = kakaoPay.payApprove(pgToken);
         
-        System.out.println("============================================="+kakaoDTO);
-        
         String reason = null;
         admissionsService.updateAdmissionStatus(admissionId, "DONE", reason);
         
-        subscriptionsService.createSubscription(principal.getName(), admissionId, kakaoDTO);
+        SubscriptionsEntity subs = subscriptionsService.createSubscription(principal.getName(), admissionId, kakaoDTO);
+        admissionsService.setSubscription(subs, admissionId);
         
-        //추가
-       // dogAssignmentsService.assignDogToClass(admissionId);
-        
+      //추가
+       dogAssignmentsService.assignDogToClass(admissionId);
         
         redirectAttributes.addFlashAttribute("kakaoDTO", kakaoDTO);
         return "redirect:/kakao/completed";

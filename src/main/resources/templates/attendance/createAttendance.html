@@ -19,7 +19,7 @@
         <h2 class="text-center mb-4">출석부 등록</h2>
 
         <form th:action="@{/attendance/create}" method="post">
-			<input type="hidden" id="branch" name="branch" th:value="${brancheEntity}">
+			<input type="hidden" id="branch" name="branch" value="${brancheEntity}">
 			<div class="form-group">
                 <label for="attendanceDate">일자</label>
                 <input type="date" class="form-control" id="attendanceDate" name="attendancedate" required>

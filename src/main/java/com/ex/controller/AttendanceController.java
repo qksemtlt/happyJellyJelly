@@ -10,13 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.ex.data.AttendanceDTO;
 import com.ex.data.BranchesDTO;
-import com.ex.data.DogsDTO;
 import com.ex.data.MonthcareGroupsDTO;
 import com.ex.entity.BranchEntity;
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
-import com.ex.entity.MonthcareGroupsEntity;
-import com.ex.repository.TestMapper;
 import com.ex.service.AttendanceService;
 import com.ex.service.BranchesService;
 import com.ex.service.DogService;
@@ -80,37 +77,25 @@ public class AttendanceController {
         return "attendance/attendanceList";
     }
 	
-
-	
 	@GetMapping("/createAttendance")
     public String createAttendanceForm(@RequestParam(value = "date", required = false) String date,
 							            Model model, Principal principal) {
-		
-		// 지점명을 가져오기 위해 사용자의 근무지 지점정보를 가져와 AttendanceDTO에 대입
 		MembersEntity me = membersService.findByUsername(principal.getName());
 		Integer branchId = me.getBranchId();
-//		BranchesDTO brancheDTO = branchesService.getBranchById(branchId);
+		BranchesDTO brancheDTO = branchesService.getBranchById(branchId);
 		BranchEntity be = new BranchEntity();
 		be.setBranchId(branchId);
-		AttendanceDTO attendanceDTO = new AttendanceDTO();
-		attendanceDTO.setBranch(be);
-		
-		// 지점별 정규반 목록과 강아지 목록조회
 		List<MonthcareGroupsDTO> monthGroupList = monthcareGroupsService.getMonthcareGroupByBranch(branchId);
-        List<DogsDTO> dogList = attendanceService.findByBranch(branchId);
-        
+        List<DogsEntity> dogList = dogService.dogsAll();
         model.addAttribute("brancheEntity", be);
         model.addAttribute("monthGroupList", monthGroupList);
         model.addAttribute("dogList", dogList);
         return "attendance/createAttendance";
     }
 
-	
     @PostMapping("/create")
-    public String createAttendance(@RequestParam("branch") Integer branchId, AttendanceDTO attendanceDTO) {
-    	System.out.println("===============컨트롤러 createAttendance=================");
-    	System.out.println("branchId ::: " + branchId);
-    	attendanceService.createAttendance(branchId, attendanceDTO);
+    public String createAttendance(AttendanceDTO attendanceDTO) {
+        attendanceService.createAttendance(attendanceDTO);
         return "redirect:/attendance";
     }
 	

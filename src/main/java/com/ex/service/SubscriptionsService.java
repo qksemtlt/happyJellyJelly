@@ -1,8 +1,11 @@
 package com.ex.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.ex.data.KakaoPayDTO;
 import com.ex.data.SubscriptionsDTO;
@@ -23,7 +26,7 @@ public class SubscriptionsService {
 	private final AdmissionsRepository admissionsRepository;
 	private final MembersRepository membersRepository;
 	
-	public void createSubscription(String username, Integer admissionId, KakaoPayDTO kakaoDTO) {
+	public SubscriptionsEntity createSubscription(String username, Integer admissionId, KakaoPayDTO kakaoDTO) {
 		MembersEntity me = membersRepository.findByUsername(username).get();
 		AdmissionsEntity ae = admissionsRepository.findById(admissionId).get();
 		
@@ -36,8 +39,7 @@ public class SubscriptionsService {
 				.amount(Integer.parseInt(kakaoDTO.getTotal_amount())).paymethod(kakaoDTO.getPayment_method_type())
 				.ticket(ae.getMonthcaregroups().getTicket()).build();
 		subscriptionsRepository.save(se);
-		
-		ae.setSubscription(se);
+		return se;
 	}
 	
 	public List<SubscriptionsDTO> mysubsInfo(String username){
@@ -61,6 +63,23 @@ public class SubscriptionsService {
 				}
 			}
 		}		
-		return subsDTOList;
+		return subsDTOList.stream()
+	            .sorted(Comparator.comparing(SubscriptionsDTO::getPaymentDate).reversed())
+	            .collect(Collectors.toList());
 	} 
+	
+	@Scheduled(cron = "0 0 0 1 * ?")
+	public void subsExpired() {
+		LocalDate today = LocalDate.now();
+		LocalDate lastMonthFirstDay = today.minusMonths(1).withDayOfMonth(1);
+		List<SubscriptionsEntity> subscriptionsList = subscriptionsRepository.findByStartDate(lastMonthFirstDay);
+		if(!subscriptionsList.isEmpty()) {
+			for(SubscriptionsEntity subs : subscriptionsList) {
+				if(subs.getRefund()==null) {
+					subs.setStatus("EXPIRED");
+					subscriptionsRepository.save(subs);
+				}				
+			}
+		}		
+	}
 }

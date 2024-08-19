@@ -1,6 +1,9 @@
 package com.ex.controller;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.ex.data.MembersDTO;
 import com.ex.data.MonthcareGroupsDTO;
+import com.ex.service.DogAssignmentsService;
 import com.ex.service.MembersService;
 import com.ex.service.MonthcareGroupsService;
 import lombok.RequiredArgsConstructor;
@@ -21,19 +25,27 @@ public class MonthcareGroupsController {
 	
 	private final MonthcareGroupsService monthcareGroupService;
 	private final MembersService membersService;
+	private final DogAssignmentsService dogAssignmentsService;
 	
 	// 지점별 반 리스트 출력
 	@GetMapping("list")
 	@PreAuthorize("isAuthenticated()")
 	public String monthcareGroupList(Model model, Principal principal) {
-		// 로그인한 username에 해당하는 branch_id 저장
-		Integer branch_id = membersService.readMembersInfo(principal.getName()).getBranchId();
-		
-		// 해당 branch_id의 반 리스트 출력하여 model 로 보냄
-		List<MonthcareGroupsDTO> monthcareList = monthcareGroupService.getMonthcareGroupByBranch(branch_id);
-		model.addAttribute("monthcare", monthcareList);
-		model.addAttribute("branch_id", branch_id);
-		return "monthcaregroups/monthgroup_list";
+	    Integer branch_id = membersService.readMembersInfo(principal.getName()).getBranchId();
+	    
+	    List<MonthcareGroupsDTO> monthcareList = monthcareGroupService.getMonthcareGroupByBranch(branch_id);
+	    
+	    Map<Integer, String> capacityInfoMap = new HashMap<>();
+	    for (MonthcareGroupsDTO group : monthcareList) {
+	        int currentStudents = dogAssignmentsService.countCurrentStudentsInGroup(group.getId());
+	        String capacityInfo = currentStudents + " / " + group.getCapacity();
+	        capacityInfoMap.put(group.getId(), capacityInfo);
+	    }
+	    
+	    model.addAttribute("monthcare", monthcareList);
+	    model.addAttribute("capacityInfoMap", capacityInfoMap);
+	    model.addAttribute("branch_id", branch_id);
+	    return "monthcaregroups/monthgroup_list";
 	}
 	
 	

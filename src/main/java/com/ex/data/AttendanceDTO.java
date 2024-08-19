@@ -1,7 +1,6 @@
 package com.ex.data;
 import java.time.LocalDate;
 import com.ex.entity.AttendanceEntity;
-import com.ex.entity.BranchEntity;
 import com.ex.entity.DailyReportsEntity;
 import com.ex.entity.DaycareGroupsEntity;
 import com.ex.entity.DogsEntity;
@@ -25,8 +24,6 @@ public class AttendanceDTO {
 	private String status; 						// 출석상태
 	private DailyReportsEntity dailyreport; 	// 알림장
 	private String notes; 						// 특이사항
-	private BranchEntity branch;				// BRANCHES 테이블 참조키
-
 	
 	// mybatis 전용
 //	private Integer attendance_id;

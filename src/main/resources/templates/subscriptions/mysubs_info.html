@@ -11,7 +11,6 @@
         body {
             font-family: 'Noto Sans KR', sans-serif;
             background-color: #FFF5E6;
-            color: #4A4A4A;
         }
         .container {
             background-color: #FFFFFF;
@@ -87,7 +86,7 @@
                         <div th:each="subs : ${subsDTO}">
                         	<p class="card-text ticket-details">
                             <strong>강아지 이름:</strong> <span th:text="${subs.dogs.dogname}"></span><br>
-                            <strong>이용권:</strong> <span th:text="${subs.ticket.ticketname}"></span><br>
+                            <strong>이용권:</strong> <span th:text="${subs.admissions.monthcaregroups.branches.name}"></span> <span th:text="${subs.ticket.ticketname}"></span><br>
                             <strong>유효기간:</strong> <span th:text="${subs.startDate}"></span>~<span th:text="${subs.endDate}"></span>
                         	</p><hr>
                         </div>
@@ -111,7 +110,7 @@
                             </thead>
                             <tbody  th:each="subs : ${subsDTO}">
                                 <tr>
-                                    <td th:text="${#dates.format(subs.paymentDate, 'yyyy-MM-dd')}"></td>
+                                    <td th:text="${subs.paymentDate}"></td>
                                     <td>월간 정기권</td>
                                    <td th:text="${#numbers.formatDecimal(subs.ticket.price, 0, 'COMMA', 0, 'POINT') + ' 원'}"></td>
                                     <td><span th:if="${subs.status == 'ACTIVE'}" class="badge bg-success" th:text="${subs.status}"></span>

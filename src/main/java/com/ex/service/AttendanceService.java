@@ -1,6 +1,4 @@
 package com.ex.service;
-import java.util.ArrayList;
-import java.util.List;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,20 +7,16 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ex.data.AttendanceDTO;
-import com.ex.data.DogsDTO;
+import com.ex.data.MonthcareGroupsDTO;
 import com.ex.entity.AttendanceEntity;
 import com.ex.entity.BranchEntity;
-import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
 import com.ex.entity.MonthcareGroupsEntity;
 import com.ex.repository.AttendanceRepository;
-import com.ex.repository.DogsRepository;
 import com.ex.repository.MembersRepository;
-import com.ex.repository.MonthcareGroupsRepository;
 import com.ex.repository.TestMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 
 @Slf4j
 @Service
@@ -33,10 +27,6 @@ public class AttendanceService {
 	private AttendanceRepository attendanceRepository;
 	@Autowired
 	private MembersRepository membersRepository;
-	@Autowired
-	MonthcareGroupsRepository monthcareGroupsRepository;
-	@Autowired
-	DogsRepository dogsRepository;
 	
 	private final TestMapper testMapper;
 	
@@ -62,14 +52,14 @@ public class AttendanceService {
 	// 일자,지점1,반1 출석부 조회
 	public List<AttendanceDTO> getAttendanceByDateAndBranchOrMonthGroup(LocalDate attendancedate
 												, Integer branch, Integer monthgroup) {
-		
+		System.out.println("===============서비스================");
 		System.out.println("attendancedate ::: " + attendancedate);
 		System.out.println("monthgroup ::: " + monthgroup);
 		System.out.println("branch ::: " + branch);
 		
 		// 선택된 반이 있다면 반id로 해당일자 출석부 조회
 		if(monthgroup != null) {
-			System.out.println("(monthgroup != null 선택된 반 있음");
+			System.out.println("(monthgroup != null");
 			MonthcareGroupsEntity mge = new MonthcareGroupsEntity();
 			mge.setId(monthgroup);
 			return attendanceRepository.findByAttendancedateAndMonthgroup(attendancedate, mge)
@@ -83,27 +73,15 @@ public class AttendanceService {
 			be.setBranchId(branch);
 			
 			AttendanceEntity ae = attendanceRepository.findById(17).get();
+			System.out.println("asfdsaf=================>>>>"+ae.getDog());
+			System.out.println("asfdsaf=================>>>>"+ae.getMonthgroup());  
+			System.out.println("asfdsaf=================>>>>"+ae.getDog().getDogname());
 			
 			return attendanceRepository.findByAttendancedateAndBranch(attendancedate, be)
 					.stream()
 					.map(this::convertToDTO)
 					.collect(Collectors.toList());
 		}
-    }
-	
-	// 지점별 강아지 출력
-	public List<DogsDTO> findByBranch(Integer branchId) {
-        List<DogsEntity> dogs = dogsRepository.findByBranch(branchId);
-
-        List<DogsDTO> dogsDTOList = new ArrayList<>();
-
-        for (DogsEntity dog : dogs) {
-            DogsDTO dto = new DogsDTO();
-            dto.setDogId(dog.getDogId());
-            dto.setDogname(dog.getDogname());
-            dogsDTOList.add(dto);
-        }
-        return dogsDTOList;
     }
 	
 	
@@ -131,13 +109,10 @@ public class AttendanceService {
 	
 	
 	// 출석부 등록
-	public void createAttendance(Integer branchId, AttendanceDTO attendanceDTO) {
+	public void createAttendance(AttendanceDTO attendanceDTO) {
 		
 		System.out.println("===============서비스createAttendance================");
 		System.out.println(attendanceDTO.toString());
-		
-		BranchEntity be = new BranchEntity();
-    	be.setBranchId(branchId);
 		
         // DTO를 엔티티로 변환
         AttendanceEntity attendanceEntity = new AttendanceEntity();
@@ -146,8 +121,7 @@ public class AttendanceService {
         attendanceEntity.setMonthgroup(attendanceDTO.getMonthgroup());
         attendanceEntity.setStatus(attendanceDTO.getStatus());
         attendanceEntity.setNotes(attendanceDTO.getNotes());
-        attendanceEntity.setBranch(be);
-        
+
         // 데이터베이스에 저장
         attendanceRepository.save(attendanceEntity);
     }

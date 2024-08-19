@@ -2,10 +2,16 @@ package com.ex.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.ex.data.AttendanceDTO;
 import com.ex.data.DailyReportsDTO;
+import com.ex.entity.AttendanceEntity;
 import com.ex.entity.DailyReportsEntity;
 import com.ex.entity.MembersEntity;
+import com.ex.repository.AttendanceRepository;
 import com.ex.repository.DailyReportsRepository;
 import com.ex.repository.MembersRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +23,20 @@ public class DailyReportsService {
 	private final DailyReportsRepository dailyReportsRepository;
 	private final MembersRepository membersRepository;
 	
+	@Autowired
+	AttendanceService attendanceService;
+	@Autowired
+	private AttendanceRepository attendanceRepository;
+	
+	// 캘린더 알림장 모두 조회
 	public List<DailyReportsDTO> getDailyReportsList(String username){
 		List<DailyReportsDTO> list = null;
 		DailyReportsDTO di = null;
+		
+		// 사용자 로그인 id로 사용자정보 조회
 		Optional<MembersEntity> op = membersRepository.findByUsername(username);
 		if(op.isPresent()) {
+			// 사용자정보로 알림장 조회
 			List<DailyReportsEntity> delist = dailyReportsRepository.findByMembers(op.get());
 			list = new ArrayList<>(delist.size());
 			for(DailyReportsEntity d: delist) {
@@ -38,18 +53,17 @@ public class DailyReportsService {
 						.contents(d.getContents())
 						.title(d.getTitle())
 						.build();
-//						.members(d.getMembers())
+						// .members(d.getMembers())
 				list.add(di);
 			}
-			
 		}
-//		return dailyReportsRepository.findAll();
 		return list;
 	}
 	
+	
+	// 알림장 상세조회
 	public DailyReportsDTO getDailyReports(Integer id){
 		DailyReportsEntity de = dailyReportsRepository.findById(id).get();
-//		System.out.println("de.getTitle() ::: " + de.getTitle());
 		DailyReportsDTO dailyReportsDTO = DailyReportsDTO.builder()
 											.id(de.getId())
 											.dogs(de.getDogs())
@@ -67,13 +81,17 @@ public class DailyReportsService {
 		return dailyReportsDTO;
 	}
 	
+	
 	// 알림장등록
-	public void create(DailyReportsDTO dailyReportsDTO, String username, String selectDate) {
+	public void create(DailyReportsDTO dailyReportsDTO, Integer attendanceId, String username, String selectDate) {
 //		LocalDate diarydate = LocalDate.parse(selectDate);
+		
+		// 출석부 상세조회
+		AttendanceEntity ae = attendanceRepository.findById(attendanceId).get();
 		
 		DailyReportsEntity de = DailyReportsEntity.builder()
 								.dogs(dailyReportsDTO.getDogs())
-								.attendance(dailyReportsDTO.getAttendance())
+								.attendance(ae)
 								.report_date(dailyReportsDTO.getReport_date())
 								.behavior(dailyReportsDTO.getBehavior())
 								.activities(dailyReportsDTO.getActivities())
@@ -85,7 +103,14 @@ public class DailyReportsService {
 								.members(dailyReportsDTO.getMembers())
 								.build();
 		
-		dailyReportsRepository.save(de);
+		de = dailyReportsRepository.save(de);
+		
+		
+		de.getId();
+		// 알림장 등록시 출석부의 알림장id도 update되어야함
+		// 알림장 테이블에서 attendance id를 이미 참조하고 있기 때문에 해당 id를 가지고 알림장id를 넣어주면 됨
+		// 출석부테이블에 알림장 id 넣어주기
+		
 	}
 	
 /*

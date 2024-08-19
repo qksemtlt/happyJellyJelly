@@ -1,7 +1,5 @@
 package com.ex.service;
 import java.time.LocalDate;
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,9 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ex.data.AttendanceDTO;
-import com.ex.data.BranchesDTO;
 import com.ex.data.DogsDTO;
-import com.ex.data.MonthcareGroupsDTO;
 import com.ex.entity.AttendanceEntity;
 import com.ex.entity.BranchEntity;
 import com.ex.entity.DogsEntity;
@@ -47,26 +43,42 @@ public class AttendanceService {
 	}
 	
 	
+	// 출석부 상세조회
+	public AttendanceDTO getAttendanceById(Integer attendanceId) {
+		System.out.println("===========서비스 getAttendanceById============");
+		AttendanceEntity ae = attendanceRepository.findById(attendanceId).get();
+		AttendanceDTO dto = AttendanceDTO.builder()
+								.id(ae.getId())
+								.dog(ae.getDog())
+								.daygroup(ae.getDaygroup())
+								.monthgroup(ae.getMonthgroup())
+								.attendancedate(ae.getAttendancedate())
+								.status(ae.getStatus())
+								.dailyreport(ae.getDailyreport())
+								.notes(ae.getNotes())
+								.branch(ae.getBranch())
+								.build();
+		return dto;
+	}
+	
+	
 	// 해당일자출석부 목록조회
-	public List<AttendanceDTO> getAttendanceDate(LocalDate currentDate){
+	public List<AttendanceDTO> getAttendanceByDate(LocalDate currentDate){
 		return attendanceRepository.findByAttendancedate(currentDate).stream()
 				.map(this::convertToDTO)
 				.collect(Collectors.toList());
 	}
 	
 	
-	public List<AttendanceDTO> getAttendenceDateAndBranch(LocalDate currentDate, Integer branchId){
+	public List<AttendanceDTO> getAttendenceByDateAndBranch(LocalDate currentDate, Integer branchId){
 		return testMapper.dateAndBranchAttendence(currentDate, branchId);
 	}
 
 	
 	// 일자,지점1,반1 출석부 조회
-	public List<AttendanceDTO> getAttendanceByDateAndBranchOrMonthGroup(LocalDate attendancedate
+	public List<AttendanceDTO> getAttendanceByDateAndBranchOrMonthGroup( String username
+												, LocalDate attendancedate
 												, Integer branch, Integer monthgroup) {
-		
-		System.out.println("attendancedate ::: " + attendancedate);
-		System.out.println("monthgroup ::: " + monthgroup);
-		System.out.println("branch ::: " + branch);
 		
 		// 선택된 반이 있다면 반id로 해당일자 출석부 조회
 		if(monthgroup != null) {
@@ -83,7 +95,11 @@ public class AttendanceService {
 			BranchEntity be = new BranchEntity();
 			be.setBranchId(branch);
 			
-			AttendanceEntity ae = attendanceRepository.findById(17).get();
+//			Optional<MembersEntity> me = membersRepository.findByUsername(username);
+//			
+//			Integer memberid = me.get().getMemberId();
+//			System.out.println("memberid ::: " + memberid);
+//			AttendanceEntity ae = attendanceRepository.findById(memberid).get();
 			
 			return attendanceRepository.findByAttendancedateAndBranch(attendancedate, be)
 					.stream()
@@ -92,8 +108,9 @@ public class AttendanceService {
 		}
     }
 	
+	
 	// 지점별 강아지 출력
-	public List<DogsDTO> findByBranch(Integer branchId) {
+	public List<DogsDTO> findDogByBranch(Integer branchId) {
         List<DogsEntity> dogs = dogsRepository.findByBranch(branchId);
 
         List<DogsDTO> dogsDTOList = new ArrayList<>();
@@ -108,11 +125,10 @@ public class AttendanceService {
     }
 	
 	
-	// USER_TYPE != REGULAR >>> 일반 수정
-	// USER_TYPE == REGULAR >>> 특이사항만 수정
-	public void updateAttendance(Integer username, AttendanceDTO attendanceDTO) {
-		Optional<MembersEntity> me = membersRepository.findById(username);
+	public void updateAttendance(AttendanceDTO attendanceDTO) {
+		
 		AttendanceEntity ae = AttendanceEntity.builder()
+				.id(attendanceDTO.getId())
 				.dog(attendanceDTO.getDog())
 				.daygroup(attendanceDTO.getDaygroup())
 				.monthgroup(attendanceDTO.getMonthgroup())
@@ -120,9 +136,14 @@ public class AttendanceService {
 				.status(attendanceDTO.getStatus())
 				.dailyreport(attendanceDTO.getDailyreport())
 				.notes(attendanceDTO.getNotes())
+				.branch(attendanceDTO.getBranch())
 				.build();
 				
 		attendanceRepository.save(ae);
+		
+		// USER_TYPE != REGULAR >>> 일반 수정
+		// USER_TYPE == REGULAR >>> 특이사항만 수정
+		
 //		if(me.get().getUser_type().equals("REGULAR")) {
 //			System.out.println("regular");
 //		} else {
@@ -133,10 +154,6 @@ public class AttendanceService {
 	
 	// 출석부 등록
 	public void createAttendance(Integer branchId, AttendanceDTO attendanceDTO) {
-		
-		System.out.println("===============서비스createAttendance================");
-		System.out.println(attendanceDTO.toString());
-		
 		BranchEntity be = new BranchEntity();
     	be.setBranchId(branchId);
 		

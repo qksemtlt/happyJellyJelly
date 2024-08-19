@@ -21,15 +21,17 @@ public class DailyReportsController {
 	@Autowired
 	private DailyReportsService dailyReportsService;
 	
+	
+	// 캘린더에 알림장 표시
 	@GetMapping("")
 	public String main(DailyReportsDTO daReportsDTO, Principal principal, Model model) {
 		List<DailyReportsDTO> list = dailyReportsService.getDailyReportsList(principal.getName());
 		model.addAttribute("list", list);
-//		diaryService.DiaryAll(principal.getName());
 		return "calendar/calendar";
 	}
 	
 	
+	// 알림장 상세조회
 	@GetMapping("select")
 	public String select(@RequestParam("selectDate") String selectDate,
 			@RequestParam("reportId") Integer reportId, Model model) {
@@ -41,7 +43,8 @@ public class DailyReportsController {
 		return "calendar/viewDailyReports";
 	}
 	
-	// 일지작성폼
+	
+	// 알림장 작성폼
 	@GetMapping("create")
 	public String create(@RequestParam("selectDate") String selectDate,
 			Model model) {
@@ -53,10 +56,14 @@ public class DailyReportsController {
 		return "calendar/createDailyReports";
 	}
 	
-	// 일지등록수행
+	
+	// 알림장 등록
 	@PostMapping("create")
-	public String create(DailyReportsDTO dailyReportsDTO, Principal principal, @RequestParam("selectDate") String selectDate) {
-		this.dailyReportsService.create(dailyReportsDTO, principal.getName(), selectDate);
+	public String create(DailyReportsDTO dailyReportsDTO
+							, Principal principal
+							, @RequestParam("attId") Integer attendanceId
+							, @RequestParam("selectDate") String selectDate) {
+		this.dailyReportsService.create(dailyReportsDTO, attendanceId, principal.getName(), selectDate);
 		return "redirect:calendar";
 	}
 	

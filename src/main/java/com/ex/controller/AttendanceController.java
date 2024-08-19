@@ -13,10 +13,7 @@ import com.ex.data.BranchesDTO;
 import com.ex.data.DogsDTO;
 import com.ex.data.MonthcareGroupsDTO;
 import com.ex.entity.BranchEntity;
-import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
-import com.ex.entity.MonthcareGroupsEntity;
-import com.ex.repository.TestMapper;
 import com.ex.service.AttendanceService;
 import com.ex.service.BranchesService;
 import com.ex.service.DogService;
@@ -25,6 +22,7 @@ import com.ex.service.MonthcareGroupsService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 
@@ -41,8 +39,6 @@ public class AttendanceController {
 	private MonthcareGroupsService monthcareGroupsService;
 	@Autowired
 	private BranchesService branchesService;
-	@Autowired
-	private DogService dogService;
 	
 	@GetMapping("test")
 	@ResponseBody
@@ -51,8 +47,9 @@ public class AttendanceController {
 	}
 
 	
+	// 출석부 목록
 	@GetMapping("")
-    public String getAttendance(@RequestParam(value = "date", required = false) String date,
+    public String getAttendanceList(@RequestParam(value = "date", required = false) String date,
     							@RequestParam(value = "selectMonthGroup", required = false) Integer selectMonthGroup,
                                 Model model, Principal principal) {
 		
@@ -71,16 +68,18 @@ public class AttendanceController {
 		
         // 모든반 출석부 목록조회	: 미선택시 	> 선생님이 근무하고 있는 지점의 해당일자 모든반 출석부
         // 특정반 출석부 목록조회 	: 반선택시 	> 선생님이 근무하고 있는 지점의 해당일자 해당반 출석부
-        List<AttendanceDTO> attendances = attendanceService.getAttendanceByDateAndBranchOrMonthGroup(currentDate, branchId, selectMonthGroup);
+        List<AttendanceDTO> attendances = attendanceService.getAttendanceByDateAndBranchOrMonthGroup(principal.getName(), currentDate, branchId, selectMonthGroup);
 
         model.addAttribute("currentDate", currentDate);
         model.addAttribute("brancheDTO", brancheDTO);
         model.addAttribute("monthGroupList", monthGroupList);
         model.addAttribute("attendances", attendances);
+        
         return "attendance/attendanceList";
     }
 	
 	
+	// 출석부 등록
 	@GetMapping("/createAttendance")
     public String createAttendanceForm(@RequestParam(value = "date", required = false) String date,
 							            Model model, Principal principal) {
@@ -88,29 +87,86 @@ public class AttendanceController {
 		// 지점명을 가져오기 위해 사용자의 근무지 지점정보를 가져와 AttendanceDTO에 대입
 		MembersEntity me = membersService.findByUsername(principal.getName());
 		Integer branchId = me.getBranchId();
-//		BranchesDTO brancheDTO = branchesService.getBranchById(branchId);
+		
+		// 지점별 정규반 목록과 강아지 목록조회
+		List<DogsDTO> dogList = attendanceService.findDogByBranch(branchId);
+		
 		BranchEntity be = new BranchEntity();
 		be.setBranchId(branchId);
 		AttendanceDTO attendanceDTO = new AttendanceDTO();
 		attendanceDTO.setBranch(be);
 		
-		// 지점별 정규반 목록과 강아지 목록조회
 		List<MonthcareGroupsDTO> monthGroupList = monthcareGroupsService.getMonthcareGroupByBranch(branchId);
-        List<DogsDTO> dogList = attendanceService.findByBranch(branchId);
         
+        model.addAttribute("dogList", dogList);
         model.addAttribute("brancheEntity", be);
         model.addAttribute("monthGroupList", monthGroupList);
-        model.addAttribute("dogList", dogList);
         return "attendance/createAttendance";
     }
 
 	
     @PostMapping("/create")
     public String createAttendance(@RequestParam("branch") Integer branchId, AttendanceDTO attendanceDTO) {
-    	System.out.println("===============컨트롤러 createAttendance=================");
-    	System.out.println("branchId ::: " + branchId);
     	attendanceService.createAttendance(branchId, attendanceDTO);
         return "redirect:/attendance";
+    }
+    
+    
+    // 출석부 상세조회
+    @GetMapping("/details/{id}")
+    public String viewOrEditAttendance(@PathVariable("id") Integer id,
+    									@RequestParam(value = "mode", defaultValue = "view") String mode,
+                                       Model model, Principal principal) {
+        
+        // 해당 출석부 항목 조회
+        AttendanceDTO attendance = attendanceService.getAttendanceById(id);
+        
+        // 사용자 정보 (지점 정보) 조회
+        MembersEntity me = membersService.findByUsername(principal.getName());
+        Integer branchId = me.getBranchId();
+        
+        // 소속 지점 정규반 목록 및 강아지 목록 조회
+        List<MonthcareGroupsDTO> monthGroupList = monthcareGroupsService.getMonthcareGroupByBranch(branchId);
+        List<DogsDTO> dogList = attendanceService.findDogByBranch(branchId);
+
+        model.addAttribute("attendance", attendance);
+        model.addAttribute("monthGroupList", monthGroupList);
+        model.addAttribute("dogList", dogList);
+        model.addAttribute("mode", mode);
+        
+        System.out.println("mode ::: " + mode);
+        
+        return "attendance/attendanceDetails";
+    }
+
+    
+    // 출석부 수정폼
+    @PostMapping("/updateForm")
+    public String updateAttendanceForm(AttendanceDTO attendanceDTO, Model model, Principal principal) {
+    	
+    	// 사용자 정보 (지점 정보) 조회
+        MembersEntity me = membersService.findByUsername(principal.getName());
+        Integer branchId = me.getBranchId();
+        
+        // 소속 지점 정규반 목록 및 강아지 목록 조회
+        List<MonthcareGroupsDTO> monthGroupList = monthcareGroupsService.getMonthcareGroupByBranch(branchId);
+        List<DogsDTO> dogList = attendanceService.findDogByBranch(branchId);
+
+        model.addAttribute("attendance", attendanceDTO);
+        model.addAttribute("monthGroupList", monthGroupList);
+        model.addAttribute("dogList", dogList);
+        
+        return "attendance/updateAttendance";
+    }
+    
+    
+    // 출석부 수정
+    @PostMapping("/update")
+    public String updateAttendance(AttendanceDTO attendanceDTO) {
+    	
+    	attendanceService.updateAttendance(attendanceDTO);
+    	
+    	return "redirect:/attendance";
     }
 	
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.ex.data.KakaoPayDTO;
 import com.ex.service.AdmissionsService;
+import com.ex.service.DogAssignmentsService;
 import com.ex.service.KakaoPayService;
 import com.ex.service.SubscriptionsService;
 
@@ -21,6 +22,7 @@ public class KakaoPayController {
     private final KakaoPayService kakaoPay;
     private final AdmissionsService admissionsService;
     private final SubscriptionsService subscriptionsService;
+    private final DogAssignmentsService dogAssignmentsService;
 
     @PostMapping("/kakaoPay")
     public String kakaoPay(KakaoPayDTO kakaoDTO, Principal principal, @RequestParam("admissionId") int admissionId){
@@ -46,6 +48,10 @@ public class KakaoPayController {
         admissionsService.updateAdmissionStatus(admissionId, "DONE", reason);
         
         subscriptionsService.createSubscription(principal.getName(), admissionId, kakaoDTO);
+        
+        //추가
+       // dogAssignmentsService.assignDogToClass(admissionId);
+        
         
         redirectAttributes.addFlashAttribute("kakaoDTO", kakaoDTO);
         return "redirect:/kakao/completed";

@@ -1,1 +1,44 @@
-<h1>hello world dogAssign</h1>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>강아지 반 배정 목록</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="mb-4">강아지 반 배정 목록</h1>
+        
+        <div th:each="group : ${groups}" class="card mb-4">
+            <div class="card-header">
+                <h2 th:text="${group.name}" class="mb-0">반 이름</h2>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>강아지 이름</th>
+                            <th>시작일</th>
+                            <th>종료일</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="assignment : ${assignmentsByGroup.get(group.id)}">
+                            <td th:text="${assignment.dogs.dogname}">강아지 이름</td>
+                            <td th:text="${#temporals.format(assignment.startDate, 'yyyy-MM-dd')}">시작일</td>
+                            <td th:text="${#temporals.format(assignment.endDate, 'yyyy-MM-dd')}">종료일</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div th:if="${groups.empty}" class="alert alert-info">
+            현재 등록된 반이 없습니다.
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

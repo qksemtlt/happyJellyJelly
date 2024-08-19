@@ -1,10 +1,7 @@
 package com.ex.service;
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDate;
-<<<<<<< HEAD
-=======
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
->>>>>>> branch 'leeji' of https://github.com/gomting0/happyJelly.git
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,18 +9,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ex.data.AttendanceDTO;
-<<<<<<< HEAD
-=======
-import com.ex.data.BranchesDTO;
 import com.ex.data.DogsDTO;
->>>>>>> branch 'leeji' of https://github.com/gomting0/happyJelly.git
-import com.ex.data.MonthcareGroupsDTO;
 import com.ex.entity.AttendanceEntity;
 import com.ex.entity.BranchEntity;
-<<<<<<< HEAD
-=======
 import com.ex.entity.DogsEntity;
->>>>>>> branch 'leeji' of https://github.com/gomting0/happyJelly.git
 import com.ex.entity.MembersEntity;
 import com.ex.entity.MonthcareGroupsEntity;
 import com.ex.repository.AttendanceRepository;
@@ -33,6 +22,7 @@ import com.ex.repository.MonthcareGroupsRepository;
 import com.ex.repository.TestMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 
 @Slf4j
 @Service

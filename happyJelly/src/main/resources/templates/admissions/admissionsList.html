@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Happy Jelly - 입학 신청 목록</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        h2 {
+            margin-bottom: 30px;
+        }
+        .table th {
+            background-color: #f8f9fa;
+        }
+        .btn-container {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        .status-pending {
+            color: #ff8c00 !important;
+            font-weight: bold;
+        }
+        .status-approved {
+            color: #008000 !important;
+            font-weight: bold;
+        }
+        .status-rejected {
+            color: rgb(191, 0, 24) !important;
+            font-weight: bold;
+        }
+        .status-canceled {
+            color: #6c757d !important;
+            font-weight: bold;
+        }
+        .status-done {
+            color: #0033CC !important;
+            font-weight: bold;
+        }
+        .pagination {
+            margin-top: 20px;
+        }
+        .page-item.active .page-link {
+            background-color: #ffc107;
+            border-color: #ffc107;
+        }
+        .page-link {
+            color: #000;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav th:replace="~{navbar::navbarFragment}"></nav>
+    <div class="container my-5" layout:fragment="content">
+        <h2 class="text-center mb-4">입학 신청 목록</h2>
+
+        <!-- 상태 필터 추가 -->
+        <div class="mb-3">
+            <form id="statusForm" th:action="@{/admissions/admissionsList}" method="get" class="form-inline">
+                <input type="hidden" name="page" th:value="${admissionsList.number}">
+                <select id="statusSelect" name="status" class="form-control mr-2">
+                    <option value="">모든 상태</option>
+                    <option value="PENDING">대기중</option>
+                    <option value="APPROVED">승인됨</option>
+                    <option value="REJECTED">거부됨</option>
+                    <option value="CANCELED">취소됨</option>
+                    <option value="DONE">결제 완료</option>
+                </select>
+            </form>
+        </div>
+        <!-- 관리자 및 디렉터용 뷰 -->
+        <div th:if="${userType == 'ADMIN' or userType == 'DIRECTOR'}">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th>번호</th>
+                        <th>강아지 이름</th>
+                        <th>신청 날짜</th>
+                        <th>상태</th>
+                        <th>견주 이름</th>
+                        <th>지점</th>
+                        <th>상세보기</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="admission : ${admissionsList.content}">
+                        <td th:text="${admission.admissionId}"></td>
+                        <td th:text="${admission.dogs.dogname}"></td>
+                        <td th:text="${#dates.format(admission.applicationDate, 'yyyy-MM-dd')}"></td>
+                        <td th:classappend="${admission.status == 'APPROVED' ? 'status-approved' : (admission.status == 'REJECTED' ? 'status-rejected' : 
+                           (admission.status == 'CANCELED' ? 'status-canceled' : (admission.status == 'DONE' ? 'status-done' : 'status-pending')))}"
+                            th:text="${admission.status == 'APPROVED' ? '승인됨' : (admission.status == 'REJECTED' ? '거부됨' : (admission.status == 'CANCELED' ? '취소됨' : (admission.status == 'DONE' ? '결제 완료' : '대기중')))}">
+                        </td>
+                        <td th:text="${admission.dogs.member.name}"></td>
+                        <td th:text="${admission.branch.name}"></td>
+                        <td>
+                            <a th:href="@{/admissions/admissionsDetail/{id}(id=${admission.admissionId})}" class="btn btn-secondary btn-sm">상세보기</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 일반 사용자용 뷰 -->
+        <div th:if="${userType != 'ADMIN' and userType != 'DIRECTOR'}">
+            <div th:if="${dogsList == null or #lists.isEmpty(dogsList)}" class="row justify-content-center mt-4">
+                <div class="row my-3">
+                    <div class="col-12 text-end">
+                        <a href="/dogs/addDogs" class="btn btn-warning btn-sm">강아지 추가</a>
+                    </div>
+                </div>
+                <div class="col-md-6 text-center">
+                    <div class="alert alert-danger" role="alert">
+                        입학 신청을 위해 강아지를 먼저 등록해 주세요.   
+                    </div>
+                </div>
+            </div>
+            <div th:if="${dogsList != null and not #lists.isEmpty(dogsList)}">
+                <div class="row my-3">
+                  <div class="col-12 text-end">
+                    <a th:href="@{/admissions}" class="btn btn-dark">입학 신청</a>
+                  </div>
+                </div>
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>번호</th>
+                            <th>강아지 이름</th>
+                            <th>신청 날짜</th>
+                            <th>상태</th>
+                            <th>상세보기</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="admission : ${admissionsList.content}">
+                            <td th:text="${admission.admissionId}"></td>
+                            <td th:text="${admission.dogs.dogname}"></td>
+                            <td th:text="${#dates.format(admission.applicationDate, 'yyyy-MM-dd')}"></td>
+                            <td th:classappend="${admission.status == 'APPROVED' ? 'status-approved' : (admission.status == 'REJECTED' ? 'status-rejected' : 
+                               (admission.status == 'CANCELED' ? 'status-canceled' : (admission.status == 'DONE' ? 'status-done' : 'status-pending')))}"
+                                th:text="${admission.status == 'APPROVED' ? '승인됨' : (admission.status == 'REJECTED' ? '거부됨' : (admission.status == 'CANCELED' ? '취소됨' : (admission.status == 'DONE' ? '결제 완료' : '대기중')))}">
+                            </td>
+                            <td>
+                                <a th:href="@{/admissions/admissionsDetail/{id}(id=${admission.admissionId})}" class="btn btn-secondary btn-sm">상세보기</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 페이지네이션 -->
+        <div th:if="${admissionsList.totalPages > 1}" class="d-flex justify-content-center">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${admissionsList.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admissions/admissionsList(page=${admissionsList.number - 1}, status=${param.status})}" tabindex="-1">이전</a>
+                </li>
+                <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, admissionsList.totalPages - 1)}"
+                    th:classappend="${pageNumber == admissionsList.number} ? 'active'">
+                    <a class="page-link" th:href="@{/admissions/admissionsList(page=${pageNumber}, status=${param.status})}" th:text="${pageNumber + 1}"></a>
+                </li>
+                <li class="page-item" th:classappend="${admissionsList.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admissions/admissionsList(page=${admissionsList.number + 1}, status=${param.status})}">다음</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var statusSelect = document.getElementById('statusSelect');
+        var statusForm = document.getElementById('statusForm');
+        var currentStatus = /*[[${param.status}]]*/ '';
+
+        // 페이지 로드 시 현재 상태 설정
+        if (currentStatus) {
+            statusSelect.value = currentStatus;
+        }
+
+        statusSelect.addEventListener('change', function() {
+            if (this.value === '') {
+                // '모든 상태'가 선택됐을 때
+                var urlWithoutStatus = new URL(window.location.href);
+                urlWithoutStatus.searchParams.delete('status');
+                window.location.href = urlWithoutStatus.toString();
+            } else {
+                // 특정 상태가 선택됐을 때
+                statusForm.submit();
+            }
+        });
+    });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

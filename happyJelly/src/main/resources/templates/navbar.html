@@ -1,0 +1,53 @@
+<nav th:fragment="navbarFragment" class="navbar navbar-expand-lg bg-warning">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">
+        <img src="/images/dog_imoji.png" alt="logo" height="40" class="d-inline-block align-text-top">
+        
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/">Happy Jelly</a>
+        </li>
+        <li class="nav-item">
+		    <a class="nav-link active" aria-current="page" href="/admissions/notice" 
+		       th:if="${!#authorization.expression('isAuthenticated()') or #authorization.expression('hasRole(''ROLE_USER'')')}">입학안내</a>
+		    <a class="nav-link active" aria-current="page" href="/admissions/admissionsList" 
+		       th:if="${#authorization.expression('hasAnyRole(''ROLE_DIRECTOR'', ''ROLE_TEACHER'', ''ROLE_ADMIN'')')}">입학신청관리</a>
+		</li>
+        <li class="nav-item" th:if="${#authorization.expression('hasAnyRole(''ROLE_DIRECTOR'', ''ROLE_TEACHER'')')}">
+          <a class="nav-link active" aria-current="page" href="/month/list">반 관리</a>
+        </li>
+        <li class="nav-item" th:if="${#authorization.expression('hasAnyRole(''ROLE_DIRECTOR'', ''ROLE_TEACHER'')')}">
+          <a class="nav-link active" aria-current="page" href="/dogassignments/dogassignmentsList">강아지 관리</a>
+        </li>
+        <li class="nav-item" th:if="${#authorization.expression('hasAnyRole(''ROLE_DIRECTOR'', ''ROLE_TEACHER'')')}">
+          <a class="nav-link active" aria-current="page" href="/attendance">출석부</a>
+        </li>
+        <li class="nav-item" th:if="${#authorization.expression('hasAnyRole(''ROLE_DIRECTOR'', ''ROLE_TEACHER'', ''ROLE_ADMIN'')')}">
+          <a class="nav-link active" aria-current="page" href="/tickets/list">이용권 관리</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+            <a class="nav-link" th:href="@{/managingSys/branch}">관리시스템</a>
+        </li>        
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/searchMap/branchSearchMain"
+          	th:if="${!#authorization.expression('isAuthenticated()') or #authorization.expression('hasRole(''ROLE_USER'')')}">지점 안내</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/members/login}" sec:authorize="isAnonymous()">로그인</a>
+          <a class="nav-link" th:href="@{/members/logout}" sec:authorize="isAuthenticated()">로그아웃</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/members/signup}" sec:authorize="isAnonymous()">회원가입</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/members/mypage" sec:authorize="isAuthenticated()">마이페이지</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

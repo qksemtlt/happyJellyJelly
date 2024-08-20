@@ -134,8 +134,6 @@ public class AttendanceController {
         model.addAttribute("dogList", dogList);
         model.addAttribute("mode", mode);
         
-        System.out.println("mode ::: " + mode);
-        
         return "attendance/attendanceDetails";
     }
 

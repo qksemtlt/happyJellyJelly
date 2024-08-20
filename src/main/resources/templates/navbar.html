@@ -13,13 +13,26 @@
           <a class="nav-link active" aria-current="page" href="/">Happy Jelly</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/admissions/admissionsList">유치원 입학</a>
+          <a class="nav-link active" aria-current="page" href="/admissions/notice">입학안내</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/tickets/list">이용권</a>
+        <li class="nav-item" th:if="${#authorization.expression('hasAnyRole(''ROLE_DIRECTOR'', ''ROLE_TEACHER'')')}">
+          <a class="nav-link active" aria-current="page" href="/month/list">반 관리</a>
         </li>
+        
+           <li class="nav-item" th:if="${#authorization.expression('hasAnyRole(''ROLE_DIRECTOR'', ''ROLE_TEACHER'')')}">
+          <a class="nav-link active" aria-current="page" th:href="@{/dogassignments/dogassignmentsList}">강아지 관리</a>
+        <li class="nav-item" th:if="${#authorization.expression('hasAnyRole(''ROLE_DIRECTOR'', ''ROLE_TEACHER'')')}">
+          <a class="nav-link active" aria-current="page" href="/attendance">출석부</a>
+        </li>
+        
+        <li class="nav-item" th:if="${#authorization.expression('hasAnyRole(''ROLE_DIRECTOR'', ''ROLE_TEACHER'', ''ROLE_ADMIN'')')}">
+          <a class="nav-link active" aria-current="page" href="/tickets/list">이용권 관리</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+            <a class="nav-link" th:href="@{/managingSys/branch}">관리시스템</a>
+        </li>        
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/calendar/">알림장</a>
+          <a class="nav-link active" aria-current="page" href="/">지점 안내</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" th:href="@{/members/login}" sec:authorize="isAnonymous()">로그인</a>

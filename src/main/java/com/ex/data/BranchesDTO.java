@@ -1,12 +1,8 @@
-
-
 package com.ex.data;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.List;
 
 @Data
@@ -20,7 +16,7 @@ public class BranchesDTO {
     private String address;
     private String address2;
     private String phone;
-    private boolean active;
+    private Boolean active;
     private List<MonthcareGroupsDTO> monthcareGroups;
     private Double latitude;
     private Double longitude;

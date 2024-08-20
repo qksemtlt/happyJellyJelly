@@ -11,6 +11,7 @@ import java.util.List;
 @Builder
 public class BranchesListResponseDTO {
     private List<BranchesDTO> branches;
-    private long totalElements;
     private int totalPages;
+    private long totalElements;
+    private int currentPage;
 }

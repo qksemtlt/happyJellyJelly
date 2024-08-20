@@ -14,7 +14,7 @@ import com.ex.service.DailyReportsService;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/calendar*")
+@RequestMapping("/calendar/*")
 @RequiredArgsConstructor
 public class DailyReportsController {
 	
@@ -32,7 +32,7 @@ public class DailyReportsController {
 	
 	
 	// 알림장 상세조회
-	@GetMapping("/select")
+	@GetMapping("select")
 	public String select(@RequestParam("selectDate") String selectDate,
 			@RequestParam("reportId") Integer reportId, Model model) {
 		System.out.println("reportId ::: " + reportId);
@@ -45,7 +45,7 @@ public class DailyReportsController {
 	
 	
 	// 알림장 작성폼
-	@GetMapping("/createForm")
+	@GetMapping("create")
 	public String create(@RequestParam("selectDate") String selectDate,
 			Model model) {
 		System.out.println("일지등록 다이어리 컨트롤러 selectDate ::: " + selectDate);
@@ -58,7 +58,7 @@ public class DailyReportsController {
 	
 	
 	// 알림장 등록
-	@PostMapping("/create")
+	@PostMapping("create")
 	public String create(DailyReportsDTO dailyReportsDTO
 							, Principal principal
 							, @RequestParam("attId") Integer attendanceId

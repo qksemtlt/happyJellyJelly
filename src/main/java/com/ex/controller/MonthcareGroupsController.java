@@ -37,7 +37,7 @@ public class MonthcareGroupsController {
 	    
 	    Map<Integer, String> capacityInfoMap = new HashMap<>();
 	    for (MonthcareGroupsDTO group : monthcareList) {
-	        int currentStudents = dogAssignmentsService.countCurrentAndFutureStudentsInGroup(group.getId());
+	        int currentStudents = dogAssignmentsService.countCurrentStudentsInGroup(group.getId());
 	        String capacityInfo = currentStudents + " / " + group.getCapacity();
 	        capacityInfoMap.put(group.getId(), capacityInfo);
 	    }

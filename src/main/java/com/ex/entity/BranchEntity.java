@@ -37,12 +37,12 @@ public class BranchEntity {
     
     @Column(name = "ACTIVE")
     @ColumnDefault("true")
-    private boolean active;    
+    private Boolean active;    
     
     @Column(name = "LATITUDE", precision = 10, scale = 8)
     private BigDecimal latitude;
 
-    @Column(name = "LONGITUDE", precision = 10, scale = 8)
+    @Column(name = "LONGITUDE", precision = 11, scale = 8)
     private BigDecimal longitude;
     
     @OneToMany(mappedBy="branches", cascade=CascadeType.REMOVE)

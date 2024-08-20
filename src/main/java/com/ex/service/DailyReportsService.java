@@ -2,11 +2,8 @@ package com.ex.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.ex.data.AttendanceDTO;
 import com.ex.data.DailyReportsDTO;
 import com.ex.entity.AttendanceEntity;
 import com.ex.entity.DailyReportsEntity;
@@ -105,12 +102,8 @@ public class DailyReportsService {
 		
 		de = dailyReportsRepository.save(de);
 		
-		// 알림장 id 가져오기
-		System.out.println("알림장 등록 완료, 알림장 id ::: " + de.getId());
-//		de.setId(de.getId());
-		ae.setDailyreport(de);
 		
-		attendanceRepository.save(ae);
+		de.getId();
 		// 알림장 등록시 출석부의 알림장id도 update되어야함
 		// 알림장 테이블에서 attendance id를 이미 참조하고 있기 때문에 해당 id를 가지고 알림장id를 넣어주면 됨
 		// 출석부테이블에 알림장 id 넣어주기

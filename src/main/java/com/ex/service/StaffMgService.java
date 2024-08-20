@@ -7,6 +7,10 @@ import com.ex.repository.BranchesRepository;
 import com.ex.repository.MembersMgRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,13 +23,19 @@ public class StaffMgService {
     private final BranchesRepository branchRepository;
 
     // 직원 조회 관련 메서드
-    public List<StaffMgDTO> getAllStaff() {
+    public Page<StaffMgDTO> getAllStaff(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MembersEntity> staffEntities = membersMgRepository.findByUserTypeNotIn(List.of("REGULAR"), pageable);
+        return staffEntities.map(this::convertToDTOWithBranch);
+    }
+
+    public List<StaffMgDTO> getAllStaffList() {
         List<MembersEntity> staffEntities = membersMgRepository.findByUserTypeNotIn(List.of("REGULAR"));
         return staffEntities.stream()
                             .map(this::convertToDTOWithBranch)
                             .collect(Collectors.toList());
     }
-
+    
     public StaffMgDTO getStaffById(Integer id) {
         return membersMgRepository.findById(id)
 //            .filter(member -> isStaff(member.getUserType()))
@@ -36,13 +46,13 @@ public class StaffMgService {
             .orElseThrow(() -> new RuntimeException("Staff not found"));
     }
 
-    public List<StaffMgDTO> searchStaff(String keyword) {
-        List<MembersEntity> memberEntities = membersMgRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrUserTypeContainingIgnoreCase(keyword, keyword, keyword);
+    public Page<StaffMgDTO> searchStaff(String keyword, int page, int size, String sortBy, String sortDir) {
+        Sort sort = Sort.by(sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
 
-        return memberEntities.stream()
-            .filter(member -> isStaff(member.getUserType()))
-            .map(this::convertToDTOWithBranch)
-            .collect(Collectors.toList());
+        Page<MembersEntity> staffPage = membersMgRepository.searchStaffByKeyword(keyword, pageable);
+
+        return staffPage.map(this::convertToDTOWithBranch);
     }
 
     public List<StaffMgDTO> getAllRegularMembers() {
@@ -148,7 +158,7 @@ public class StaffMgService {
     }
 
     @Transactional
-    public boolean deactivateStaff(Integer id) {
+    public Boolean deactivateStaff(Integer id) {
         MembersEntity member = membersMgRepository.findById(id).orElse(null);
         if (member != null && isStaff(member.getUserType())) {
             member.setUserType("INACTIVE");
@@ -159,7 +169,7 @@ public class StaffMgService {
     }
 
     @Transactional
-    public boolean deleteStaff(Integer id) {
+    public Boolean deleteStaff(Integer id) {
         if (membersMgRepository.existsById(id)) {
             MembersEntity member = membersMgRepository.findById(id).orElse(null);
             if (member != null && isStaff(member.getUserType())) {
@@ -178,15 +188,15 @@ public class StaffMgService {
     }
 
     // 유틸리티 메서드
-    private boolean isStaff(MembersEntity member) {
+    private Boolean isStaff(MembersEntity member) {
         return isStaff(member.getUserType());
     }
 
-    private boolean isStaff(String userType) {
+    private Boolean isStaff(String userType) {
         return List.of("TEACHER", "DIRECTOR", "ADMIN").contains(userType);
     }
 
-    private boolean isValidUserType(String userType) {
+    private Boolean isValidUserType(String userType) {
         return List.of("REGULAR", "TEACHER", "DIRECTOR", "ADMIN", "INACTIVE").contains(userType);
     }
 
@@ -217,8 +227,9 @@ public class StaffMgService {
                 .branchId(branch.getBranchId())
                 .branchesName(branch.getName())
                 .address(branch.getAddress())
+                .address2(branch.getAddress2())
                 .phone(branch.getPhone())
-                .active(branch.isActive())
+                .active(branch.getActive())
                 .build();
     }
 }

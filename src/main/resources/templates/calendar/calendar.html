@@ -44,7 +44,7 @@
 			dayMaxEvents : true, // allow "more" link when too many events
 			selectMirror : true,
 			select : function(arg) {
-				window.location = "/calendar/createForm?selectDate="
+				window.location = "/calendar/create?selectDate="
 						+ arg.startStr;
 				calendar.unselect()
 			},

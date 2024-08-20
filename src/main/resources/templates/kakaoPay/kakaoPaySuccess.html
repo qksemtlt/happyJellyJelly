@@ -64,7 +64,7 @@
                         </div>
                         <div class="payment-item row">
                             <div class="col-sm-4 payment-label">가격:</div>
-                            <div class="col-sm-8 payment-value" th:text="*{total_amount + '원'}"></div>
+                            <div class="col-sm-8 payment-value" th:text="*{#numbers.formatCurrency(total_amount)}"></div>
                         </div>
                         <div class="payment-item row">
                             <div class="col-sm-4 payment-label">결제시각:</div>

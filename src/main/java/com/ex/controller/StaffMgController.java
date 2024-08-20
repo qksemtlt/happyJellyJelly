@@ -6,6 +6,7 @@ import com.ex.service.StaffMgService;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,17 +24,24 @@ public class StaffMgController {
 
  // 직원 목록을 조회하고 staffManagement 페이지를 반환하는 메서드
     @GetMapping("")
-    public String listStaff(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
-        List<StaffMgDTO> staffList;
-//        if (keyword == null || keyword.equals("")) {
-//            staffList = staffMgService.getAllStaff(); // 전체 직원 조회
-//        } else {
-//            staffList = staffMgService.searchStaff(keyword); // 키워드로 직원 검색
-//        }
-        staffList = staffMgService.getAllStaff();
-        System.out.println("Staff list size: " + staffList.size()); // 로그 추가
-        model.addAttribute("staffList", staffList);
-        return "managingSys/staffDetail/staffManagement";
+    public String listStaff(@RequestParam(value = "page", defaultValue = "0") int page,
+                            @RequestParam(value = "size", defaultValue = "10") int size,
+                            Model model) {
+        Page<StaffMgDTO> staffPage = staffMgService.getAllStaff(page, size);
+        model.addAttribute("staffPage", staffPage);
+        return "managingSys/staff/staffManagement";
+    }
+    
+    @GetMapping("/api/search")
+    @ResponseBody
+    public ResponseEntity<Page<StaffMgDTO>> searchStaffApi(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sortBy", defaultValue = "name") String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir) {
+        Page<StaffMgDTO> staffPage = staffMgService.searchStaff(keyword, page, size, sortBy, sortDir);
+        return ResponseEntity.ok(staffPage);
     }
     
     // 특정 ID의 직원 정보를 JSON 형태로 반환하는 메서드
@@ -47,11 +55,11 @@ public class StaffMgController {
     // 직원 등록 폼을 보여주는 메서드
     @GetMapping("/register")
     public String showRegisterStaffForm(Model model) {
-    	List<StaffMgDTO> staffList = staffMgService.getAllRegularMembers();
-    	System.out.println("=========================="+staffList);
+       List<StaffMgDTO> staffList = staffMgService.getAllRegularMembers();
+       System.out.println("=========================="+staffList);
         model.addAttribute("memberList", staffMgService.getAllRegularMembers());
         model.addAttribute("branchList", staffMgService.getAllBranches());
-        return "managingSys/staffDetail/staffRegister";
+        return "managingSys/staff/staffRegister";
     }
 
     // 새 직원을 등록하는 메서드
@@ -59,7 +67,7 @@ public class StaffMgController {
     public String registerStaff( StaffMgDTO staffDTO) {
         try {
             staffMgService.registerStaff(staffDTO);
-            return "managingSys/staffDetail/staffRegisterSuccss";
+            return "managingSys/staff/staffRegisterSuccss";
         } catch (Exception e) {
             e.printStackTrace();
             return "x";
@@ -72,7 +80,7 @@ public class StaffMgController {
         List<BranchesDTO> branches = staffMgService.getAllBranches();
         model.addAttribute("staff", staff);
         model.addAttribute("branches", branches);
-        return "managingSys/staffDetail/staffEdit";
+        return "managingSys/staff/staffEdit";
     }
 
     @PostMapping("/staffEdit/{id}")
@@ -86,7 +94,7 @@ public class StaffMgController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "직원 정보 수정 중 오류가 발생했습니다: " + e.getMessage());
         }
-        return "redirect:/managingSys/staffDetail";
+        return "redirect:/managingSys/staff";
     }
     
     // 직원의 타입(직급)을 업데이트하는 메서드

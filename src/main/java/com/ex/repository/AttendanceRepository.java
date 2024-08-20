@@ -10,10 +10,10 @@ import java.time.LocalDate;
 @Repository
 public interface AttendanceRepository extends JpaRepository<AttendanceEntity, Integer>{
 
-	List<AttendanceEntity> findByAttendancedate(LocalDate attendancedate);
+   List<AttendanceEntity> findByAttendancedate(LocalDate attendancedate);
 
-	List<AttendanceEntity> findByAttendancedateAndBranch(LocalDate attendancedate, BranchEntity branch);
-	
-	List<AttendanceEntity> findByAttendancedateAndMonthgroup(LocalDate attendancedate, MonthcareGroupsEntity monthgroup);
-	
+   List<AttendanceEntity> findByAttendancedateAndBranch(LocalDate attendancedate, BranchEntity branch);
+   
+   List<AttendanceEntity> findByAttendancedateAndMonthgroup(LocalDate attendancedate, MonthcareGroupsEntity monthgroup);
+   
 }

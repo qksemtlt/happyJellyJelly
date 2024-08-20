@@ -194,7 +194,10 @@ public class AdmissionsService {
     public void setSubscription (SubscriptionsEntity subs, Integer admissonId) {
 		AdmissionsEntity ae = admissionRepository.findById(admissonId).get();
 		ae.setSubscription(subs);
+		System.out.println(subs);
 		admissionRepository.save(ae);
 	}
+    
+    
   
 }

@@ -10,7 +10,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.ex.data.KakaoPayDTO;
 import com.ex.entity.SubscriptionsEntity;
 import com.ex.service.AdmissionsService;
-import com.ex.service.AttendanceService;
 import com.ex.service.DogAssignmentsService;
 import com.ex.service.KakaoPayService;
 import com.ex.service.SubscriptionsService;
@@ -25,7 +24,6 @@ public class KakaoPayController {
     private final AdmissionsService admissionsService;
     private final SubscriptionsService subscriptionsService;
     private final DogAssignmentsService dogAssignmentsService;
-    private final AttendanceService attendanceService;
 
     @PostMapping("/kakaoPay")
     public String kakaoPay(KakaoPayDTO kakaoDTO, Principal principal, @RequestParam("admissionId") int admissionId){
@@ -45,26 +43,18 @@ public class KakaoPayController {
                                   Principal principal) {
         KakaoPayDTO kakaoDTO = kakaoPay.payApprove(pgToken);
         
-        // 입학 상태 변경
         String reason = null;
         admissionsService.updateAdmissionStatus(admissionId, "DONE", reason);
         
-        // 구독 정보 입력
         SubscriptionsEntity subs = subscriptionsService.createSubscription(principal.getName(), admissionId, kakaoDTO);
-        
-        // 입학테이블에 구독정보 입력
         admissionsService.setSubscription(subs, admissionId);
         
-        // 강아지 배정
+        //추가
         dogAssignmentsService.assignDogToClass(admissionId);
-       
-        // 출석부 등록
-        attendanceService.setMonthAttendance(subs);
         
         redirectAttributes.addFlashAttribute("kakaoDTO", kakaoDTO);
         return "redirect:/kakao/completed";
     }
-    
     
     @GetMapping("/completed")
     public String complete(@ModelAttribute("kakaoDTO") KakaoPayDTO kakaoDTO, Model model) {

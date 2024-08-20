@@ -7,7 +7,7 @@
 	<select id="dateAndBranchAttendence" resultType="com.ex.data.AttendanceDTO">
 		select * from Attendance 
 			where 
-			BRANCH_BRANCH_ID = #{branchid} 
+			ATTENDANCE_ID = #{branchid} 
 			And ATTENDANCEDATE = #{currentDate}
 	</select>
 	

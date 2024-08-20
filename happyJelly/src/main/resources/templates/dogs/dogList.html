@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>강아지 목록 조회</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>강아지 목록 조회</h1>
+    
+    <form th:action="@{/dogs/}" method="get">
+    	<input type="hidden" id="branches_id">
+<!--     <form th:action="@{/dogs/search}" method="get"> -->
+        <select name="">
+            <option value="전체">전체</option>
+            <option value="마키꽁뽕">마키꽁뽕</option>
+            <option value="요기파">요기파</option>
+            <option value="장디방">장디방</option>
+            <option value="휘핑">휘핑</option>
+        </select>
+        <input type="submit" value="검색">
+    </form>
+
+    <div>
+<!--         <span>승인완료: </span><span th:text="${approvedCount}">0</span>마리 -->
+<!--         <span>승인대기: </span><span th:text="${pendingCount}">0</span>마리 -->
+    </div>
+
+    <table>
+        <tr><td><a href="#" >반 추가</a></td></tr>
+        <tr>
+            <th>반 이름</th>
+            <th>보호자</th>
+            <th>강아지 이름</th>
+            <th>품종</th>
+        </tr>
+		<tr th:each="dogs : ${dogsList}">
+            <td th:text="${dogs.member.join_date}"></td>
+            <td th:text="${dogs.member.name}">보호자 성함</td>
+<!--             <td th:text="${dogs.dog_id}">보호자</td> -->
+<!--             <td><a href="/dogs/detail" th:text="${dogs.dogname}">강아지 이름</a></td> -->
+            <td><a th:href="@{|/dogs/detail/${dogs.dog_id}|}" th:text="${dogs.dogname}"></a></td>
+            <td th:text="${dogs.breed}">강아지 품종</td>
+        </tr>
+    </table>
+</body>

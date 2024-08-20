@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>출석부</title>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+	<style>
+		body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+		.container {
+			margin-top: 50px;
+		}
+
+		th,
+		td {
+			padding: 10px;
+			text-align: center;
+			border: 1px solid #ddd;
+		}
+
+		th {
+			background-color: #f2f2f2;
+		}
+
+		/* Flexbox를 이용해 버튼과 날짜를 가로로 배치 */
+		.date-navigation {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin-bottom: 20px;
+		}
+
+		.date-navigation h3 {
+			margin: 0 15px;
+			/* 버튼과의 간격을 위한 여백 설정 */
+		}
+	</style>
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+	<nav th:replace="~{navbar::navbarFragment}"></nav>
+	<div class="container">
+		<h2 class="text-center mb-4">출석부</h2>
+
+		<!-- Flexbox를 사용한 날짜와 버튼의 가로 배치 -->
+		<div class="date-navigation">
+			<button class="btn btn-primary" onclick="navigateDate(-1)">&lt;</button>
+			<h3 id="currentDateText" th:text="${currentDate}">2024-07-11</h3>
+			<button class="btn btn-primary" onclick="navigateDate(1)">&gt;</button>
+		</div>
+		<table>
+			<tr>
+				<th><span th:text="${brancheDTO.branchesName}"></span></th>
+				<td>
+<!--					<select id="groupSelect" name="mothcaregroups.id" required onchange="updateGroups()">-->
+					<select id="groupSelect" name="monthGroupList" required onchange="updateGroups()">
+						<option value="">반을 선택해주세요</option>
+						<option th:each="group : ${monthGroupList}" 
+								th:value="${group.id}" 
+								th:text="${group.name}">
+						</option>
+					</select>
+				</td>
+				<!-- 출석부 추가 버튼 -->
+				<td>
+					<div class="add-attendance-button">
+			            <button class="btn btn-success" onclick="window.location.href='/attendance/createAttendance'">출석부 추가</button>
+			        </div>
+				</td>
+			</tr>
+		</table>
+
+		<table class="table mt-4">
+			<thead>
+				<tr>
+					<th>일자</th>
+					<th>반</th>
+					<th>강아지 이름</th>
+					<th>출석</th>
+					<th>특이사항</th>
+					<th>알림장</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="attendance : ${attendances}">
+					<td th:text="${attendance.attendancedate}"></td>
+<!--					<td th:text="${attendance.monthgroup}"></td>-->
+<!--					<td th:text="${attendance.dog.dogname}"></td>-->
+					<td th:text="${attendance.monthgroup != null ? attendance.monthgroup.name : 'N/A'}"></td>
+					<td th:text="${attendance.dog != null ? attendance.dog.dogname : 'N/A'}"></td>
+					<td th:text="${attendance.status}"></td>
+					<td th:text="${attendance.notes}"></td>
+					<td>
+						<button class="btn btn-info" onclick="navigateToAlert(/* 여기에 attendance.id */)">알림장</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+<script>
+	function navigateDate(offset) {
+		// 현재 화면에 표시된 날짜를 가져옴
+		var currentDateText = document.getElementById('currentDateText').textContent;
+		var currentDate = new Date(currentDateText);
+		console.log("날자 ::: " + currentDate);
+		alert(currentDate);
+
+		// offset을 적용하여 새로운 날짜를 계산함
+		currentDate.setDate(currentDate.getDate() + offset);
+
+		// 새로운 날짜로 페이지 이동
+		window.location.href = `/attendance?date=${currentDate.toISOString().split('T')[0]}`;
+	}
+
+	function navigateToAlert(attendanceId) {
+		// 알림장 작성 여부에 따라 알림장 화면으로 이동
+		window.location.href = `/alert/${attendanceId}`;
+	}
+	
+	function updateGroups() {
+		var currentDatee = document.getElementById('currentDateText').textContent;
+		var currentDate = new Date(currentDateText);
+		
+		var selectElement = document.getElementById("groupSelect");
+        var selectMonthGroup = selectElement.value;
+		
+        window.location.href = `/attendance?date=${currentDatee}&selectMonthGroup=${selectMonthGroup}`;
+		
+    }
+
+</script>
+</body>
+
+</html>

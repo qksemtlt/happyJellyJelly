@@ -1,11 +1,14 @@
 package com.ex.service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.ex.data.DogAssignmentsDTO;
+import com.ex.data.MonthcareGroupsDTO;
 import com.ex.entity.AdmissionsEntity;
 import com.ex.entity.DogAssignmentsEntity;
 import com.ex.entity.MonthcareGroupsEntity;
@@ -14,53 +17,54 @@ import com.ex.repository.DogAssignmentsRepository;
 import com.ex.repository.MonthcareGroupsRepository;
 import lombok.RequiredArgsConstructor;
 
-@Service // 이 클래스가 Spring의 서비스 계층 컴포넌트임을 나타냅니다.
-@RequiredArgsConstructor // Lombok 어노테이션으로, final 필드에 대한 생성자를 자동으로 생성합니다.
+@Service
+@RequiredArgsConstructor
 public class DogAssignmentsService {
-    // 필요한 레포지토리들을 주입받습니다.
     private final DogAssignmentsRepository dogAssignmentsRepository;
     private final AdmissionsRepository admissionsRepository;
     private final MonthcareGroupsRepository monthcareGroupsRepository;
+    private final MonthcareGroupsService monthcareGroupsService;
 
-    @Transactional // 이 메소드가 트랜잭션으로 실행되어야 함을 나타냅니다.
+    @Transactional
     public void assignDogToClass(Integer admissionId) {
-        // 주어진 ID로 입학 정보를 조회합니다. 없으면 예외를 던집니다.
         AdmissionsEntity admission = admissionsRepository.findById(admissionId)
             .orElseThrow(() -> new RuntimeException("Admission not found"));
-        
-        // 입학 상태가 'DONE'이 아니면 예외를 던집니다.
+
+        LocalDate currentDate = LocalDate.now();
+
         if (!"DONE".equals(admission.getStatus())) {
             throw new RuntimeException("Payment not completed for this admission");
         }
 
-        // 새로운 강아지 배정 엔티티를 생성합니다.
-        DogAssignmentsEntity assignment = new DogAssignmentsEntity();
-        assignment.setDogs(admission.getDogs());  // 강아지 정보를 설정합니다.
-        assignment.setMonthgroup(admission.getMonthcaregroups());  // 월간 그룹을 설정합니다.
-        assignment.setStartDate(admission.getSubscription().getStartDate());  // 시작 날짜를 현재로 설정합니다.
-        assignment.setEndDate(admission.getSubscription().getEndDate()); // 종료 날짜를 1달 후로 설정합니다.
-        assignment.setAdmission(admission);  // 입학 정보를 설정합니다.
+        LocalDate startDate = admission.getSubscription().getStartDate();
+        if (startDate.isBefore(currentDate)) {
+            throw new RuntimeException("Cannot assign dog to class for past dates");
+        }
 
-        // 생성한 배정 정보를 저장합니다.
+        DogAssignmentsEntity assignment = new DogAssignmentsEntity();
+        assignment.setDogs(admission.getDogs());
+        assignment.setMonthgroup(admission.getMonthcaregroups());
+        assignment.setStartDate(startDate);
+        assignment.setEndDate(admission.getSubscription().getEndDate());
+        assignment.setAdmission(admission);
+
         dogAssignmentsRepository.save(assignment);
     }
 
-    // 특정 그룹의 모든 강아지 배정 정보를 조회합니다.
-    public List<DogAssignmentsDTO> getAssignmentsByGroup(Integer groupId) {
-        // 주어진 ID로 월간 그룹을 조회합니다. 없으면 예외를 던집니다.
+    public List<DogAssignmentsDTO> getCurrentAndFutureAssignmentsByGroup(Integer groupId) {
         MonthcareGroupsEntity monthgroup = monthcareGroupsRepository.findById(groupId)
             .orElseThrow(() -> new RuntimeException("Monthcare group not found"));
 
-        // 해당 그룹의 모든 배정 정보를 조회합니다.
+        LocalDate today = LocalDate.now();
+
         List<DogAssignmentsEntity> assignments = dogAssignmentsRepository.findByMonthgroup(monthgroup);
 
-        // 엔티티를 DTO로 변환하여 반환합니다.
         return assignments.stream()
+            .filter(assignment -> !assignment.getEndDate().isBefore(today))
             .map(this::convertToDTO)
             .collect(Collectors.toList());
     }
 
-    // 엔티티를 DTO로 변환하는 private 메소드입니다.
     private DogAssignmentsDTO convertToDTO(DogAssignmentsEntity entity) {
         return DogAssignmentsDTO.builder()
             .dogassignmentId(entity.getDogassignmentId())
@@ -71,10 +75,45 @@ public class DogAssignmentsService {
             .admission(entity.getAdmission())
             .build();
     }
-    
-    public int countCurrentStudentsInGroup(Integer groupId) {
-        List<DogAssignmentsDTO> assignments = getAssignmentsByGroup(groupId);
-        System.out.println("Group ID: " + groupId + ", Assignments DTO count: " + assignments.size());
-        return assignments.size();
+
+    public int countCurrentAndFutureStudentsInGroup(Integer groupId) {
+        return getCurrentAndFutureAssignmentsByGroup(groupId).size();
+    }
+
+    public Map<Integer, List<DogAssignmentsDTO>> getCurrentAndFutureAssignmentsByBranch(Integer branchId) {
+        List<MonthcareGroupsDTO> groups = monthcareGroupsService.getMonthcareGroupByBranch(branchId);
+        Map<Integer, List<DogAssignmentsDTO>> assignmentsByGroup = new HashMap<>();
+
+        for (MonthcareGroupsDTO group : groups) {
+            List<DogAssignmentsDTO> assignments = getCurrentAndFutureAssignmentsByGroup(group.getId());
+            assignmentsByGroup.put(group.getId(), assignments);
+        }
+
+        return assignmentsByGroup;
+    }
+
+    public Map<Integer, Integer> countCurrentAndFutureStudentsByBranch(Integer branchId) {
+        List<MonthcareGroupsDTO> groups = monthcareGroupsService.getMonthcareGroupByBranch(branchId);
+        Map<Integer, Integer> studentCountByGroup = new HashMap<>();
+
+        for (MonthcareGroupsDTO group : groups) {
+            int studentCount = countCurrentAndFutureStudentsInGroup(group.getId());
+            studentCountByGroup.put(group.getId(), studentCount);
+        }
+
+        return studentCountByGroup;
+    }
+
+    public Map<String, Object> getAssignmentsInfoByBranch(Integer branchId) {
+        Map<String, Object> result = new HashMap<>();
+        List<MonthcareGroupsDTO> groups = monthcareGroupsService.getMonthcareGroupByBranch(branchId);
+        Map<Integer, List<DogAssignmentsDTO>> assignmentsByGroup = getCurrentAndFutureAssignmentsByBranch(branchId);
+        Map<Integer, Integer> studentCountByGroup = countCurrentAndFutureStudentsByBranch(branchId);
+
+        result.put("groups", groups);
+        result.put("assignmentsByGroup", assignmentsByGroup);
+        result.put("studentCountByGroup", studentCountByGroup);
+
+        return result;
     }
 }

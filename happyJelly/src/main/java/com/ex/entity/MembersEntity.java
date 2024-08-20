@@ -59,6 +59,9 @@ public class MembersEntity {
 	// 사용자 비밀번호
 	private String password;
 	
+	@Column(name="ADDRESS")
+	private String address;
+	
 	@Column(name="BRANCH_ID")
 	private Integer branchId;
 	

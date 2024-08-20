@@ -13,6 +13,7 @@ import com.ex.entity.BranchEntity;
 import com.ex.entity.DogsEntity;
 import com.ex.entity.MembersEntity;
 import com.ex.entity.MonthcareGroupsEntity;
+import com.ex.entity.SubscriptionsEntity;
 import com.ex.repository.AttendanceRepository;
 import com.ex.repository.DogsRepository;
 import com.ex.repository.MembersRepository;
@@ -168,6 +169,20 @@ public class AttendanceService {
 
         // 데이터베이스에 저장
         attendanceRepository.save(attendanceEntity);
+    }
+	
+	
+	// 결제 > 입학완료 > 개배정 > 한달치 출석부 세팅 일~토 1~7
+    public void setMonthAttendance(SubscriptionsEntity subs) {
+    	// 사용자의 티켓 요일에 따른 출석부 세팅
+    	// 246 > 월수금 71 > 토일
+    	// 해당 값의 요일 일자에 출석부 넣어주기
+    	
+    	// 구독엔티티의 티켓엔티티의 dayofweek 컬럼 가져오기
+    	subs.getTicket().getDayofweek();
+    	LocalDate localDate;
+//    	localDate.
+    	
     }
 	
 	

@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class AttendanceService {
+<<<<<<< HEAD
 	
 	@Autowired
 	private AttendanceRepository attendanceRepository;
@@ -74,7 +75,58 @@ public class AttendanceService {
 	public List<AttendanceDTO> getAttendenceByDateAndBranch(LocalDate currentDate, Integer branchId){
 		return testMapper.dateAndBranchAttendence(currentDate, branchId);
 	}
+=======
+   
+   @Autowired
+   private AttendanceRepository attendanceRepository;
+   @Autowired
+   private MembersRepository membersRepository;
+   @Autowired
+   MonthcareGroupsRepository monthcareGroupsRepository;
+   @Autowired
+   DogsRepository dogsRepository;
+   
+   private final TestMapper testMapper;
+   
+   public List<AttendanceDTO> getAttendanceAll(){
+      List<AttendanceDTO> list = null;
+      return list;
+   }
+   
+   
+   // 출석부 상세조회
+   public AttendanceDTO getAttendanceById(Integer attendanceId) {
+      System.out.println("===========서비스 getAttendanceById============");
+      AttendanceEntity ae = attendanceRepository.findById(attendanceId).get();
+      AttendanceDTO dto = AttendanceDTO.builder()
+                        .id(ae.getId())
+                        .dog(ae.getDog())
+                        .daygroup(ae.getDaygroup())
+                        .monthgroup(ae.getMonthgroup())
+                        .attendancedate(ae.getAttendancedate())
+                        .status(ae.getStatus())
+                        .dailyreport(ae.getDailyreport())
+                        .notes(ae.getNotes())
+                        .branch(ae.getBranch())
+                        .build();
+      return dto;
+   }
+   
+   
+   // 해당일자출석부 목록조회
+   public List<AttendanceDTO> getAttendanceByDate(LocalDate currentDate){
+      return attendanceRepository.findByAttendancedate(currentDate).stream()
+            .map(this::convertToDTO)
+            .collect(Collectors.toList());
+   }
+   
+   
+   public List<AttendanceDTO> getAttendenceByDateAndBranch(LocalDate currentDate, Integer branchId){
+      return testMapper.dateAndBranchAttendence(currentDate, branchId);
+   }
+>>>>>>> branch 'woocheol' of https://github.com/gomting0/happyJelly.git
 
+<<<<<<< HEAD
 	
 	// 일자,지점1,반1 출석부 조회
 	public List<AttendanceDTO> getAttendanceByDateAndBranchOrMonthGroup( String username
@@ -107,11 +159,52 @@ public class AttendanceService {
 					.map(this::convertToDTO)
 					.collect(Collectors.toList());
 		}
+=======
+   
+   // 일자,지점1,반1 출석부 조회
+   public List<AttendanceDTO> getAttendanceByDateAndBranchOrMonthGroup( String username
+                                    , LocalDate attendancedate
+                                    , Integer branch, Integer monthgroup) {
+      
+      // 선택된 반이 있다면 반id로 해당일자 출석부 조회
+      if(monthgroup != null) {
+         System.out.println("(monthgroup != null 선택된 반 있음");
+         MonthcareGroupsEntity mge = new MonthcareGroupsEntity();
+         mge.setId(monthgroup);
+         return attendanceRepository.findByAttendancedateAndMonthgroup(attendancedate, mge)
+               .stream()
+               .map(this::convertToDTO)
+               .collect(Collectors.toList());
+         
+      // 선택된 반이 없다면 지점id로 해당일자 출석부 조회
+      }else {
+         BranchEntity be = new BranchEntity();
+         be.setBranchId(branch);
+         
+//         Optional<MembersEntity> me = membersRepository.findByUsername(username);
+//         
+//         Integer memberid = me.get().getMemberId();
+//         System.out.println("memberid ::: " + memberid);
+//         AttendanceEntity ae = attendanceRepository.findById(memberid).get();
+         
+         return attendanceRepository.findByAttendancedateAndBranch(attendancedate, be)
+               .stream()
+               .map(this::convertToDTO)
+               .collect(Collectors.toList());
+      }
+>>>>>>> branch 'woocheol' of https://github.com/gomting0/happyJelly.git
     }
+<<<<<<< HEAD
 	
 	
 	// 지점별 강아지 출력
 	public List<DogsDTO> findDogByBranch(Integer branchId) {
+=======
+   
+   
+   // 지점별 강아지 출력
+   public List<DogsDTO> findDogByBranch(Integer branchId) {
+>>>>>>> branch 'woocheol' of https://github.com/gomting0/happyJelly.git
         List<DogsEntity> dogs = dogsRepository.findByBranch(branchId);
 
         List<DogsDTO> dogsDTOList = new ArrayList<>();
@@ -124,6 +217,7 @@ public class AttendanceService {
         }
         return dogsDTOList;
     }
+<<<<<<< HEAD
 	
 	
 	public void updateAttendance(AttendanceDTO attendanceDTO) {
@@ -158,6 +252,42 @@ public class AttendanceService {
 		BranchEntity be = new BranchEntity();
     	be.setBranchId(branchId);
 		
+=======
+   
+   
+   public void updateAttendance(AttendanceDTO attendanceDTO) {
+      
+      AttendanceEntity ae = AttendanceEntity.builder()
+            .id(attendanceDTO.getId())
+            .dog(attendanceDTO.getDog())
+            .daygroup(attendanceDTO.getDaygroup())
+            .monthgroup(attendanceDTO.getMonthgroup())
+            .attendancedate(attendanceDTO.getAttendancedate())
+            .status(attendanceDTO.getStatus())
+            .dailyreport(attendanceDTO.getDailyreport())
+            .notes(attendanceDTO.getNotes())
+            .branch(attendanceDTO.getBranch())
+            .build();
+            
+      attendanceRepository.save(ae);
+      
+      // USER_TYPE != REGULAR >>> 일반 수정
+      // USER_TYPE == REGULAR >>> 특이사항만 수정
+      
+//      if(me.get().getUser_type().equals("REGULAR")) {
+//         System.out.println("regular");
+//      } else {
+//         
+//      }
+   }
+   
+   
+   // 출석부 등록
+   public void createAttendance(Integer branchId, AttendanceDTO attendanceDTO) {
+      BranchEntity be = new BranchEntity();
+       be.setBranchId(branchId);
+      
+>>>>>>> branch 'woocheol' of https://github.com/gomting0/happyJelly.git
         // DTO를 엔티티로 변환
         AttendanceEntity attendanceEntity = new AttendanceEntity();
         attendanceEntity.setAttendancedate(attendanceDTO.getAttendancedate());
@@ -170,6 +300,7 @@ public class AttendanceService {
         // 데이터베이스에 저장
         attendanceRepository.save(attendanceEntity);
     }
+<<<<<<< HEAD
 	
 	
 	// 결제 > 입학완료 > 개배정 > 한달치 출석부 세팅 일~토 1~7
@@ -217,4 +348,39 @@ public class AttendanceService {
 //		
 //	}
 	
+=======
+   
+   
+   private AttendanceDTO convertToDTO(AttendanceEntity entity) {
+      AttendanceDTO dto = new AttendanceDTO();
+      dto.setId(entity.getId());
+      dto.setDog(entity.getDog());
+      dto.setDaygroup(entity.getDaygroup());
+      dto.setMonthgroup(entity.getMonthgroup());
+      dto.setAttendancedate(entity.getAttendancedate());
+      dto.setStatus(entity.getStatus());
+      dto.setNotes(entity.getNotes());
+      return dto;
+   }
+   
+   
+   // 지점id와 선생님id로 
+//   public List<MonthcareGroupsDTO> getMonthGroupByTeacherId(Integer branchId, Integer teacherId){
+//      List<MonthcareGroupsDTO> monthcareDtoList = new ArrayList<>();
+//      List<MonthcareGroupsEntity> monthcareEntityList = monthcareGroupsRepository.findByBranchesAndTeachers(branchId, teacherId);
+//      for(MonthcareGroupsEntity me : monthcareEntityList) {
+//         MonthcareGroupsDTO dto = new MonthcareGroupsDTO();
+//         dto.setId(me.getId());
+//         dto.setName(me.getName());
+//         dto.setDescription(me.getDescription());
+//         dto.setCapacity(me.getCapacity());
+//         dto.setBranches(me.getBranches());
+//         dto.setTeacher(me.getTeachers());
+//         monthcareDtoList.add(dto);
+//      }
+//      return monthcareDtoList;
+//      
+//   }
+   
+>>>>>>> branch 'woocheol' of https://github.com/gomting0/happyJelly.git
 }

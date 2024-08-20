@@ -37,6 +37,7 @@ public class MembersDTO {
 	private String userType;
 	private LocalDate joinDate;
 	private Integer branchId;
+	private String address;
 	
 	public interface SignUp {}
     public interface PasswordChange {}

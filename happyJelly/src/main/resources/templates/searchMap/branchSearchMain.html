@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -124,11 +124,7 @@
     </style>
 </head>
 <body class="bg-gray-100">
-    <nav class="bg-happy-yellow p-4 shadow-md">
-        <div class="container mx-auto">
-            <h1 class="text-3xl font-bold text-happy-black">Happy Jelly</h1>
-        </div>
-    </nav>
+<th:block layout:fragment="content">
             <!-- 왼쪽 섹션: 검색 및 지점 리스트 -->
     <div class="container mx-auto p-4">
         <h2 class="text-2xl font-bold mb-6 text-happy-black">지점 찾기</h2>
@@ -151,6 +147,6 @@
     </div>
 
 <!--     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8f4cf2011b98623f426842d7be946f0f"> -->
-
+</th:block>
 </body>
 </html>

@@ -91,10 +91,6 @@ Happy Jelly는 반려견 유치원을 위한 종합 관리 시스템입니다. �
    - 출석 정보 저장
    - 칼럼: ATTENDANCE_ID, DOG_ID, DATE, STATUS
 
-5. **DAILY_REPORTS**
-   - 일일 리포트 정보 저장
-   - 칼럼: REPORT_ID, DOG_ID, REPORT_DATE, CONTENT
-
 ### 샘플 쿼리
 
 ```sql

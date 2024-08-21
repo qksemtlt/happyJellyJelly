@@ -1,18 +1,10 @@
-<p align="center">
-  <img src="https://path_to_your_logo.png" alt="Happy Jelly Logo" width="200"/>
-</p>
+![Happy Jelly Logo](https://raw.githubusercontent.com/happyjelly/project-assets/main/logo.png)
 
-<h1 align="center">Happy Jelly 반려견 유치원 관리 시스템</h1>
+# Happy Jelly 반려견 유치원 관리 시스템
 
-<p align="center">
-  <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
-  <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
-  <img alt="Made with: Spring Boot" src="https://img.shields.io/badge/Made%20with-Spring%20Boot-6DB33F?logo=spring&logoColor=white" />
-</p>
+![version](https://img.shields.io/badge/version-1.0.0-blue) ![license](https://img.shields.io/badge/license-MIT-yellow) ![spring boot](https://img.shields.io/badge/spring%20boot-2.5.0-brightgreen)
 
-<p align="center">
-  반려견과 함께하는 행복한 유치원 생활, Happy Jelly가 만들어갑니다 🐾
-</p>
+반려견과 함께하는 행복한 유치원 생활, Happy Jelly가 만들어갑니다 🐾
 
 ## 📚 목차
 
@@ -30,15 +22,15 @@ Happy Jelly는 반려견 유치원을 위한 종합 관리 시스템입니다. �
 
 ## ✨ 주요 기능
 
-🧑‍💼 **회원 관리**: 사용자 등록, 로그인, 프로필 관리
-🐶 **강아지 관리**: 강아지 정보 등록 및 관리
-📝 **입학 신청**: 온라인 입학 신청 및 처리
-📊 **출석 관리**: 강아지 출석 체크 및 기록
-📰 **일일 리포트**: 강아지 활동 및 상태에 대한 일일 보고서 작성
-💉 **백신 관리**: 강아지 백신 접종 기록 및 관리
-💳 **결제 시스템**: 카카오페이 연동을 통한 결제 처리
-🏢 **지점 관리**: 여러 지점의 정보 관리 및 조회
-👥 **직원 관리**: 직원 정보 관리 및 권한 설정
+- 👤 **회원 관리**: 사용자 등록, 로그인, 프로필 관리
+- 🐶 **강아지 관리**: 강아지 정보 등록 및 관리
+- 📝 **입학 신청**: 온라인 입학 신청 및 처리
+- 📊 **출석 관리**: 강아지 출석 체크 및 기록
+- 📰 **일일 리포트**: 강아지 활동 및 상태에 대한 일일 보고서 작성
+- 💉 **백신 관리**: 강아지 백신 접종 기록 및 관리
+- 💳 **결제 시스템**: 카카오페이 연동을 통한 결제 처리
+- 🏢 **지점 관리**: 여러 지점의 정보 관리 및 조회
+- 👥 **직원 관리**: 직원 정보 관리 및 권한 설정
 
 ## 🛠 기술 스택
 

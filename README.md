@@ -1,44 +1,49 @@
-![Happy Jelly Logo](https://raw.githubusercontent.com/happyjelly/project-assets/main/logo.png)
+# 반려견 유치원 관리 시스템 - Happy Jelly
 
-# Happy Jelly 반려견 유치원 관리 시스템
+![Happy Jelly Logo](path_to_logo.png)
 
-![version](https://img.shields.io/badge/version-1.0.0-blue) ![license](https://img.shields.io/badge/license-MIT-yellow) ![spring boot](https://img.shields.io/badge/spring%20boot-2.5.0-brightgreen)
+## 목차
+1. [프로젝트 소개](#프로젝트-소개)
+2. [기술 스택](#기술-스택)
+3. [주요 기능](#주요-기능)
+4. [데이터베이스 설계](#데이터베이스-설계)
+5. [설치 및 실행 방법](#설치-및-실행-방법)
+6. [팀 멤버](#팀-멤버)
+7. [라이선스](#라이선스)
 
-반려견과 함께하는 행복한 유치원 생활, Happy Jelly가 만들어갑니다 🐾
+## 프로젝트 소개
+Happy Jelly는 반려견 유치원을 위한 종합 관리 시스템입니다. 이 시스템은 유치원 운영에 필요한 다양한 기능을 제공하여 효율적인 관리와 고객 서비스 향상을 목표로 합니다.
 
-## 📚 목차
+## 기술 스택
+- 데이터베이스: Oracle Database
+- 개발 도구: SQL Developer
+- 백엔드: Java (또는 사용한 백엔드 기술)
+- 프론트엔드: (사용한 프론트엔드 기술, 예: HTML, CSS, JavaScript)
 
-- [📖 프로젝트 소개](#-프로젝트-소개)
-- [✨ 주요 기능](#-주요-기능)
-- [🛠 기술 스택](#-기술-스택)
-- [🚀 시작하기](#-시작하기)
-- [📸 스크린샷](#-스크린샷)
-- [👥 기여하기](#-기여하기)
-- [📄 라이선스](#-라이선스)
+## 주요 기능
+- 회원 관리: 고객 및 직원 정보 관리
+- 강아지 관리: 반려견 정보 및 건강 기록 관리
+- 수업 관리: 수업 일정 및 참석 관리
+- 결제 관리: 수강료 결제 및 정산 관리
+- 보고서 생성: 일일/주간/월간 활동 보고서 생성
 
-## 📖 프로젝트 소개
+## 데이터베이스 설계
+### ER 다이어그램
+![ER Diagram](path_to_er_diagram.png)
 
-Happy Jelly는 반려견 유치원을 위한 종합 관리 시스템입니다. 이 시스템은 유치원 운영에 필요한 다양한 기능을 제공하여 효율적인 관리와 고객 서비스 향상을 목표로 합니다. 반려견의 행복과 보호자의 만족을 최우선으로 생각하는 Happy Jelly와 함께 즐거운 유치원 생활을 경험해보세요!
+### 주요 테이블
+1. MEMBERS: 회원 정보 저장
+2. DOGS: 강아지 정보 저장
+3. CLASSES: 수업 정보 저장
+4. ATTENDANCE: 출석 정보 저장
+5. PAYMENTS: 결제 정보 저장
 
-## ✨ 주요 기능
+### 샘플 쿼리
+```sql
+-- 회원 정보 조회
+SELECT * FROM MEMBERS WHERE member_id = 1;
 
-- 👤 **회원 관리**: 사용자 등록, 로그인, 프로필 관리
-- 🐶 **강아지 관리**: 강아지 정보 등록 및 관리
-- 📝 **입학 신청**: 온라인 입학 신청 및 처리
-- 📊 **출석 관리**: 강아지 출석 체크 및 기록
-- 📰 **일일 리포트**: 강아지 활동 및 상태에 대한 일일 보고서 작성
-- 💉 **백신 관리**: 강아지 백신 접종 기록 및 관리
-- 💳 **결제 시스템**: 카카오페이 연동을 통한 결제 처리
-- 🏢 **지점 관리**: 여러 지점의 정보 관리 및 조회
-- 👥 **직원 관리**: 직원 정보 관리 및 권한 설정
-
-## 🛠 기술 스택
-
-- **Backend**: Spring Boot, Java
-- **Frontend**: Thymeleaf, HTML, CSS, JavaScript
-- **Database**: JPA, Hibernate
-- **외부 API**: 카카오 지도 API, 카카오페이 API
-
-## 🚀 시작하기
-
-1. 저장소를 클론합니다:
+-- 특정 강아지의 출석 기록 조회
+SELECT * FROM ATTENDANCE 
+WHERE dog_id = 1 
+ORDER BY attendance_date DESC;

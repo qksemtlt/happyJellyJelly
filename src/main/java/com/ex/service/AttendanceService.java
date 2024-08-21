@@ -1,11 +1,14 @@
 package com.ex.service;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.ex.data.AdmissionsDTO;
 import com.ex.data.AttendanceDTO;
 import com.ex.data.DogsDTO;
 import com.ex.entity.AttendanceEntity;
@@ -33,6 +36,7 @@ public class AttendanceService {
 	MonthcareGroupsRepository monthcareGroupsRepository;
 	@Autowired
 	DogsRepository dogsRepository;
+	private final AdmissionsService admissionsService;
 	
 	private final TestMapper testMapper;
 	
@@ -117,6 +121,7 @@ public class AttendanceService {
     }
 	
 	
+	// 출석부 수정
 	public void updateAttendance(AttendanceDTO attendanceDTO) {
 		
 		AttendanceEntity ae = AttendanceEntity.builder()
@@ -163,16 +168,55 @@ public class AttendanceService {
     }
 	
 	
-	// 결제 > 입학완료 > 개배정 > 한달치 출석부 세팅 일~토 1~7
-    public void setMonthAttendance(SubscriptionsEntity subs) {
-    	// 사용자의 티켓 요일에 따른 출석부 세팅
-    	// 246 > 월수금 71 > 토일
-    	// 해당 값의 요일 일자에 출석부 넣어주기
+	// 결제 > 입학완료 > 개배정 > 사용자의 티켓 요일정보에 따른 한달치 출석부 세팅 일~토 1~7
+    public void setMonthAttendance(SubscriptionsEntity subs, int admissionId) {
     	
-    	// 구독엔티티의 티켓엔티티의 dayofweek 컬럼 가져오기
-    	subs.getTicket().getDayofweek();
-    	LocalDate localDate;
-//    	localDate.
+    	// 구독티켓의 요일정보가져오기 (ex: "1,2,3" -> 일,월,화)
+    	String dayOfWeekString = subs.getTicket().getDayofweek();
+    	
+    	// 구독요일을 콤마로분리하여 리스트로 변환
+        String[] dayOfWeekArray = dayOfWeekString.split(",");
+
+        // 현재날짜기준으로 다음달의 첫째날과 마지막날 계산
+        LocalDate today = LocalDate.now();
+        YearMonth nextMonth = YearMonth.of(today.getYear(), today.plusMonths(1).getMonth());
+        LocalDate firstDayOfNextMonth = nextMonth.atDay(1);
+        LocalDate lastDayOfNextMonth = nextMonth.atEndOfMonth();
+
+        // 출석부에 넣을 날짜리스트
+        List<LocalDate> attendanceDates = new ArrayList<>();
+
+        // 첫째날부터 마지막날까지 반복
+        for (LocalDate date = firstDayOfNextMonth; !date.isAfter(lastDayOfNextMonth); date = date.plusDays(1)) {
+            // 현재날짜의 요일 (1 = 일요일, 2 = 월요일, ... 7 = 토요일)
+            int dayOfWeekValue = date.getDayOfWeek().getValue();
+            if (dayOfWeekValue == 7) dayOfWeekValue = 1; // 일요일을 1로 맞추기
+
+            // 해당요일이 구독된요일리스트에 포함되면 출석부추가
+            for (String day : dayOfWeekArray) {
+                if (Integer.parseInt(day.trim()) == dayOfWeekValue) {
+                    attendanceDates.add(date);
+                    break;
+                }
+            }
+        }
+
+        AdmissionsDTO admissionDTO = admissionsService.getAdmissionById(admissionId);
+        MonthcareGroupsEntity me = admissionDTO.getMonthcaregroups();
+        
+        // 출석 날짜들을 출석부에 저장
+        for (LocalDate attendanceDate : attendanceDates) {
+            // 출석부 등록을 위한 DTO 생성
+            AttendanceDTO attendanceDTO = new AttendanceDTO();
+            attendanceDTO.setAttendancedate(attendanceDate);
+            attendanceDTO.setDog(subs.getDogs());
+            attendanceDTO.setMonthgroup(me);
+            attendanceDTO.setStatus("PRESENT");  // 출석 상태 초기값 설정
+            attendanceDTO.setNotes("");  // 특별한 노트 없음
+            
+            // 출석부 등록 메서드 호출
+            createAttendance(admissionDTO.getBranch().getBranchId(), attendanceDTO);
+        }
     	
     }
 	

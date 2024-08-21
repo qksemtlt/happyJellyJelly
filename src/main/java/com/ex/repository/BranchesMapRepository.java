@@ -13,7 +13,15 @@
 //@Repository
 //@Mapper
 //public interface BranchesMapRepository extends JpaRepository<BranchEntity, Integer> {
-//    @Query("SELECT b FROM BranchEntity b WHERE b.active = true")
+//    
+//	List<BranchEntity> findByActiveTrue();
+//	
+//	@Query("UPDATE BranchEntity b SET b.latitude = :latitude, b.longitude = :longitude WHERE b.branchId = :branchId")
+//    void updateCoordinates(@Param("branchId") Integer branchId, 
+//                           @Param("latitude") Double latitude, 
+//                           @Param("longitude") Double longitude);
+//	
+//	@Query("SELECT b FROM BranchEntity b WHERE b.active = true")
 //    List<BranchEntity> findAllActiveBranches();
 //    List<BranchesDTO> getAllBranches();
 //    List<BranchesDTO> searchBranches(@Param("term") String term);

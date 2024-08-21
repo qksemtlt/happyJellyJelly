@@ -2,14 +2,20 @@ package com.ex.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import com.ex.repository.BranchesRepository;
+
 import lombok.RequiredArgsConstructor;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URI;
@@ -19,8 +25,8 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class KakaoApiService {
-   private static final Logger logger = LoggerFactory.getLogger(KakaoApiService.class);
-   private final RestTemplate restTemplate;
+	private static final Logger logger = LoggerFactory.getLogger(KakaoApiService.class);
+    private final RestTemplate restTemplate;
    
     @Value("${kakao.api.javascript.key}")
     private String kakaoJavascriptKey;
@@ -72,4 +78,50 @@ public class KakaoApiService {
             throw new RuntimeException("주소를 좌표로 변환하는 중 오류가 발생했습니다: " + e.getMessage(), e);
         }
     }
+    
+
+//    
+//    
+//    @Transactional(readOnly = true)
+//    public List<BranchesDTO> getAllBranchesForMap() {
+//        return branchesRepository.findByActiveTrue().stream()
+//                .map(this::convertToDTO)
+//                .map(this::ensureCoordinates)
+//                .collect(Collectors.toList());
+//    }
+//
+//    private BranchesDTO convertToDTO(BranchEntity branch) {
+//        BranchesDTO dto = new BranchesDTO();
+//        dto.setBranchId(branch.getBranchId());
+//        dto.setBranchesName(branch.getName());
+//        dto.setPostCode(branch.getPostCode());
+//        dto.setAddress(branch.getAddress());
+//        dto.setAddress2(branch.getAddress2());
+//        dto.setPhone(branch.getPhone());
+//        dto.setActive(branch.getActive());
+//        dto.setLatitude(branch.getLatitude() != null ? branch.getLatitude().doubleValue() : null);
+//        dto.setLongitude(branch.getLongitude() != null ? branch.getLongitude().doubleValue() : null);
+//        return dto;
+//    }
+//
+//    private BranchesDTO ensureCoordinates(BranchesDTO branch) {
+//        if (branch.getLatitude() == null || branch.getLongitude() == null) {
+//            try {
+//                Map<String, Double> coordinates = getCoordinatesFromAddress(
+//                        branch.getPostCode(), branch.getAddress(), branch.getAddress2());
+//                branch.setLatitude(coordinates.get("latitude"));
+//                branch.setLongitude(coordinates.get("longitude"));
+//
+//                // 데이터베이스 엔티티 업데이트
+//                branchesRepository.updateCoordinates(
+//                    branch.getBranchId(), 
+//                    Double.valueOf(branch.getLatitude()), 
+//                    Double.valueOf(branch.getLongitude())
+//                );
+//            } catch (Exception e) {
+//                logger.error("Failed to get coordinates for branch: {}", branch.getBranchId(), e);
+//            }
+//        }
+//        return branch;
+//    }
 }

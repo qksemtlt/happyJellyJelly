@@ -1,0 +1,66 @@
+<html layout:decorate="~{layout}">
+    <div layout:fragment="content" class="container my-3">
+		<div class="row justify-content-center">
+            <div class="col-md-6">
+                <h4 class="text-center mb-4">강아지 등록</h4>
+                
+                <form action="/dogs/addDogs" method="post" th:object="${dogsDTO}">
+                    <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                    
+                    <div class="mb-3">
+                        <label class="form-label" for="dogname">이름</label>
+                        <input class="form-control" type="text" id="dogname" th:field="*{dogname}" required/>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label" for="breed">견종</label>
+                        <input class="form-control" type="text" id="breed" th:field="*{breed}" required/>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label" for="weight">몸무게(kg)</label>
+                        <input class="form-control" type="number" step="0.1" id="weight" th:field="*{weight}" required/>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label" for="birth_date">생년월일</label>
+                        <input class="form-control" type="date" id="birthDate" th:field="*{birthDate}">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">성별</label>
+                        <div class="form-check form-check-inline">
+                        	<input type="radio" id="male" th:field="*{gender}" value="M" class="form-check-input"/>
+		        			<label for="male" class="form-check-label">남</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                        	<input type="radio" id="female" th:field="*{gender}" value="F" class="form-check-input"/>
+		        			<label for="female" class="form-check-label">여</label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label" for="dog_serialnum">동물 등록번호</label>
+                        <input class="form-control" type="number" id="dogSerialnum" th:field="*{dogSerialnum}" required/>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">중성화 여부</label>
+                        <div class="form-check form-check-inline">
+                        	<input type="radio" id="yes" th:field="*{neutering}" value="1" class="form-check-input"/>
+		        			<label for="yes" class="form-check-label">완료</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                        	<input type="radio" id="no" th:field="*{neutering}" value="0" class="form-check-input"/>
+		        			<label for="no" class="form-check-label">미완료</label>
+                        </div>                 
+                    </div>                                
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-dark">강아지 등록</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</html>

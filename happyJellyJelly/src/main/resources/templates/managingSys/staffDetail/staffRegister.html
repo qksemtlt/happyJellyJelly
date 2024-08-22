@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+    <title>새 직원 등록 - Happy Jelly 관리시스템</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
+
+
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- 사이드바 -->
+                <nav class="sidebar" id="sidebar">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/managingSys/branches">
+                                <i class='bx bx-store'></i> 매장 관리
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/managingSys/staff">
+                                <i class='bx bx-user'></i> 직원 관리
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/managingSys/member">
+                                <i class='bx bx-group'></i> 회원 관리
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- 메인 컨텐츠 -->
+                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">새 직원 등록</h5>
+                        </div>
+                        <div class="card-body">
+                            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+                            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+                            
+                                <div class="mb-3">
+                                    <label for="searchInput" class="form-label">회원 검색</label>
+                                    <input type="text" id="searchInput" class="form-control" placeholder="이름 또는 이메일로 검색">
+                                </div>
+
+                                <table class="table table-hover" id="memberTable">
+                                    <thead>
+                                        <tr>
+                                            <th>회원 ID</th>
+                                            <th>이름</th>
+                                            <th>이메일</th>
+                                            <th>입사날짜</th>
+                                            <th>직원 타입</th>
+                                            <th>매장 선택</th>
+                                            <th>작업</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody th:if="${memberList != null}">
+                                        <tr th:each="member : ${memberList}">
+                                        	<form th:action="@{/managingSys/staff/register}" method="post"  id="myform">
+                                        		<input th:type="hidden" th:name="memberId"  th:value="${member.memberId}" />
+	                                            <td th:text="${member.memberId}"></td>
+	                                            <td th:text="${member.name}"></td>
+	                                            <td th:text="${member.email}"></td>
+	                                            <td>
+	                                                <select class="form-select userType" name="usertype">
+	                                                    <option value="">선택하세요</option>
+	                                                    <option value="INACTIVE">회원</option>
+	                                                    <option value="TEACHER">직원</option>
+	                                                    <option value="DIRECTOR">원장</option>
+	                                                    <option value="ADMIN">관리자</option>
+	                                                </select>
+	                                            </td>
+	                                            <td>
+	                                                <select class="form-select branchId" name="branchId">
+	                                                    <option value="">선택하세요</option>
+	                                                    <option th:each="branch : ${branchList}"
+	                                                            th:value="${branch.branchId}"
+	                                                            th:text="${branch.branchesName}"></option>
+	                                                </select>
+	                                            </td>
+	                                            <td>
+	                                                <button type="submit"  class="btn btn-primary btn-sm staffRegister"  th:data-member-id="${member.memberId}">
+	                                                직원 등록
+													</button>
+	                                            </td>
+                                            </form>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+	                                <a href="/managingSys/staff" class="btn btn-secondary">
+	                                    <i class='bx bx-arrow-back btn-icon'></i>돌아가기
+	                                </a>
+                            
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+    $(document).ready(function() {
+        // 검색 기능 (변경 없음)
+        $("#searchInput").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#memberTable tbody tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+
+        // 폼 제출 이벤트 처리
+        $(".staffRegister").on("click", function(e) {
+            e.preventDefault();
+			alert("asf");
+            var $submitButton = $(document.activeElement);
+            if (!$submitButton.hasClass('staffRegister')) {
+                return;
+            }
+
+            var memberId = $submitButton.data('member-id');
+            var userType = $submitButton.closest('tr').find('.userType').val();
+            var branchId = $submitButton.closest('tr').find('.branchId').val();
+
+            // 여기서 콘솔 로그를 추가하여 값을 확인
+            console.log("memberId:", memberId);
+            console.log("userType:", userType);
+            console.log("branchId:", branchId);
+            console.log("전송할 데이터:", { memberId: memberId, usertype: userType, branchId: branchId });
+            
+            
+        });
+    });
+    </script>
+</body>
+</html>

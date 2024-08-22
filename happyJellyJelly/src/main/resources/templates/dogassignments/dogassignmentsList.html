@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Happy Jelly - 강아지 반 배정 목록</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        .card-header {
+            background-color: #007bff;
+            color: white;
+        }
+        .table th {
+            border-top: none;
+        }
+        .badge-pill {
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <nav th:replace="~{navbar::navbarFragment}"></nav>
+    <div class="container my-5">
+        <h2 class="text-center mb-4">강아지 반 배정 목록</h2>
+
+        <div th:each="group : ${groups}" class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 th:text="${group.name}" class="mb-0">반 이름</h3>
+                <span class="badge badge-pill badge-light" th:text="${studentCountByGroup.get(group.id)} + '/' + ${group.capacity}">학생 수/정원</span>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>강아지 이름</th>
+                            <th>시작일</th>
+                            <th>종료일</th>
+                            <th>상태</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="assignment : ${assignmentsByGroup.get(group.id)}">
+                            <td>
+                                <i class="fas fa-dog mr-2"></i>
+                                <span th:text="${assignment.dogs.dogname}">강아지 이름</span>
+                            </td>
+                            <td th:text="${#temporals.format(assignment.startDate, 'yyyy-MM-dd')}">시작일</td>
+                            <td th:text="${#temporals.format(assignment.endDate, 'yyyy-MM-dd')}">종료일</td>
+                            <td>
+                                <span th:if="${assignment.startDate.isAfter(#temporals.createToday())}" class="badge badge-info">예정</span>
+                                <span th:if="${assignment.startDate.isBefore(#temporals.createToday()) and assignment.endDate.isAfter(#temporals.createToday())}" class="badge badge-success">진행중</span>
+                                <span th:if="${assignment.endDate.isBefore(#temporals.createToday())}" class="badge badge-secondary">종료</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div th:if="${groups.empty}" class="alert alert-info text-center">
+            <i class="fas fa-info-circle mr-2"></i>현재 등록된 반이 없습니다.
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

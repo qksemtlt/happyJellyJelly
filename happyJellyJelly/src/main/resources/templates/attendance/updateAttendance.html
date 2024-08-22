@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title text="출석부 수정"></title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav th:replace="~{navbar::navbarFragment}"></nav>
+    <div class="container">
+        <h2 class="text-center mb-4" text="출석부 수정"></h2>
+
+        <form th:action="@{/attendance/update}" method="post">
+            <input type="hidden" id="branch" name="branch" th:value="${attendance.branch.branchId}">
+            <input type="hidden" id="id" name="id" th:value="${attendance.id}">
+			<input type="hidden" class="form-control" id="dog" name="dog" th:value="${attendance.dog.dogId}">
+		    <input type="hidden" id="monthgroup" name="monthgroup" th:value="${attendance.monthgroup.id}">
+			<input type="hidden" name="attendancedate" th:value="${attendance.attendancedate}">
+		    
+		    <div class="form-group">
+		        <label for="attendanceDate">일자</label>
+		        <input type="date" class="form-control" id="attdate" name="attendancedate" th:value="${attendance.attendancedate}" th:disabled="disabled">
+		    </div>
+            <div class="form-group">
+                <label for="monthgroup">반</label>
+                <select class="form-control" id="monthgroup" name="monthgroup" th:disabled="disabled" required>
+                    <option value="">반을 선택해주세요</option>
+                    <option th:each="group : ${monthGroupList}" th:value="${group.id}" th:text="${group.name}" th:selected="${attendance.monthgroup.id == group.id}"></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dogSelect">강아지 이름</label>
+				<input type="text" class="form-control" id="dog" name="dog" th:value="${attendance.dog.dogname}" th:disabled="disabled" required>
+            </div>
+			<div class="form-group">
+			    <label for="status">출석 상태</label>
+			    <select class="form-control" id="status" name="status" required>
+			        <option value="PRESENT" th:selected="${attendance.status == 'PRESENT'}">출석</option>
+			        <option value="ABSENT" th:selected="${attendance.status == 'ABSENT'}">결석</option>
+			    </select>
+			</div>
+            <div class="form-group">
+                <label for="notes">특이사항</label>
+                <textarea class="form-control" id="notes" name="notes" th:text="${attendance.notes}"></textarea>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary">수정하기</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>직원 정보 수정 - Happy Jelly 관리시스템</title>
+        <th:block layout:fragment="css">
+	       <style>
+	           body { background-color: #f8f9fa; }
+	           .card { box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15); }
+	           .card-header { background-color: #4e73df; color: white; }
+	       </style>
+        </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container">
+        <h2>직원 정보 수정</h2>
+        <form th:action="@{/managingSys/staff/staffEdit/{id}(id=${staff.memberId})}" th:object="${staff}" method="post">
+            <div class="form-group">
+                <label for="name">이름:</label>
+                <input type="text" class="form-control" id="name" th:field="*{name}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="email">이메일:</label>
+                <input type="email" class="form-control" id="email" th:field="*{email}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="phone">전화번호:</label>
+                <input type="text" class="form-control" id="phone" th:field="*{phone}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="active">재직 상태:</label>
+                <select class="form-control" id="active" name="active" th:field="*{active}">
+                    <option th:value="true">재직중</option>
+                    <option th:value="false">퇴사</option>
+                </select>
+            </div>
+            <div class="form-group" th:if="${staff.active}">
+                <label for="usertype">직급:</label>
+                <select class="form-control" id="usertype" name="usertype" th:field="*{usertype}">
+                    <option value="TEACHER">강사</option>
+                    <option value="DIRECTOR">원장</option>
+                    <option value="ADMIN">관리자</option>
+                </select>
+            </div>
+            <div class="form-group" th:if="${staff.active}">
+                <label for="branchId">소속 지점:</label>
+                <select class="form-control" id="branchId" name="branchId" th:field="*{branchId}">
+                    <option th:each="branch : ${branches}" 
+                            th:value="${branch.branchId}" 
+                            th:text="${branch.branchesName}"></option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">
+            	<i class='bx bx-save btn-icon'></i>수정
+           	</button>
+	        <a href="/managingSys/staff" class="btn btn-secondary">
+	            <i class='bx bx-arrow-back btn-icon'></i>돌아가기
+            </a>
+        </form>
+    </div>
+</div>
+<script th:inline="javascript">
+document.getElementById('active').addEventListener('change', function() {
+    var usertypeSelect = document.getElementById('usertype');
+    var branchSelect = document.getElementById('branchId');
+    if (this.value === 'false') {
+        usertypeSelect.value = 'REGULAR';
+        branchSelect.value = '';
+        usertypeSelect.disabled = true;
+        branchSelect.disabled = true;
+    } else {
+        usertypeSelect.disabled = false;
+        branchSelect.disabled = false;
+    }
+});
+</script>
+</body>
+</html>

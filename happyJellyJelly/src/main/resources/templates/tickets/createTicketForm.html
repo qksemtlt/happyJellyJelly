@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>이용권 등록</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav th:replace="~{navbar::navbarFragment}"></nav>
+    <div class="container">
+        <h2 class="text-center mb-4">이용권 등록</h2>
+        <form th:action="@{/tickets/add}" method="post">
+            <div class="form-group">
+                <label for="ticketname">이용권 이름</label>
+                <input type="text" class="form-control" id="ticketname" name="ticketname" required>
+            </div>
+            <div class="form-group">
+                <label for="price">금액</label>
+                <input type="number" class="form-control" id="price" name="price" required>
+            </div>
+            <div class="form-group">
+                <label for="groupType">이용권 종류</label>
+                <select class="form-control" id="groupType" name="groupType" required onchange="toggleFields()">
+                    <option value="REGULAR">정기권</option>
+                    <option value="DAYCARE">횟수권</option>
+                </select>
+            </div>
+            <div id="dayofweekGroup" class="form-group">
+                <label for="dayofweek">요일</label>
+                <div>
+                    <input type="checkbox" name="dayofweek" value="1"> <label for="1">월요일</label>
+                    <input type="checkbox" name="dayofweek" value="2"> <label for="2">화요일</label>
+                    <input type="checkbox" name="dayofweek" value="3"> <label for="3">수요일</label>
+                    <input type="checkbox" name="dayofweek" value="4"> <label for="4">목요일</label>
+                    <input type="checkbox" name="dayofweek" value="5"> <label for="5">금요일</label>
+                    <input type="checkbox" name="dayofweek" value="6"> <label for="6">토요일</label>
+                    <input type="checkbox" name="dayofweek" value="7"> <label for="7">일요일</label>
+                </div>
+            </div>
+            <div id="ticketcountGroup" class="form-group hidden">
+                <label for="ticketcount">횟수</label>
+                <input type="number" class="form-control" id="ticketcount" name="ticketcount">
+            </div>
+			<br />
+            <button type="submit" class="btn btn-primary">등록</button>
+            <button type="button" class="btn btn-secondary" onclick="window.location.href='/tickets/list'">취소</button>
+        </form>
+    </div>
+
+    <th:block layout:fragment="script">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            function toggleFields() {
+                var groupType = document.getElementById('groupType').value;
+                var dayofweekGroup = document.getElementById('dayofweekGroup');
+                var ticketcountGroup = document.getElementById('ticketcountGroup');
+
+                if (groupType === 'DAYCARE') {
+                    dayofweekGroup.classList.add('hidden');
+                    ticketcountGroup.classList.remove('hidden');
+                } else {
+                    dayofweekGroup.classList.remove('hidden');
+                    ticketcountGroup.classList.add('hidden');
+                }
+            }
+
+            // 페이지 로드 시 초기 상태 설정
+            window.onload = function() {
+                toggleFields();
+            };
+        </script>
+    </th:block>
+</body>
+</html>

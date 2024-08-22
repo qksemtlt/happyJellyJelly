@@ -1,0 +1,24 @@
+<html layout:decorate="~{layout}">
+    <div layout:fragment="content" class="container my-3">
+    	<div class="row justify-content-center">
+            <div class="col-md-6">
+                <h4 class="text-center mb-4">회원 탈퇴</h4>
+                
+				<form action="/members/deleteAccount" method="post" th:object="${membersDTO}">
+                	<div th:replace="~{form_errors :: formErrorsFragment}"></div>
+                	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                	
+                	<input type="hidden" name="username" th:value="${username}" />
+                	
+                	<div class="mb-3">
+                        <label class="form-label" for="password">비밀번호</label>
+                        <input class="form-control" type="password" id="password" name="password" required/>
+                    </div>
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-dark">회원탈퇴</button>
+                    </div>
+                </form>
+			</div>
+        </div>
+    </div>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>지점 찾기 - Happy Jelly</title>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8f4cf2011b98623f426842d7be946f0f"></script>
+    <style>
+        .store-list {
+            height: calc(100vh - 250px);
+            overflow-y: auto;
+        }
+        #map {
+            height: calc(100vh - 200px);
+        }
+    </style>
+</head>
+<body>
+    <th:block layout:fragment="content">
+        <div class="container-fluid">
+            <div class="row">
+                <main class="col-md-12 ms-sm-auto col-lg-12 px-md-4">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">지점 찾기</h1>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <input type="text" id="searchInput" class="form-control" placeholder="지역명 또는 우편번호 입력">
+                            </div>
+                            <button id="searchButton" class="btn btn-primary w-100 mb-3">검색</button>
+                            <div id="branchList" class="store-list bg-white rounded shadow">
+                                <!-- 지점 목록이 여기에 동적으로 추가됩니다 -->
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div id="map" class="rounded shadow-lg"></div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block layout:fragment="script">
+        <script th:inline="javascript">
+            var map;
+
+            $(document).ready(function() {
+                loadBranches();
+                initMap();
+            });
+
+            function loadBranches() {
+                $.ajax({
+                    url: "/api/branches",
+                    method: "GET",
+                    success: function(data) {
+                        displayBranches(data);
+                        addMarkersToMap(data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error loading branches:", error);
+                    }
+                });
+            }
+
+            function initMap() {
+                var container = document.getElementById('map');
+                var options = {
+                    center: new kakao.maps.LatLng(37.566826, 126.9786567),
+                    level: 8
+                };
+                map = new kakao.maps.Map(container, options);
+            }
+
+            function addMarkersToMap(branches) {
+                branches.forEach(function(branch) {
+                    var markerPosition = new kakao.maps.LatLng(branch.latitude, branch.longitude);
+                    var marker = new kakao.maps.Marker({
+                        position: markerPosition
+                    });
+                    marker.setMap(map);
+
+                    var infowindow = new kakao.maps.InfoWindow({
+                        content: '<div style="padding:5px;">' + branch.branchesName + '</div>'
+                    });
+
+                    kakao.maps.event.addListener(marker, 'click', function() {
+                        infowindow.open(map, marker);
+                    });
+                });
+            }
+
+            function displayBranches(branches) {
+                var branchList = $("#branchList");
+                branchList.empty();
+                if (branches.length === 0) {
+                    branchList.html('<p class="text-center py-4">표시할 지점이 없습니다.</p>');
+                    return;
+                }
+                branches.forEach(function(branch) {
+                    var branchElement = $(`
+                        <div class="p-3 border-bottom hover:bg-light">
+                            <h5 class="mb-1">${branch.branchesName || branch.name}</h5>
+                            <p class="mb-1 text-muted">${branch.address}</p>
+                            <p class="mb-0 text-muted">${branch.phone}</p>
+                        </div>
+                    `);
+                    branchList.append(branchElement);
+                });
+            }
+
+            $("#searchButton").click(function() {
+                var searchTerm = $("#searchInput").val();
+                // 여기에 검색 로직을 구현하세요
+            });
+        </script>
+    </th:block>
+</body>
+</html>
